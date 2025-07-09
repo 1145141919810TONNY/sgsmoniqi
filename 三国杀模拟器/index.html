@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>主页</title>
+		<link rel="stylesheet" href="css/head.css">
+	</head>
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f7f9fc;
+			color: #333;
+			line-height: 1.6;
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+		}
+
+		.hero-section {
+			background: linear-gradient(135deg, #8e0e00 0%, #1f1c18 100%);
+			color: #fff;
+			text-align: center;
+			padding: 60px 20px 40px;
+			position: relative;
+			overflow: hidden;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		}
+
+		.hero-section::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><pattern id="pattern" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M0 0 L20 0 L20 20 Z" fill="rgba(255,255,255,0.03)"/></pattern><rect width="100%" height="100%" fill="url(%23pattern)"/></svg>');
+			opacity: 0.3;
+		}
+
+		.hero-title {
+			font-size: 36px;
+			margin-bottom: 15px;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+			color: #f1c40f;
+			position: relative;
+		}
+
+		.hero-subtitle {
+			font-size: 18px;
+			max-width: 700px;
+			margin: 0 auto 30px;
+			color: #ecf0f1;
+			opacity: 0.9;
+			position: relative;
+		}
+
+		.main-content {
+			flex: 1;
+			max-width: 1200px;
+			margin: 30px auto;
+			padding: 0 20px;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.feature-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 30px;
+			margin-bottom: 50px;
+		}
+
+		.feature-card {
+			background: #fff;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+			transition: all 0.3s ease;
+			text-decoration: none;
+			color: inherit;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+
+		.feature-card:hover {
+			transform: translateY(-10px);
+			box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+		}
+
+		.card-image {
+			height: 180px;
+			background: linear-gradient(135deg, #a52a2a 0%, #8b0000 100%);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 24px;
+		}
+
+		.card-content {
+			padding: 25px;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.card-title {
+			font-size: 24px;
+			margin: 0 0 15px;
+			color: #8e0e00;
+		}
+
+		.card-description {
+			margin-bottom: 20px;
+			color: #666;
+			flex-grow: 1;
+		}
+
+		.icon-lg {
+			font-size: 60px;
+			margin-bottom: 15px;
+		}
+
+		.btn-primary {
+			display: inline-block;
+			background: linear-gradient(to right, #8e0e00, #a52a2a);
+			color: white;
+			padding: 12px 28px;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			border: none;
+			cursor: pointer;
+			text-align: center;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			margin-top: 10px;
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+			background: linear-gradient(to right, #a52a2a, #8e0e00);
+		}
+
+		.update-highlight {
+			padding: 25px;
+			background: linear-gradient(to right, rgba(142, 14, 0, 0.05), rgba(31, 28, 24, 0.05));
+			border-radius: 12px;
+			border: 1px solid rgba(142, 14, 0, 0.15);
+			margin-bottom: 40px;
+			box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.03);
+		}
+
+		.update-title {
+			color: #8e0e00;
+			text-align: center;
+			font-size: 28px;
+			margin-bottom: 20px;
+		}
+
+		.update-content {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.update-btn {
+			flex: 1;
+			min-width: 250px;
+			max-width: 400px;
+		}
+
+		.about-section {
+			padding: 40px 0;
+		}
+
+		.section-title {
+			font-size: 32px;
+			text-align: center;
+			color: #8e0e00;
+			margin-bottom: 30px;
+			position: relative;
+		}
+
+		.section-title::after {
+			content: "";
+			display: block;
+			width: 80px;
+			height: 4px;
+			background: linear-gradient(to right, #8e0e00, #f1c40f);
+			margin: 10px auto;
+			border-radius: 2px;
+		}
+
+
+	</style>
+	<body>
+		<section class="hero-section">
+			<h1 class="hero-title">三国杀模拟器主页</h1>
+		</section>
+		<div class="main-content">
+			<div class="feature-grid">
+				<a href="jushou.html" class="feature-card">
+					<div class="card-content">
+						<h2 class="card-title">沮授模拟器</h2>
+						<span class="btn-primary">开始模拟</span>
+					</div>
+				</a>
+				<a href="versionjs.html" class="feature-card">
+					<div class="card-content">
+						<h2 class="card-title">沮爹模拟器更新日志</h2>
+						<span class="btn-primary">查看更新</span>
+					</div>
+				</a>
+			</div>
+			<div class="update-highlight">
+				<h3 class="update-title">最新版本优化内容</h3>
+				<div class="update-content">
+					<div class="update-info">
+						<p>最新版本：沮爹模拟器V5.0更新内容<br />
+							1.重构整个页面文件，即将脱离本地化，接入Gitee Pages静态网页托管功能<br />
+							2.日后会更新其他武将的摸牌模拟器<br />
+							3.将css样式，牌堆js代码分开另外的文件，日后更新会使文件边幅大幅度变小<br/>
+							4.修复了点击非“添加指定牌”但是弹出对应弹出的bug
+						</p>
+					</div>
+					<div class="update-btn">
+						<a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
+					</div>
+				</div>
+			</div>
+	</body>
+	<footer class="site-footer">
+		<div class="author-info">
+			<p>
+				作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+					target="_blank">bilibili月が綺麗ですね_</a><br />
+				联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+				有什么新功能或建议欢迎骚扰（著名来意）
+			</p>
+		</div>
+		<div class="code-update">
+			<a href="https://gitee.com/a3099637681/judiehongliqi" target="_blank" class="buttoncopy"
+				rel="noopener noreferrer">
+				[Gitee]获取后续代码更新
+			</a>
+			<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+				class="bili-button" rel="noopener noreferrer">
+				[bilibili]获取更新动态
+			</a>
+		</div>
+		<div class="license-notice">
+			<p>
+				Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+				Released under the
+				<a href="https://gitee.com/a3099637681/judiehongliqi/blob/master/LICENSE" title="查看MIT许可证"
+					class="license-link" target="_blank">
+					MIT License
+				</a>
+			</p>
+			<p class="i18n-annotation">
+				(法律条款以英文版<a href="https://gitee.com/a3099637681/judiehongliqi/blob/master/LICENSE"
+					target="_blank">LICENSE</a>文件为准)
+			</p>
+		</div>
+	</footer>
+</html>
