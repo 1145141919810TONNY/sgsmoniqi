@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>沮爹模拟器版本更新日志</title>
+		<link rel="stylesheet" href="css/head.css">
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1 style="text-align: center;">沮爹模拟器版本更新日志</h1>
+			</header>
+			<div class="nav-buttons">
+				<button class="nav-button"><a href="index.html">返回主页</a></button>
+				<button class="nav-button"><a href="jushou.html">进入沮爹模拟器</a></button>
+			</div>
+			<div class="update-section">
+				<h2 class="version-title">V1.0原始版本内容</h2>
+				<ul class="version-list">
+					<li>1.提供基本的抽1-4张牌的功能</li>
+					<li>2.提供基本的洗牌功能，查看剩余牌堆功能</li>
+				</ul>
+			</div>
+			<div class="content">
+				<div class="update-section">
+					<h2 class="version-title">V2.0更新内容</h2>
+					<ul class="version-list">
+						<li>1.新增了记牌器的显示</li>
+						<li>2.添加了V1.0版本里牌堆漏掉的5张酒</li>
+						<li>3.新增抽到ak提示</li>
+						<li>4.优化并置顶了交互按钮</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V2.1更新内容</h2>
+					<ul class="version-list">
+						<li>1.新增了脚气卡的使用，在发的牌等于4张且每次洗牌时少于7次可使用</li>
+						<li>2.优化了更新内容的排版，更加简洁界面</li>
+						<li>3.优化了基锦装的组合代码，使代码更加简洁</li>
+						<li>4.更新了较完整的注释，网页端浏览器可按F12查看并学习</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V3.0更新内容</h2>
+					<ul class="version-list">
+						<li>1.新增了模拟出牌阶段（功能尚未完善）</li>
+						<li>2.新增了标沮授的技能代码（需要进入出牌阶段才可使用）</li>
+						<li>3.刷新牌堆自动发4张牌</li>
+						<li>4.优化了牌堆代码，大幅度减少牌堆代码的臃肿度</li>
+						<li>5.新增日志区</li>
+						<li>6.新增展开和收起记牌器的按钮</li>
+						<li>7.新增刷新网页按钮</li>
+						<li>8.采用了新的牌堆随机代码方式，令其更加安全的且更加接近真随机牌堆，并且让新算法尝试适配较旧的浏览器</li>
+						<li>9.修复了牌堆代码里的一些花色的格式不一导致渐营无法正确触发的bug</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V3.1更新内容</h2>
+					<ul class="version-list">
+						<li>1.新增MD5码的生成与校检</li>
+						<li>2.新增结束出牌阶段按钮，以便日后功能更新</li>
+						<li>3.新增AES编码的生成与校检，并与MD5码联合绑定，且可解码他人分享的本模拟器生成的AES编码内容。AES码生成时，会排除掉开局发的4张牌，只会生成剩下的156张牌
+						</li>
+						<li>4.新增牌堆日志的生成。该功能只能在windows系统内使用。（有可能检测不到是否windows，不管了）</li>
+						<li>5.在记牌器区域背景通过base64编码加上沮爹帅气的脸庞，本地也可以看到沮爹帅气的脸庞力！</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V3.2更新内容</h2>
+					<ul class="version-list">
+						<li>
+						<li>1.新增以下卡牌的作用：
+							<ul>
+								<li>1.1【无中生有】：额外摸两张牌</li>
+								<li>1.2【铁索连环】：功能1：重铸摸一张牌，不检索花色点数<br>功能2：不摸牌，使用并检索花色点数</li>
+								<li>1.3新增【杀】的使用次数限制,默认为2次，使用2次后会被禁用，直到结束出牌阶段</li>
+								<li>1.4【诸葛连弩】：解除【杀】的使用次数限制</li>
+								<li>1.5新增【桃】【酒】的正确使用次数（界沮授开局少1滴血）</li>
+								<li>1.6常规下，禁用【闪】的使用（功能后续会继续开发）</li>
+							</ul>
+						</li>
+						<li>2.新增状态信息区（该区域以后会逐渐新增功能）</li>
+						</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V3.3更新内容</h2>
+					<ul class="version-list">
+						<li>1.新增操作台的快捷键</li>
+						<li>2.新增以下牌的作用：
+							<ul>
+								<li>2.1：【借刀杀人】：功能1:从牌堆里检索并获得一张武器牌<br>功能2:让自己能使用一张闪，如果不使用闪的话，状态区桃可使用的次数+1</li>
+								<li>2.2：常态禁用【无懈可击】的使用</li>
+								<li>2.3：【桃园结义】-1次桃的可使用次数</li>
+							</ul>
+						</li>
+						<li>3.新增测试功能：手动添加指定牌到手牌区（方便我自己测试卡牌的bug时使用）</li>
+						<li>4.删除记牌器的图片（由于图片的代码实在太长太大了，不得已删除。若确实需要，点击页尾处"获取更新”跳转链接获取）</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V4.0更新内容</h2>
+					<ul class="version-list">
+						<li>
+							<ul>
+								<li>重要更新：该源码获取了<span class="highlight">MIT License开源许可</span></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V4.1更新内容</h2>
+					<ul class="version-list">
+						<li>1.修复了【桃园结义】可以让桃的可使用次数为-1的bug</li>
+						<li>2.修复了显示AES展开时按钮显示不完全的bug</li>
+						<li>3.将锦囊牌细分为普通锦囊牌和延时锦囊牌方便日后的更新</li>
+						<li>4.优化了若浏览器窗口过小时，会遮挡部分内容的情况</li>
+						<li>5.删除了旧的脚气卡计数器显示（即V4.0前标明删除就跑不了的部分）</li>
+						<li>6.优化了一些代码细节，增强代码的可读性</li>
+						<li>7.增加了十万次随机洗牌的功能，以及有诸葛连弩的概率提示</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V4.2更新内容</h2>
+					<ul class="version-list">
+						<li>
+						<li>1.1：新增洗牌均匀性测试窗口重新测试按钮</li>
+						<li>1.2：完善洗牌均匀性测试窗口的计算公式</li>
+						<li>1.3：优化了洗牌均匀性测试窗口的排序</li>
+						<li>2.重新针对移动端进行一次css样式优化</li>
+						<li>3.修复了最左边的更新信息按钮弹窗内容会被遮挡的问题</li>
+						<li>4.修复了【借刀杀人】的一些bug</li>
+						</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V5.0更新内容</h2>
+					<ul class="version-list">
+						<li>
+						<li>1.重构整个页面文件，即将脱离本地化，接入GitHub Pages静态网页托管功能</li>
+						<li>2.日后会更新其他武将的摸牌模拟器</li>
+						<li>3.将css样式，牌堆js代码分开另外的文件，日后更新会使文件边幅大幅度变小</li>
+						<li>4.修复了点击非“添加指定牌”但是弹出对应弹出的bug</li>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<footer class="site-footer">
+				<div class="author-info">
+					<p>
+						作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+							target="_blank">bilibili月が綺麗ですね_</a><br />
+						联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+						有什么新功能或建议欢迎骚扰（著名来意）
+					</p>
+				</div>
+				<div class="code-update">
+					<a href="https://gitee.com/a3099637681/judiehongliqi" target="_blank" class="buttoncopy"
+						rel="noopener noreferrer">
+						[Gitee]获取后续代码更新
+					</a>
+					<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+						class="bili-button" rel="noopener noreferrer">
+						[bilibili]获取更新动态
+					</a>
+					<a href="https://github.com/1145141919810TONNY/sgsmoniqi/blob/main/%E4%B8%89%E5%9B%BD%E6%9D%80%E6%A8%A1%E6%8B%9F%E5%99%A8" target="_blank" class="buttoncopy" rel="noopener noreferrer">
+						[GitHub]获取后续代码更新
+					</a>
+				</div>
+				<div class="license-notice">
+					<p>
+						Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+						Released under the
+						<a href="https://gitee.com/a3099637681/judiehongliqi/blob/master/LICENSE" title="查看MIT许可证"
+							class="license-link" target="_blank">
+							MIT License
+						</a>
+					</p>
+					<p class="i18n-annotation">
+						(法律条款以英文版<a href="https://gitee.com/a3099637681/judiehongliqi/blob/master/LICENSE"
+							target="_blank">LICENSE</a>文件为准)
+					</p>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
