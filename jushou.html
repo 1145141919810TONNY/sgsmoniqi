@@ -57,7 +57,7 @@
 		</div>
 		<div class="header-placeholder"></div>
 		<!-- 占位元素：确保内容不被顶部操作栏遮挡 -->
-		<h1>沮爹红利期模拟器V5.1</h1>
+		<h1>沮爹红利期模拟器纯随机版</h1>
 		<!-- 主标题：显示应用名称和版本 -->
 
 		<div class="tooltip-container">
@@ -229,7 +229,7 @@
 					// 处理每张卡牌的花色和点数
 					card.suits.forEach(suitStr => {
 						// 使用正则表达式解析花色和点数
-						const match = suitStr.match(/^([♠♠♥♣♣♦]️?)([JQKA]|\d+)$/);
+						const match = suitStr.match(/^([♠♥♣♦]️?)([JQKA]|\d+)$/);
 						if (match) {
 							const suitPart = match[1]; // 提取花色部分
 							let point = match[2]; // 提取点数部分
@@ -2561,10 +2561,6 @@
 				</p>
 			</div>
 			<div class="code-update">
-				<a href="https://gitee.com/a3099637681/judiehongliqi" target="_blank" class="buttoncopy"
-					rel="noopener noreferrer">
-					[Gitee]获取后续代码更新
-				</a>
 				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
 					class="bili-button" rel="noopener noreferrer">
 					[bilibili]获取更新动态
@@ -2577,13 +2573,13 @@
 				<p>
 					Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
 					Released under the
-					<a href="https://gitee.com/a3099637681/judiehongliqi/blob/master/LICENSE" title="查看MIT许可证"
+					<a href="MIT LICENSE.html" title="查看MIT许可证"
 						class="license-link" target="_blank">
 						MIT License
 					</a>
 				</p>
 				<p class="i18n-annotation">
-					(法律条款以英文版<a href="https://gitee.com/a3099637681/judiehongliqi/blob/master/LICENSE"
+					(法律条款以英文版<a href="MIT LICENSE.html"
 						target="_blank">LICENSE</a>文件为准)
 				</p>
 			</div>
