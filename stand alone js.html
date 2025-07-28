@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+		<title>沮爹红利期模拟器</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 10px;
+				overflow-x: hidden;
+			}
+
+			#deck {
+				margin-top: 15px;
+			}
+
+			.card {
+				background-color: #f0f0f0;
+				border: 1px solid #ccc;
+				padding: 8px;
+				margin: 4px;
+				display: inline-block;
+				width: 130px;
+				text-align: center;
+			}
+
+			#remaining {
+				margin-top: 15px;
+				border: 2px solid #ccc;
+				padding: 8px;
+				width: auto;
+			}
+
+			.highlight {
+				background-color: #ffcccc;
+			}
+
+			.header {
+				position: fixed;
+				top: 0;
+				width: 100%;
+				background-color: #333;
+				color: #fff;
+				padding: 8px 0;
+				text-align: center;
+				z-index: 1000;
+				box-sizing: border-box;
+			}
+
+			.header-plaeholder {
+				height: 50px;
+				width: 100%;
+			}
+
+			#remaining-counts {
+				background-size: cover;
+				position: relative;
+				margin: 10px 0;
+				padding: 8px;
+				border: 2px solid #ddd;
+				background-color: #f9f9f9;
+			}
+
+			#remaining-counts::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(255, 255, 255, 0.7);
+				z-index: 0;
+			}
+
+			#remaining-counts .category {
+				position: relative;
+				z-index: 1;
+			}
+
+			.category {
+				margin: 8px 0;
+				padding: 4px;
+				border-bottom: 2px solid #ccc;
+			}
+
+			.category-title {
+				font-weight: bold;
+				color: #333;
+				margin-bottom: 4px;
+			}
+
+			.count-item {
+				display: inline-block;
+				width: 100px;
+				padding: 2px;
+				font-size: 13px;
+			}
+
+			footer {
+				background-color: #000;
+				color: #fff;
+				padding: 8px 0;
+				text-align: center;
+				font-family: Arial, sans-serif;
+			}
+
+			.tooltip-container {
+				position: relative;
+				display: inline-block;
+				margin: 15px;
+				margin-left: 2em;
+			}
+
+			.tooltip {
+				visibility: hidden;
+				background-color: #555;
+				color: #fff;
+				text-align: center;
+				border-radius: 4px;
+				padding: 6px;
+				position: absolute;
+				z-index: 1;
+				top: 125%;
+				opacity: 0;
+				transition: opacity 0.3s;
+				min-width: 200px;
+				max-width: 350px;
+				white-space: normal;
+				box-sizing: border-box;
+				left: 50%;
+				transform: translateX(-50%);
+				pointer-events: none;
+				margin-left: 0;
+				margin-right: 0;
+				width: auto;
+				max-width: calc(100vw - 20px);
+				left: calc(50% + 1em) !important;
+				transform: translateX(-50%) !important;
+			}
+
+			button {
+				margin-right: 8px;
+				margin-left: 0;
+				padding: 5px 10px;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			.tooltip::after {
+				content: "";
+				position: absolute;
+				bottom: 100%;
+				left: 50%;
+				margin-left: -5px;
+				border-width: 5px;
+				border-style: solid;
+				border-color: transparent transparent #555 transparent;
+			}
+
+			.tooltip.right-align {
+				left: auto;
+				right: 0;
+				transform: none;
+			}
+
+			.tooltip.right-align::after {
+				right: 20px;
+				left: auto;
+				margin-left: 0;
+			}
+
+			.tooltip-container:hover .tooltip {
+				visibility: visible;
+				opacity: 1;
+			}
+
+			#hand {
+				margin: 15px 0;
+			}
+
+			button {
+				margin-right: 8px;
+			}
+
+			.phase {
+				color: red;
+				margin: 8px;
+			}
+
+			.card {
+				padding: 6px;
+				margin: 3px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				font-family: monospace;
+			}
+
+			#log-container {
+				border: 2px solid #666;
+				border-radius: 8px;
+				padding: 8px;
+				margin: 15px 0;
+				max-height: 150px;
+				overflow-y: auto;
+				background-color: #f8f8f8;
+				display: flex;
+				flex-direction: column;
+			}
+
+			#log {
+				display: flex;
+				flex-direction: column-reverse;
+			}
+
+			#log p {
+				margin: 4px 0;
+				padding: 2px;
+				border-bottom: 1px dotted #ddd;
+				animation: slideDown 0.3s ease;
+			}
+
+			@keyframes slideDown {
+				from {
+					opacity: 0;
+					transform: translateY(-10px);
+				}
+
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			#remaining-counts {
+				transition: all 0.3s ease;
+				overflow: hidden;
+			}
+
+			.collapsed {
+				max-height: 0 !important;
+				opacity: 0;
+				padding: 0 !important;
+				border: none !important;
+			}
+
+			#deck {
+				transition: all 0.3s ease;
+			}
+
+			.shuffling {
+				position: relative;
+				animation: deckShuffle 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+				filter: drop-shadow(0 0 12px rgba(255, 215, 64, 0.6));
+			}
+
+			.card.shuffle-item {
+				animation: cardShuffle 0.8s ease-in-out both;
+				transform-origin: 50% 100%;
+			}
+
+			@keyframes deckShuffle {
+				0% {
+					transform: translateY(0) rotateZ(0deg);
+					opacity: 1;
+				}
+
+				30% {
+					transform: translateY(-20px) rotateZ(-5deg);
+					opacity: 0.9;
+				}
+
+				70% {
+					transform: translateY(10px) rotateZ(5deg);
+					opacity: 0.95;
+				}
+
+				100% {
+					transform: translateY(0) rotateZ(0deg);
+					opacity: 1;
+				}
+			}
+
+			@keyframes cardShuffle {
+				0% {
+					transform: rotateZ(0deg) scale(1);
+					z-index: 1;
+				}
+
+				25% {
+					transform: rotateZ(-15deg) scale(1.05);
+					z-index: 2;
+				}
+
+				50% {
+					transform: rotateZ(15deg) scale(0.95);
+					filter: brightness(1.2);
+				}
+
+				75% {
+					transform: rotateZ(-10deg) scale(1.02);
+					filter: brightness(1.1);
+				}
+
+				100% {
+					transform: rotateZ(0deg) scale(1);
+					z-index: 1;
+				}
+			}
+
+			@media (prefers-reduced-motion: no-preference) {
+
+				.shuffling,
+				.card.shuffle-item {
+					will-change: transform, filter;
+					backface-visibility: hidden;
+				}
+			}
+
+			.md5-panel {
+				margin: 15px 0;
+				padding: 10px;
+				border: 2px solid #BBDEFB;
+				border-radius: 8px;
+				background: #E3F2FD;
+				box-shadow: 0 2px 4px rgba(33, 150, 243, 0.1);
+			}
+
+			.md5-display {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			#md5Value {
+				font-family: 'Courier New', monospace;
+				font-size: 13px;
+				letter-spacing: 1px;
+				padding: 6px 10px;
+				background: #FFF;
+				border: 1px solid #64B5F6;
+				border-radius: 4px;
+				flex-grow: 1;
+				user-select: none;
+				min-width: 220px;
+				color: #1976D2;
+			}
+
+			.aes-panel {
+				margin: 15px 0;
+				padding: 10px;
+				border: 2px solid #C8E6C9;
+				border-radius: 8px;
+				background: #E8F5E9;
+				box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+			}
+
+			#aesValue {
+				font-family: 'Courier New', monospace;
+				font-size: 18px;
+				letter-spacing: 0.5px;
+				padding: 8px;
+				background: #fff;
+				border: 1px solid #b3e5fc;
+				border-radius: 6px;
+				flex-grow: 1;
+				user-select: none;
+				min-width: 240px;
+				word-break: break-all;
+				white-space: pre-wrap;
+				line-height: 1.5;
+				color: #01579b;
+				box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+				transition: all 0.3s ease;
+				max-height: 120px;
+				overflow-y: auto;
+			}
+
+			#aesValue:hover {
+				border-color: #81d4fa;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			#aesValue::-webkit-scrollbar {
+				height: 4px;
+				background-color: #E8F5E9;
+			}
+
+			#aesValue::-webkit-scrollbar-thumb {
+				background: #4CAF50;
+				border-radius: 2px;
+			}
+
+			.md5-buttons {
+				flex-shrink: 0;
+				margin-left: 10px;
+			}
+
+			.md5-display {
+				overflow: visible;
+				flex-wrap: nowrap;
+			}
+
+			.md5-button {
+				padding: 5px 10px;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			#toggleMD5,
+			#copyMD5 {
+				border: 1px solid #2196F3;
+				color: #2196F3;
+				background: none;
+			}
+
+			#toggleMD5:hover,
+			#copyMD5:hover {
+				background: #2196F3;
+				color: white;
+			}
+
+			#toggleAES,
+			#copyAES {
+				border: 1px solid #4CAF50;
+				color: #4CAF50;
+				background: none;
+			}
+
+			#toggleAES:hover,
+			#copyAES:hover {
+				background: #4CAF50;
+				color: white;
+			}
+
+			#verifyResult {
+				font-weight: bold;
+				padding: 3px 6px;
+				border-radius: 3px;
+			}
+
+			#verifyResult[style*="4CAF50"] {
+				background: #E8F5E9;
+			}
+
+			#verifyResult[style*="f44336"] {
+				background: #FFEBEE;
+			}
+
+			#verifyAESResult {
+				font-weight: bold;
+				padding: 3px 6px;
+				border-radius: 3px;
+			}
+
+			#verifyAESResult:empty {
+				display: none;
+			}
+
+			.md5-button.copied {
+				background-color: #4CAF50 !important;
+				color: white !important;
+				transition: all 0.3s ease;
+			}
+
+			.security-alert {
+				font-family: '微软雅黑', sans-serif;
+				padding: 15px;
+				border-radius: 8px;
+				background: #f8f9fa;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+				max-width: 90%;
+				line-height: 1.6;
+			}
+
+			.security-alert strong {
+				color: #d32f2f;
+			}
+
+			.security-alert button {
+				margin: 8px 4px 0 0;
+				padding: 6px 16px;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			.security-alert .confirm {
+				background: #4CAF50;
+				color: white;
+				border: none;
+			}
+
+			.security-alert .cancel {
+				background: #f44336;
+				color: white;
+				border: none;
+			}
+
+			#md5aes-container {
+				transition: all 0.3s ease;
+				overflow: hidden;
+				max-height: 1500px;
+			}
+
+			#md5aes-container.collapsed {
+				max-height: 0 !important;
+				opacity: 0;
+				padding: 0 !important;
+				border: none !important;
+			}
+
+			.chain-dialog button {
+				margin: 4px;
+				padding: 6px 12px;
+				border: 1px solid #666;
+				cursor: pointer;
+			}
+
+			.chain-dialog button:hover {
+				background: #f0f0f0;
+			}
+
+			#func1 {
+				background: #BBDEFB;
+			}
+
+			#func2 {
+				background: #C8E6C9;
+			}
+
+			#cancel {
+				background: #FFCDD2;
+			}
+
+			#status-area {
+				border: 2px solid #666;
+				padding: 12px;
+				margin: 12px 0;
+				background: #f8f9fa;
+			}
+
+			#kill-counter {
+				font-weight: bold;
+				color: #c62828;
+				margin: 4px 0;
+			}
+
+			#zhuge-status {
+				color: #2e7d32;
+				margin: 4px 0;
+			}
+
+			.disabled {
+				opacity: 0.5;
+				pointer-events: none;
+			}
+
+			.tooltip-container button::after {
+				content: attr(data-shortcut);
+				margin-left: 6px;
+				color: #666;
+				font-size: 0.8em;
+			}
+
+			button {
+				position: relative;
+			}
+
+			button::after {
+				content: attr(data-shortcut);
+				position: absolute;
+				right: 6px;
+				bottom: 2px;
+				font-size: 0.8em;
+				color: #666;
+			}
+
+			.tooltip#cardSelector {
+				max-width: 500px;
+				padding: 12px;
+			}
+
+			.tooltip#cardSelector button {
+				min-width: 80px;
+				padding: 4px;
+				font-size: 13px;
+			}
+
+			.card-selector-modal {
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background: white;
+				padding: 15px;
+				border: 2px solid #666;
+				z-index: 10000;
+				box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+				max-width: 90%;
+				max-height: 90vh;
+				overflow-y: auto;
+			}
+
+			.modal-backdrop {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(0, 0, 0, 0.5);
+				z-index: 9999;
+			}
+
+			.card-button {
+				margin: 4px;
+				padding: 6px 12px;
+				min-width: 100px;
+			}
+
+			.gitee-button {
+				display: inline-flex;
+				align-items: center;
+				padding: 6px 12px;
+				background: #c71d23;
+				color: white !important;
+				border-radius: 4px;
+				transition: opacity 0.3s;
+			}
+
+			.gitee-button:hover {
+				opacity: 0.9;
+			}
+
+			.bili-button {
+				display: inline-flex;
+				align-items: center;
+				padding: 10px 38px;
+				background: #f46674;
+				color: white !important;
+				border-radius: 4px;
+				transition: opacity 0.3s;
+			}
+
+			.bili-button:hover {
+				opacity: 0.9;
+			}
+
+			.site-footer {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				gap: 15px;
+				padding: 1.5rem 3%;
+			}
+
+			.buttoncopy {
+				color: white !important;
+				text-decoration: none !important;
+				display: inline-block;
+				padding: 10px 20px;
+				border-radius: 4px;
+				background: #C71D23;
+				font-weight: 500;
+				transition: all 0.3s ease;
+				border: 2px solid transparent;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			.buttoncopy:hover {
+				transform: translateY(-1px);
+				box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+				background: #A3171C;
+			}
+
+			.buttoncopy:active {
+				transform: translateY(0);
+				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+			}
+
+			.site-footer a {
+				text-decoration: none !important;
+				color: #ADD8E6 !important;
+			}
+
+			.license-link:hover {
+				opacity: 0.8;
+				text-decoration: underline !important;
+			}
+
+			.i18n-annotation {
+				color: rgba(255, 255, 255, 0.7) !important;
+			}
+
+			#testUniformBtn {
+				background-color: #4CAF50;
+				color: white;
+			}
+
+			#testPerfBtn {
+				background-color: #2196F3;
+				color: white;
+			}
+
+			.security-alert strong {
+				color: #d32f2f;
+				font-size: 1.1em;
+				display: block;
+				margin-bottom: 12px;
+			}
+
+			.security-alert ul {
+				margin: 8px 0;
+				padding-left: 20px;
+			}
+
+			.security-alert li {
+				list-style-type: '▸ ';
+				margin: 6px 0;
+				color: #666;
+			}
+
+			.security-alert .confirm {
+				background: #4CAF50 !important;
+			}
+
+			.security-alert .cancel {
+				background: #f44336 !important;
+			}
+
+			.scrollable-panel {
+				overflow-y: auto;
+				max-height: 90vh;
+			}
+
+			.scrollable-panel::-webkit-scrollbar {
+				width: 10px;
+			}
+
+			.scrollable-panel::-webkit-scrollbar-track {
+				background: #f1f1f1;
+				border-radius: 10px;
+			}
+
+			.scrollable-panel::-webkit-scrollbar-thumb {
+				background: #4CAF50;
+				border-radius: 10px;
+			}
+
+			.scrollable-panel::-webkit-scrollbar-thumb:hover {
+				background: #3e8e41;
+			}
+
+			@media (max-width: 768px) {
+				body {
+					margin: 8px;
+				}
+
+				.header {
+					padding: 6px 0;
+					font-size: 14px;
+				}
+
+				.header-plaeholder {
+					height: 45px;
+				}
+
+				.card {
+					width: 110px;
+				}
+
+				#remaining {
+					width: auto;
+				}
+
+				.count-item {
+					width: 90px;
+					font-size: 12px;
+				}
+
+				.md5-panel,
+				.aes-panel {
+					padding: 10px;
+				}
+
+				#md5Value,
+				#aesValue {
+					font-size: 12px;
+					min-width: 180px;
+				}
+
+				.buttoncopy {
+					padding: 8px 16px;
+				}
+
+				.security-alert {
+					padding: 12px;
+				}
+
+				.card-selector-modal {
+					max-width: 95%;
+				}
+
+				.scrollable-panel {
+					width: 95% !important;
+					padding: 15px !important;
+				}
+
+				#rerunTest,
+				#closePanel {
+					display: block;
+					width: 100%;
+					margin: 8px 0;
+				}
+
+				.scrollable-panel h2 {
+					margin-top: 30px;
+				}
+
+				.scrollable-panel>div>div {
+					position: relative !important;
+					top: auto !important;
+					right: auto !important;
+					flex-direction: column;
+				}
+
+				.monospace {
+					font-size: 12px !important;
+				}
+
+				progress {
+					height: 6px;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.scrollable-panel {
+					max-height: 85vh !important;
+				}
+
+				.md5-button,
+				.dialog-button {
+					padding: 8px 12px !important;
+					font-size: 14px !important;
+				}
+
+				.log-panel {
+					max-height: 200px;
+					overflow-y: auto;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<p>操作台</p>
+			<button id="reloadButton"
+				style="margin-left: 15px; background-color: #ff4444; color: white;">强制刷新（Q）</button>
+			<button id="draw1Button">发1张牌（1）</button>
+			<button id="draw2Button">发2张牌（2）</button>
+			<button id="draw3Button">发3张牌（3）</button>
+			<button id="draw4Button">发4张牌（4）</button>
+			<button id="revealButton">查看剩余牌堆（W）</button>
+			<button id="highlightButton">高亮诸葛连弩（E）</button>
+			<button id="shuffleButton">重新洗牌（R）</button>
+			<button id="reshuffleBtn" disabled>使用脚气卡（T）</button>
+			<button id="drawBtn">进入摸牌阶段（A）</button>
+			<button id="playBtn" disabled>进入出牌阶段（S）</button>
+			<button id="endPlayBtn" disabled>结束出牌阶段（D）</button>
+			<button id="testCardBtn">测试功能：添加指定牌</button>
+			<button id="testUniformBtn">洗牌均匀性测试</button>
+			<button id="testPerfBtn">洗牌性能测试（暂未编写代码）</button>
+		</div>
+		<div class="header-placeholder"></div>
+		<h1>沮爹红利期模拟器V5.0单机版</h1>
+		<h2>注：本模拟器已接入GitHub Pages静态网页托管功能，网页链接：<a href="https://1145141919810tonny.github.io/sgsmoniqi/"
+				target="_blank">https://1145141919810tonny.github.io/sgsmoniqi/</a></h2>
+		<div class="tooltip-container">
+			<button>V2.0更新内容</button>
+			<div class="tooltip">
+				1.新增了剩余牌名的显示<br />
+				2.添加了1.0版本里牌堆漏掉的5张酒<br />
+				3.新增抽到ak提示<br />
+				4.优化并置顶了交互按钮
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V2.1更新内容</button>
+			<div class="tooltip">
+				1.新增了脚气卡的使用，在发的牌等于4张且每次洗牌时少于7次可使用<br />
+				2.优化了更新内容的排版，更加简洁界面<br />
+				3.优化了基锦装的组合代码，使代码更加简洁<br />
+				4.更新了较完整的注释，网页端浏览器可按F12查看并学习
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V3.0更新内容</button>
+			<div class="tooltip">
+				1.新增了模拟出牌阶段（功能尚未完善）<br />
+				2.新增了标沮授的技能代码（需要进入出牌阶段才可使用）<br />
+				3.刷新牌堆自动发4张牌<br />
+				4.优化了牌堆代码，大幅度减少牌堆代码的臃肿度<br />
+				5.新增日志区<br />
+				6.新增展开和收起记牌器的按钮<br />
+				7.新增刷新网页按钮<br />
+				8.采用了新的牌堆随机代码方式，令其更加安全的且更加接近真随机牌堆，并且让新算法尝试适配较旧的浏览器<br />
+				9.修复了牌堆代码里的一些花色的格式不一导致渐营无法正确触发的bug
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V3.1更新内容</button>
+			<div class="tooltip">
+				1.新增MD5码的生成与校检<br />
+				2.新增结束出牌阶段按钮，以便日后功能更新。<br />
+				3.新增AES编码的生成与校检，并与MD5码联合绑定，且可解码他人分享的本模拟器生成的AES编码内容。AES码生成时，会排除掉开局发的4张牌，只会生成剩下的156张牌<br />
+				4.新增牌堆日志的生成。该功能只能在windows系统内使用。（有可能检测不到是否windows，不管了）<br />
+				5.在记牌器区域背景通过base64编码加上沮爹帅气的脸庞，本地也可以看到沮爹帅气的脸庞力！
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V3.2更新内容</button>
+			<div class="tooltip">
+				1.新增以下卡牌的作用：<br />
+				1.1【无中生有】：额外摸两张牌<br />
+				1.2【铁索连环】：功能1：重铸摸一张牌，不检索花色点数<br />
+				功能2：不摸牌，使用并检索花色点数。<br />
+				1.3新增【杀】的使用次数限制,默认为2次，使用2次后会被禁用，直到结束出牌阶段<br />
+				1.4【诸葛连弩】：解除【杀】的使用次数限制<br />
+				1.5新增【桃】【酒】的正确使用次数（界沮授开局少1滴血）<br />
+				1.6常规下，禁用【闪】的使用（功能后续会继续开发）<br />
+				2.新增状态信息区（该区域以后会逐渐新增功能）
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V3.3更新内容</button>
+			<div class="tooltip">
+				1.新增操作台的快捷键<br />
+				2.新增以下牌的作用：<br />
+				2.1：【借刀杀人】：功能1:从牌堆里检索并获得一张武器牌<br />
+				功能2:让自己能使用一张闪，如果不使用闪的话，状态区桃可使用的次数+1<br />
+				2.2：常态禁用【无懈可击】的使用。<br />
+				2.3：【桃园结义】-1次桃的可使用次数。<br />
+				3.新增测试功能：手动添加指定牌到手牌区（方便我自己测试卡牌的bug时使用）<br />
+				4.删除记牌器的图片。（由于图片的代码实在太长太大了，不得已删除。若确实需要，点击页尾处"获取更新”跳转链接获取。）
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V4.0更新内容</button>
+			<div class="tooltip">
+				重要更新：该源码获取了MIT License开源许可
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V4.1更新内容</button>
+			<div class="tooltip">
+				1.修复了【桃园结义】可以让桃的可使用次数为-1的bug<br />
+				2.修复了显示AES展开时按钮显示不完全的bug<br />
+				3.将锦囊牌细分为普通锦囊牌和延时锦囊牌方便日后的更新<br />
+				4.优化了若浏览器窗口过小时，会遮挡部分内容的情况<br />
+				5.删除了旧的脚气卡计数器显示（即V4.0前标明删除就跑不了的部分）<br />
+				6.优化了一些代码细节，增强代码的可读性<br />
+				7.增加了十万次随机洗牌的功能，以及有诸葛连弩的概率提示
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V4.2更新内容</button>
+			<div class="tooltip">
+				1.1：新增洗牌均匀性测试窗口重新测试按钮<br />
+				1.2：完善洗牌均匀性测试窗口的计算公式<br />
+				1.3：优化了洗牌均匀性测试窗口的排序<br />
+				2.重新针对移动端进行一次css样式优化<br />
+				3.修复了最左边的更新信息按钮弹窗内容会被遮挡的问题<br />
+				4.修复了【借刀杀人】的一些bug
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V5.0更新内容</button>
+			<div class="tooltip">
+				1.本模拟器以脱离本地化模式，接入GitHub Pages静态网页托管功能,页尾处有对应跳转链接<br />
+				2.修复了点击非“添加指定牌”但是弹出对应弹出的bug
+			</div>
+		</div>
+		<p>说明：本代码的牌堆是真正的纯随机，专治各种嘴硬<br />
+			请先查看剩余牌堆，再点高亮ak。<br />
+			由于是纯随机序列，有一大堆杀闪扎堆属于正常现象（恭喜你刷到了沙摩柯的牌堆（bushi）），不想看到此类情况的，重新洗牌即可<br />
+			刷新按钮可在网页有不可逆的bug时将网页恢复到初始状态
+		</p>
+		<h2>安全校验区MD5/AES编码<button id="toggleMD5AES" style="font-size: 12px; padding: 2px 5px;">▼ 收起</button></h2>
+		<div id="md5aes-container">
+			<div class="md5-panel">
+				<div class="md5-display">
+					<div id="md5Value">******</div>
+					<div class="md5-buttons">
+						<button id="toggleMD5" class="md5-button">显示MD5</button>
+						<button id="copyMD5" class="md5-button">复制</button>
+					</div>
+				</div>
+				<p class="md5-caption">该标识符基于当前牌堆生成，用于验证牌堆唯一性</p>
+				<div class="verify-panel">
+					<input type="text" id="verifyMD5" placeholder="输入MD5验证牌堆" class="verify-input">
+					<button onclick="verifyDeck()" class="md5-button">验证</button>
+					<span id="verifyResult" class="verify-result"></span>
+				</div>
+			</div>
+			<div class="aes-panel">
+				<div class="md5-display">
+					<div id="aesValue" class="aes-value">******</div>
+					<div class="md5-buttons">
+						<button id="toggleAES" class="md5-button">显示AES</button>
+						<button id="copyAES" class="md5-button">复制</button>
+					</div>
+				</div>
+				<p class="aes-caption">包含密钥的AES编码，可反向解析牌堆</p>
+				<div class="verify-panel">
+					<input type="text" id="verifyAES" placeholder="输入AES编码验证牌堆" class="verify-input">
+					<button onclick="verifyAESDeck()" class="md5-button">解密验证</button>
+					<span id="verifyAESResult" class="verify-result"></span>
+				</div>
+				<div class="log-panel">
+					<button id="exportLog" class="md5-button log-button">
+						📄 生成安全日志文件
+					</button>
+				</div>
+			</div>
+		</div>
+		<h2>记牌器 <button id="toggleCounter" style="font-size: 12px; padding: 2px 5px;">▼ 收起</button></h2>
+		<div id="remaining-counts"></div>
+		<h3>状态信息</h3>
+		<div id="status-area">
+			<div id="kill-counter">杀可用次数：2</div>
+			<div id="zhuge-status">诸葛连弩：未装备</div>
+			<div id="peach-counter">桃可用次数：1</div>
+			<div id="wine-counter">酒可用次数：1</div>
+		</div>
+		<div id="testProgress" style="display:none;">
+			<progress value="0" max="100"></progress>
+			<span>0%</span>
+		</div>
+		<div id="deck"></div>
+		<div id="remaining"></div>
+		<div id="hand"></div>
+		<h3>操作日志</h3>
+		<div id="log-container">
+			<div id="log"></div>
+		</div>
+		<div id="stageInfo" class="phase"></div>
+		<script>
+			const cardCategories = {
+				basic: ["杀", "闪", "桃", "酒", "火杀", "雷杀"],
+				trick: ["决斗", "无中生有", "过河拆桥", "顺手牵羊", "借刀杀人", "南蛮入侵", "万箭齐发", "桃园结义", "五谷丰登", "无懈可击", "火攻", "铁索连环", ],
+				ystrick: ["乐不思蜀", "闪电", "兵粮寸断"],
+				weapon: ["诸葛连弩", "雌雄双股剑", "青龙偃月刀", "青釭剑", "丈八蛇矛", "麒麟弓", "贯石斧", "方天画戟", "寒冰剑", "古锭刀", "朱雀羽扇"],
+				armor: ["八卦阵", "仁王盾", "藤甲", "白银狮子"],
+				horse: ["赤兔", "大宛", "紫骍", "的卢", "绝影", "爪黄飞电", "骅骝"]
+			};
+			const standardDeck = [{
+					name: "杀",
+					suits: ["♠️7"],
+					count: 1
+				},
+				{
+					name: "杀",
+					suits: ["♠️8", "♠️9", "♠️10", "♥️10"],
+					count: 2
+				},
+				{
+					name: "杀",
+					suits: ["♥️J", "♣️2", "♣️3", "♣️4", "♣️5", "♣️6", "♣️7"],
+					count: 1
+				},
+				{
+					name: "杀",
+					suits: ["♣️8", "♣️9", "♣️10", "♣️J"],
+					count: 2
+				},
+				{
+					name: "杀",
+					suits: ["♦️6", "♦️7", "♦️8", "♦️9", "♦️10", "♦️K"],
+					count: 1
+				},
+				{
+					name: "火杀",
+					suits: ["♥️4", "♥️7", "♥️10", "♦️4", "♦️5"],
+					count: 1
+				},
+				{
+					name: "雷杀",
+					suits: ["♠️4", "♠️5", "♠️6", "♠️7", "♠️8", "♣️5", "♣️6", "♣️7", "♣️8"],
+					count: 1
+				},
+				{
+					"name": "闪",
+					"suits": ["♥️2"],
+					"count": 2
+				},
+				{
+					"name": "闪",
+					"suits": ["♥️8", "♥️9", "♥️J", "♥️Q"],
+					"count": 1
+				},
+				{
+					"name": "闪",
+					"suits": ["♥️K"],
+					"count": 1
+				},
+				{
+					"name": "闪",
+					"suits": ["♦️2"],
+					"count": 2
+				},
+				{
+					"name": "闪",
+					"suits": ["♦️3", "♦️4", "♦️5", "♦️9"],
+					"count": 1
+				},
+				{
+					"name": "闪",
+					"suits": ["♦️6", "♦️7", "♦️8", "♦️10"],
+					"count": 2
+				},
+				{
+					"name": "闪",
+					"suits": ["♦️J"],
+					"count": 3
+				},
+				{
+					name: "桃",
+					suits: ["♥️3", "♥️4", "♥️5", "♥️7", "♥️8", "♥️9", "♥️Q"],
+					count: 1
+				},
+				{
+					name: "桃",
+					suits: ["♥️6"],
+					count: 2
+				},
+				{
+					name: "桃",
+					suits: ["♦️2", "♦️3", "♦️Q"],
+					count: 1
+				},
+				{
+					name: "酒",
+					suits: ["♠️3", "♠️9", "♣️3", "♣️9", "♦️9"],
+					count: 1
+				},
+				{
+					name: "决斗",
+					suits: ["♠️A", "♣️A", "♦️A"],
+					count: 1
+				},
+				{
+					name: "无中生有",
+					suits: ["♥️7", "♥️8", "♥️9", "♥️J"],
+					count: 1
+				},
+				{
+					name: "过河拆桥",
+					suits: ["♠️3", "♠️4", "♠️Q", "♥️Q", "♣️3", "♣️4"],
+					count: 1
+				},
+				{
+					name: "顺手牵羊",
+					suits: ["♠️3", "♠️4", "♠️J", "♦️3", "♦️4"],
+					count: 1
+				},
+				{
+					name: "借刀杀人",
+					suits: ["♣️Q", "♣️K"],
+					count: 1
+				},
+				{
+					name: "南蛮入侵",
+					suits: ["♠️7", "♠️K", "♣️7"],
+					count: 1
+				},
+				{
+					name: "万箭齐发",
+					suits: ["♥️A"],
+					count: 1
+				},
+				{
+					name: "桃园结义",
+					suits: ["♥️A"],
+					count: 1
+				},
+				{
+					name: "五谷丰登",
+					suits: ["♥️3", "♥️4"],
+					count: 1
+				},
+				{
+					name: "无懈可击",
+					suits: ["♠️J", "♣️Q", "♣️K", "♦️Q", "♠️K", "♥️A", "♥️K"],
+					count: 1
+				},
+				{
+					name: "火攻",
+					suits: ["♥️2", "♥️3", "♦️Q"],
+					count: 1
+				},
+				{
+					name: "铁索连环",
+					suits: ["♠️J", "♠️Q", "♣️10", "♣️J", "♣️Q", "♣️K"],
+					count: 1
+				},
+				{
+					name: "乐不思蜀",
+					suits: ["♠️6", "♥️6", "♣️6"],
+					count: 1
+				},
+				{
+					name: "闪电",
+					suits: ["♠️A", "♥️Q"],
+					count: 1
+				},
+				{
+					name: "兵粮寸断",
+					suits: ["♠️10", "♣️4"],
+					count: 1
+				},
+				{
+					name: "雌雄双股剑",
+					suits: ["♠️2"],
+					count: 1
+				},
+				{
+					name: "青龙偃月刀",
+					suits: ["♠️5"],
+					count: 1
+				},
+				{
+					name: "青釭剑",
+					suits: ["♠️6"],
+					count: 1
+				},
+				{
+					name: "丈八蛇矛",
+					suits: ["♠️Q"],
+					count: 1
+				},
+				{
+					name: "麒麟弓",
+					suits: ["♥️5"],
+					count: 1
+				},
+				{
+					name: "诸葛连弩",
+					suits: ["♣️A", "♦️A"],
+					count: 1
+				},
+				{
+					name: "贯石斧",
+					suits: ["♦️5"],
+					count: 1
+				},
+				{
+					name: "方天画戟",
+					suits: ["♦️Q"],
+					count: 1
+				},
+				{
+					name: "寒冰剑",
+					suits: ["♠️2"],
+					count: 1
+				},
+				{
+					name: "古锭刀",
+					suits: ["♠️A"],
+					count: 1
+				},
+				{
+					name: "朱雀羽扇",
+					suits: ["♦️A"],
+					count: 1
+				},
+				{
+					name: "八卦阵",
+					suits: ["♠️2", "♣️2"],
+					count: 1
+				},
+				{
+					name: "仁王盾",
+					suits: ["♣️2"],
+					count: 1
+				},
+				{
+					name: "藤甲",
+					suits: ["♠️2", "♣️2"],
+					count: 1
+				},
+				{
+					name: "白银狮子",
+					suits: ["♣️A"],
+					count: 1
+				},
+				{
+					name: "赤兔",
+					suits: ["♥️5"],
+					count: 1
+				},
+				{
+					name: "大宛",
+					suits: ["♠️K"],
+					count: 1
+				},
+				{
+					name: "紫骍",
+					suits: ["♦️K"],
+					count: 1
+				},
+				{
+					name: "的卢",
+					suits: ["♣️5"],
+					count: 1
+				},
+				{
+					name: "绝影",
+					suits: ["♠️5"],
+					count: 1
+				},
+				{
+					name: "爪黄飞电",
+					suits: ["♥️K"],
+					count: 1
+				},
+				{
+					name: "骅骝",
+					suits: ["♦️K"],
+					count: 1
+				},
+			];
+			let deck = [];
+			let drawnCards = [];
+			let discardPile = [];
+			let hand = [];
+			let phase = '';
+			let lastUsedCard = null;
+			let reshuffleUsed = 0;
+			const MAX_RESHUFLE = 7;
+			let currentMD5 = '';
+			let showMD5 = false;
+			let currentAES = '';
+			let showAES = false;
+			let originalDeck = [];
+			let isCounterCollapsed = false;
+			let isMD5AESCollapsed = false;
+			let killCount = 2;
+			let hasZhugeLianNu = false;
+			let currentWeapon = null;
+			let peachCount = 1;
+			let wineCount = 1;
+
+			function initializeDeck() {
+				document.getElementById('log').innerHTML = '';
+				log("牌堆初始化开始");
+				deck = [];
+				drawnCards = [];
+				discardPile = [];
+				hand = [];
+				document.getElementById('deck').innerHTML = '';
+				reshuffleUsed = 0;
+				phase = '';
+				lastUsedCard = null;
+				peachCount = 1;
+				wineCount = 1;
+				standardDeck.forEach(card => {
+					card.suits.forEach(suitStr => {
+						const match = suitStr.match(/^([♠♥♣♦]️?)([JQKA]|\d+)$/);
+						if (match) {
+							const suitPart = match[1];
+							let point = match[2];
+							switch (point) {
+								case 'J':
+									point = 11;
+									break;
+								case 'Q':
+									point = 12;
+									break;
+								case 'K':
+									point = 13;
+									break;
+								case 'A':
+									point = 1;
+									break;
+								default:
+									point = parseInt(point, 10);
+							}
+							for (let i = 0; i < card.count; i++) {
+								deck.push({
+									name: card.name,
+									suit: suitPart,
+									point: point,
+									uid: CryptoJS.lib.WordArray.random(16).toString()
+								});
+							}
+						}
+
+					});
+				});
+				currentWeapon = null;
+				killCount = 2;
+				hasZhugeLianNu = false;
+				updateStatus();
+				shuffleDeck();
+				generateDeckMD5();
+				updateMD5Display();
+				generateDeckAES();
+				updateAESDisplay();
+				updateRemaining();
+				startGame();
+				log("牌堆初始化完成");
+			}
+
+			function getPointDisplay(point) {
+				switch (point) {
+					case 11:
+						return 'J';
+					case 12:
+						return 'Q';
+					case 13:
+						return 'K';
+					case 1:
+						return 'A';
+					default:
+						return point;
+				}
+			}
+
+			function generateDeckMD5() {
+				const deckString = deck
+					.sort((a, b) => a.uid.localeCompare(b.uid))
+					.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
+					.join('@@');
+				const firstHash = CryptoJS.MD5(deckString).toString();
+				const timestamp = Date.now().toString(16).padStart(16, '0');
+				currentMD5 = CryptoJS.MD5(firstHash + timestamp).toString();
+				const isDebug = new URLSearchParams(window.location.search).has('debug');
+				currentMD5 = isDebug ? firstHash : CryptoJS.MD5(firstHash + timestamp).toString();
+				if (isDebug) console.log("调试模式MD5（不含时间戳）:", currentMD5);
+			}
+			const deckSnapshots = {};
+
+			function saveSnapshot() {
+				const snapshot = {
+					deck: deck.map(c => ({
+						...c
+					})),
+					md5: currentMD5,
+					timestamp: Date.now()
+				};
+				deckSnapshots[currentMD5] = snapshot;
+				localStorage.setItem('md5Snapshots', JSON.stringify(deckSnapshots));
+				log(`牌堆快照已保存 (MD5: ${currentMD5})`);
+			}
+
+			function loadSnapshot(targetMD5) {
+				const snapshot = deckSnapshots[targetMD5];
+				if (!snapshot) return alert("无此牌堆记录");
+				deck = snapshot.deck;
+				currentMD5 = snapshot.md5;
+				updateUI();
+				log(`已加载牌堆快照 (MD5: ${targetMD5})`);
+			}
+
+			function updateMD5Display() {
+				const display = document.getElementById('md5Value');
+				if (showMD5) {
+					const formatted = currentMD5
+						.match(/.{1,4}/g)
+						.join('-')
+						.toUpperCase();
+					display.textContent = formatted;
+					display.style.color = '#2196F3';
+				} else {
+					display.textContent = '******';
+					display.style.color = '#666';
+				}
+			}
+			document.getElementById('toggleMD5').addEventListener('click', () => {
+				showMD5 = !showMD5;
+				document.getElementById('toggleMD5').textContent =
+					showMD5 ? '隐藏MD5' : '显示MD5';
+				updateMD5Display();
+			});
+			document.getElementById('copyMD5').addEventListener('click', () => {
+				if (!currentMD5) return;
+				const copy = async () => {
+					try {
+						await navigator.clipboard.writeText(currentMD5);
+						document.getElementById('copyMD5').classList.add('copied');
+						setTimeout(() => {
+							document.getElementById('copyMD5').classList.remove('copied');
+						}, 1000);
+						log('MD5已复制到剪贴板');
+					} catch (err) {
+						const textarea = document.createElement('textarea');
+						textarea.value = currentMD5;
+						document.body.appendChild(textarea);
+						textarea.select();
+						document.execCommand('copy');
+						document.body.removeChild(textarea);
+						log('MD5已复制（传统方式）');
+					}
+				};
+				copy().catch(err => {
+					console.error('复制失败:', err);
+					log('复制失败，请手动选择复制');
+				});
+			});
+
+			function verifyDeck() {
+				const inputMD5 = document.getElementById('verifyMD5').value.replace(/-/g, '').toLowerCase();
+				const isValid = currentMD5 === inputMD5;
+				const resultSpan = document.getElementById('verifyResult');
+				resultSpan.textContent = isValid ? '✅ 验证通过' : '❌ 验证失败';
+				resultSpan.style.color = isValid ? '#4CAF50' : '#f44336';
+				log(`牌堆MD5验证${isValid ? '成功' : '失败'}`);
+			}
+
+			function generateDeckAES() {
+				try {
+					const deckData = deck.map(c => ({
+						n: c.name,
+						s: c.suit,
+						p: c.point,
+						u: c.uid
+					}));
+					const key = CryptoJS.lib.WordArray.random(128 / 8);
+					const iv = CryptoJS.lib.WordArray.random(128 / 8);
+					const encrypted = CryptoJS.AES.encrypt(
+						JSON.stringify(deckData),
+						key, {
+							iv: iv
+						}
+					);
+					currentAES = [
+						key.toString(CryptoJS.enc.Base64),
+						iv.toString(CryptoJS.enc.Base64),
+						encrypted.toString()
+					].join('::');
+				} catch (e) {
+					console.error('AES生成失败:', e);
+					currentAES = 'ERROR';
+				}
+			}
+
+			function updateAESDisplay() {
+				const display = document.getElementById('aesValue');
+				if (!display) return;
+				if (showAES) {
+					const formatted = currentAES
+						.match(/.{1,24}/g)
+						.join('\n');
+					display.textContent = formatted;
+					display.style.color = '#2196F3';
+				} else {
+					display.textContent = '******';
+					display.style.color = '#666';
+				}
+			}
+			document.getElementById('toggleAES').addEventListener('click', () => {
+				showAES = !showAES;
+				document.getElementById('toggleAES').textContent =
+					showAES ? '隐藏AES' : '显示AES';
+				updateAESDisplay();
+			});
+			document.getElementById('copyAES').addEventListener('click', () => {
+				if (!currentAES || currentAES === '******') return;
+				const copy = async () => {
+					try {
+						await navigator.clipboard.writeText(currentAES);
+						document.getElementById('copyAES').classList.add('copied');
+						setTimeout(() => {
+							document.getElementById('copyAES').classList.remove('copied');
+						}, 1000);
+						log('AES编码已复制');
+					} catch (err) {
+						const textarea = document.createElement('textarea');
+						textarea.value = currentAES;
+						document.body.appendChild(textarea);
+						textarea.select();
+						document.execCommand('copy');
+						document.body.removeChild(textarea);
+						log('AES编码已复制（传统方式）');
+					}
+				};
+				copy().catch(err => {
+					console.error('复制失败:', err);
+					log('AES复制失败，请手动选择复制');
+				});
+			});
+
+			function verifyAESDeck() {
+				const input = document.getElementById('verifyAES').value.trim();
+				const resultSpan = document.getElementById('verifyAESResult');
+				if (!input) {
+					resultSpan.textContent = '❌ 请输入编码';
+					resultSpan.style.color = '#f44336';
+					return;
+				}
+				try {
+					const [keyB64, ivB64, data] = input.split('::');
+					if (!keyB64 || !ivB64 || !data) throw new Error('格式无效');
+					const key = CryptoJS.enc.Base64.parse(keyB64);
+					const iv = CryptoJS.enc.Base64.parse(ivB64);
+					const decrypted = CryptoJS.AES.decrypt(data, key, {
+						iv: iv
+					});
+					const utf8String = decrypted.toString(CryptoJS.enc.Utf8);
+					if (!utf8String) throw new Error('解密失败');
+					const decoded = JSON.parse(utf8String);
+					deck = decoded.map(c => ({
+						name: c.n,
+						suit: c.s,
+						point: c.p,
+						uid: c.u
+					}));
+					generateDeckMD5();
+					updateMD5Display();
+					updateRemaining();
+					revealDeck();
+					log('AES解码成功，牌堆已加载');
+					resultSpan.textContent = '✅ 验证通过';
+					resultSpan.style.color = '#4CAF50';
+				} catch (e) {
+					console.error('AES验证失败:', e);
+					resultSpan.textContent = '❌ 无效编码';
+					resultSpan.style.color = '#f44336';
+					log('AES解码失败: ' + e.message);
+				}
+			}
+
+			function getSecureRandomIndex(max) {
+				if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+					const randomBuffer = new Uint32Array(1);
+					window.crypto.getRandomValues(randomBuffer);
+					return randomBuffer[0] % (max + 1);
+				} else {
+					return Math.floor(Math.random() * (max + 1));
+				}
+			}
+			async function testShuffleUniformity() {
+				const CONFIG = {
+					TOTAL_TRIALS: 100000,
+					BATCH_SIZE: 5000,
+					DECK_SIZE: 160,
+					AK_COUNT: 2,
+					CHECK_SIZE: 7
+				};
+				const backdrop = document.createElement('div');
+				backdrop.style.cssText = `
+			        position: fixed;
+			        top: 0;
+			        left: 0;
+			        right: 0;
+			        bottom: 0;
+			        background: rgba(0,0,0,0.5);
+			        z-index: 9998;
+			        backdrop-filter: blur(3px);
+			    `;
+				const panel = document.createElement('div');
+				panel.className = 'scrollable-panel';
+				panel.style.cssText = `
+				    position: fixed;
+				    top: 50%;
+				    left: 50%;
+				    transform: translate(-50%, -50%);
+				    background: white;
+				    padding: 25px;
+				    border-radius: 12px;
+				    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+				    z-index: 9999;
+				    width: 80%;
+				    max-width: 800px;
+				    max-height: 90vh;        // 关键属性1：限制最大高度
+				    overflow-y: auto;         // 关键属性2：启用垂直滚动
+				    font-family: Arial, sans-serif;
+				`;
+				panel.innerHTML = `
+			        <div style="position: relative; margin-bottom: 20px;">
+			            <h2 style="margin:0 0 10px; color:#333; font-size:20px;">洗牌均匀性测试</h2>
+			            <div style="position: absolute; top: -15px; right: -15px; display: flex; gap: 5px;">
+			                <button id="rerunTest" 
+			                    style="padding: 8px 20px;
+			                           background: #4CAF50;
+			                           color: white;
+			                           border: none;
+			                           border-radius: 4px;
+			                           cursor: pointer;">
+			                    重新测试 ▶
+			                </button>
+			                <button id="closePanel" 
+			                    style="padding: 8px 20px;
+			                           background: #f44336;
+			                           color: white;
+			                           border: none;
+			                           border-radius: 4px;
+			                           cursor: pointer;">
+			                    关闭窗口 ×
+			                </button>
+			            </div>
+			        </div>
+			        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">
+			            <div>
+			                <h3 style="font-size:14px; color:#666; margin:0 0 8px;">实际结果</h3>
+			                <p>≥1张AK： <span id="actualSingle">0</span></p>
+			                <p>≥2张AK： <span id="actualDouble">0</span></p>
+			            </div>
+			            <div>
+			                <h3 style="font-size:14px; color:#666; margin:0 0 8px;">理论参考</h3>
+			                <p>≈8.51% (单AK)</p>
+			                <p>≈0.165% (双AK)</p>
+			            </div>
+			        </div>
+			        <div style="margin-top:20px; padding:15px; background:#f8f9fa; border-radius:6px;">
+			            <!-- 单AK计算公式 -->
+			            <div style="margin-bottom:25px;">
+			                <h4 style="color:#444; margin:0 0 8px; font-size:14px;">1. 至少1张诸葛连弩（≈8.56%）</h4>
+			                <div style="font-family:monospace; font-size:14px;">
+			                    <p style="margin:6px 0">N=160（总牌数）</p>
+			                    <p style="margin:6px 0">K=2（诸葛连弩数量）</p>
+			                    <p style="margin:6px 0">n=7（抽牌数）</p>
+			                    <p style="margin:4px 0;">P(≥1) = 1 - [C(158,7) / C(160,7)]</p>
+			                    <p style="margin:4px 0; color:#666;">      = 1 - 158！/ （7！* 151！）/ 160！/（7！ 8 153！）</p>
+			                    <p style="margin:4px 0; color:#666;">      = 1 - (158×157) / (160×159)</p>
+			                    <p style="margin:4px 0; color:#2196F3;">      ≈ 8.51%</p>
+			                </div>
+			            </div>
+			            <!-- 双AK计算公式 -->
+			            <div style="margin-bottom:25px;">
+			                <h4 style="color:#444; margin:0 0 8px; font-size:14px;">2. 至少2张诸葛连弩（≈0.165%）</h4>
+			                <div style="font-family:monospace; font-size:14px;">
+			                    <div style="margin-bottom:8px;">
+			                        <p style="margin:4px 0;">计算公式</p>
+			                        <p style="margin:4px 0;">P (≥2) = C ( K , 2 ) * C( N - K , n - 2) / C(N , n)</p>
+			                        <p style="margin:4px 0;">P (=2) = C ( 2 , 2 ) * C( 158 , 5 ) / C (160 , 7)</P>
+			                        <p style="margin:4px 0;">       = (1 * 158! / 5! * 153! ) / 160! / 7! * 153!</p>
+			                        <p style="margin:4px 0;">P(≥2) = [C(2,2)·C(158,5)] / C(160,7)</p>
+			                        <p style="margin:4px 0; color:#666;">      = [1 × (158×157×156×155×154)]</p>
+			                        <p style="margin:4px 0; color:#666;">      / [160×159×158×157×156×155×154]</p>
+			                    </div>
+			                    <div style="border-left:3px solid #ddd; padding-left:12px; color:#666;">
+			                        <p style="margin:4px 0;">分子化简：7×6=42</p>
+			                        <p style="margin:4px 0;">分母化简：160×159=25,440</p>
+			                        <p style="margin:4px 0; color:#2196F3;">最终≈42/25,440≈0.165%</p>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			        <progress value="0" max="${CONFIG.TOTAL_TRIALS}" 
+			            style="width:100%; height:8px; margin:15px 0;"></progress>
+			        <div id="akStats" style="color:#666; font-size:14px;"></div>
+			    `;
+				document.body.appendChild(panel);
+				panel.style.cssText += `
+				    ::-webkit-scrollbar {
+				        width: 12px;  // 增加滚动条宽度
+				    }
+				    ::-webkit-scrollbar-track {
+				        background: #f1f1f1;
+				        border-radius: 10px;
+				    }
+				    ::-webkit-scrollbar-thumb {
+				        background: #4CAF50;  // 设置滚动条颜色为蓝色
+				        border-radius: 10px;
+				    }
+				    ::-webkit-scrollbar-thumb:hover {
+				        background: #3e8e41;  // 滚动条悬停时的颜色
+				    }
+				`;
+				document.body.appendChild(backdrop);
+				document.body.appendChild(panel);
+				let isClosing = false;
+				let stats = {
+					single: 0,
+					double: 0
+				};
+				let completed = 0;
+				const closePanel = () => {
+					if (isClosing) return;
+					isClosing = true;
+					panel.style.transition = 'opacity 0.3s, transform 0.3s';
+					panel.style.opacity = '0';
+					panel.style.transform = 'translate(-50%, -50%) scale(0.9)';
+					backdrop.style.transition = 'opacity 0.3s';
+					backdrop.style.opacity = '0';
+					setTimeout(() => {
+						document.body.removeChild(backdrop);
+						document.body.removeChild(panel);
+					}, 300);
+				};
+				panel.querySelector('#closePanel').addEventListener('click', closePanel);
+				panel.querySelector('#rerunTest').addEventListener('click', () => {
+					closePanel();
+					testShuffleUniformity();
+				});
+				const generateTestDeck = () =>
+					Array.from({
+						length: CONFIG.DECK_SIZE
+					}, (_, i) => ({
+						isAK: i < CONFIG.AK_COUNT,
+						id: i
+					}));
+				const runBatch = async () => {
+					for (let i = 0; i < CONFIG.BATCH_SIZE; i++) {
+						if (isClosing) return;
+						const deck = generateTestDeck();
+						for (let j = deck.length - 1; j > 0; j--) {
+							const k = Math.floor(Math.random() * (j + 1));
+							[deck[j], deck[k]] = [deck[k], deck[j]];
+						}
+						const akCount = deck.slice(0, CONFIG.CHECK_SIZE)
+							.filter(c => c.isAK).length;
+						if (akCount >= 1) stats.single++;
+						if (akCount >= 2) stats.double++;
+					}
+					completed += CONFIG.BATCH_SIZE;
+					panel.querySelector('progress').value = completed;
+					panel.querySelector('#actualSingle').textContent =
+						`${stats.single} (${(stats.single / completed * 100).toFixed(2)}%)`;
+					panel.querySelector('#actualDouble').textContent =
+						`${stats.double} (${(stats.double / completed * 100).toFixed(2)}%)`;
+					panel.querySelector('#akStats').innerHTML = `
+			            <p>已测试：${completed.toLocaleString()} 次</p>
+			            <p>单AK概率：${(stats.single / completed * 100).toFixed(2)}%</p>
+			            <p>双AK概率：${(stats.double / completed * 100).toFixed(2)}%</p>
+			        `;
+				};
+				try {
+					const startTime = performance.now();
+					while (completed < CONFIG.TOTAL_TRIALS && !isClosing) {
+						await new Promise(resolve =>
+							requestAnimationFrame(async () => {
+								await runBatch();
+								resolve();
+							})
+						);
+					}
+					if (!isClosing) {
+						const totalTime = ((performance.now() - startTime) / 1000).toFixed(1);
+						panel.querySelector('#akStats').innerHTML += `
+			                <div style="margin-top:15px; padding-top:15px; border-top:1px solid #eee;">
+			                    <p>总耗时：${totalTime} 秒</p>
+			                    <p>测试牌堆：${CONFIG.DECK_SIZE}张（含${CONFIG.AK_COUNT}AK）</p>
+			                </div>
+			            `;
+					}
+				} catch (error) {
+					console.error('测试出错:', error);
+					panel.querySelector('#akStats').innerHTML = `
+			            <div style="color: red;">
+			                <h3>测试失败</h3>
+			                <p>${error.message}</p>
+			            </div>
+			        `;
+				}
+			}
+			document.getElementById('testPerfBtn').addEventListener('click', async () => {
+				const confirmed = await showPerformanceWarning();
+				if (confirmed) {
+					testShuffleUniformity();
+				}
+			});
+
+			function showPerformanceWarning() {
+				return new Promise((resolve) => {
+					const backdrop = document.createElement('div');
+					backdrop.style.cssText = `
+			            position: fixed;
+			            top: 0;
+			            left: 0;
+			            right: 0;
+			            bottom: 0;
+			            background: rgba(0,0,0,0.6);
+			            z-index: 9999;
+			            display: flex;
+			            justify-content: center;
+			            align-items: center;
+			        `;
+					const alertBox = document.createElement('div');
+					alertBox.style.cssText = `
+			            background: white;
+			            padding: 25px;
+			            border-radius: 12px;
+			            min-width: 400px;
+			            max-width: 90vw;
+			            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+			        `;
+					alertBox.innerHTML = `
+			            <h2 style="margin:0 0 15px; font-size:20px; color:#d32f2f;">⚠️ 性能警告</h2>
+			            <ul style="margin:0 0 20px; padding-left:20px;">
+			                <li style="margin-bottom:8px;">CPU使用率可能达到100%</li>
+			                <li style="margin-bottom:8px;">浏览器可能暂时无响应（约10-30秒）</li>
+			                <li style="margin-bottom:8px;">移动设备可能出现明显发热</li>
+			            </ul>
+			            <div style="display: flex; gap:10px;">
+			                <button id="confirmBtn" 
+			                    style="flex:1; padding:12px; background:#4CAF50; 
+			                           color:white; border:none; border-radius:6px;
+			                           cursor:pointer;">继续执行</button>
+			                <button id="cancelBtn"
+			                    style="flex:1; padding:12px; background:#f44336;
+			                           color:white; border:none; border-radius:6px;
+			                           cursor:pointer;">取消操作</button>
+			            </div>
+			        `;
+					const close = (result) => {
+						document.body.removeChild(backdrop);
+						resolve(result);
+					};
+					alertBox.querySelector('#confirmBtn').addEventListener('click', () => close(true));
+					alertBox.querySelector('#cancelBtn').addEventListener('click', () => close(false));
+					backdrop.addEventListener('click', (e) => {
+						if (e.target === backdrop) close(false);
+					});
+					backdrop.appendChild(alertBox);
+					document.body.appendChild(backdrop);
+				});
+			}
+
+			function buildAKStats(total, single, double, totalAK) {
+				const singleRate = (single / total * 100).toFixed(2);
+				const doubleRate = (double / total * 100).toFixed(2);
+				return `<div style="border-top:1px solid #ddd;padding-top:10px;">
+			        <h4>诸葛连弩统计（牌堆共${totalAK}张）</h4>
+			        <p>前7张出现至少1张： 
+			            ${single.toLocaleString()}/${total.toLocaleString()}, 
+			            ${singleRate}%</p>
+			        <p>前7张同时出现2张： 
+			            ${double.toLocaleString()}/${total.toLocaleString()}, 
+			            ${doubleRate}%</p>
+			    </div>`;
+			}
+
+			function updateAKStats(progress, completed, single, double) {
+				const statsDiv = progress.querySelector('#akStats');
+				if (!statsDiv) return;
+				const current = completed.toLocaleString();
+				const singleRate = (single / completed * 100).toFixed(2);
+				const doubleRate = (double / completed * 100).toFixed(2);
+				statsDiv.innerHTML = `
+			        <p>实时统计（已测试${current}次）:</p>
+			        <p>单AK出现率: ${singleRate}%</p>
+			        <p>双AK出现率: ${doubleRate}%</p>`;
+			}
+
+			function generateStandardDeck() {
+				const deck = [];
+				standardDeck.forEach(card => {
+					card.suits.forEach(suitStr => {
+						const match = suitStr.match(/^([♠♥♣♦]️?)([JQKA]|\d+)$/);
+						if (match) {
+							const suitPart = match[1];
+							let point = match[2];
+							switch (point) {
+								case 'J':
+									point = 11;
+									break;
+								case 'Q':
+									point = 12;
+									break;
+								case 'K':
+									point = 13;
+									break;
+								case 'A':
+									point = 1;
+									break;
+								default:
+									point = parseInt(point, 10);
+							}
+							for (let i = 0; i < card.count; i++) {
+								deck.push({
+									name: card.name,
+									suit: suitPart,
+									point: point,
+									uid: CryptoJS.lib.WordArray.random(16).toString()
+								});
+							}
+						}
+					});
+				});
+				return deck;
+			}
+			async function showPerformanceWarning(testFunction) {
+				return new Promise((resolve) => {
+					const alertBox = document.createElement('div');
+					alertBox.className = 'security-alert';
+					alertBox.innerHTML = `
+			            <strong>性能警告</strong>
+			            <p>即将执行压力测试，可能会造成：（系统会自动进行十万次洗牌！！！）</p>
+			            <ul>
+			                <li>▸ CPU使用率短暂飙升</li>
+			                <li>▸ 浏览器暂时无响应（约10-30秒）</li>
+			                <li>▸ 移动设备可能出现明显发热</li>
+			            </ul>
+			            <p>建议关闭其他标签页后继续，是否确认执行？</p>
+			            <button class="confirm">继续执行</button>
+			            <button class="cancel">取消操作</button>
+			        `;
+					const backdrop = document.createElement('div');
+					backdrop.className = 'modal-backdrop';
+					const container = document.createElement('div');
+					container.style.cssText = `
+			            position: fixed;
+			            top: 0;
+			            left: 0;
+			            width: 100%;
+			            height: 100%;
+			            display: flex;
+			            justify-content: center;
+			            align-items: center;
+			        `;
+					container.appendChild(alertBox);
+					backdrop.appendChild(container);
+					document.body.appendChild(backdrop);
+					const handler = (result) => {
+						document.body.removeChild(backdrop);
+						resolve(result);
+					};
+					alertBox.querySelector('.confirm').addEventListener('click', () => handler(true));
+					alertBox.querySelector('.cancel').addEventListener('click', () => handler(false));
+					backdrop.addEventListener('click', (e) => {
+						if (e.target === backdrop) handler(false);
+					});
+				});
+			}
+
+			function updateRemainingCounts() {
+				const categories = {
+					basic: {
+						name: "基本牌",
+						items: {}
+					},
+					trick: {
+						name: "普通锦囊牌",
+						items: {}
+					},
+					ystrick: {
+						name: "延时锦囊牌",
+						items: {}
+					},
+					weapon: {
+						name: "武器",
+						items: {}
+					},
+					armor: {
+						name: "防具",
+						items: {}
+					},
+					horse: {
+						name: "坐骑",
+						items: {}
+					}
+				};
+				deck.forEach(card => {
+					for (const [type, items] of Object.entries(cardCategories)) {
+						if (items.includes(card.name)) {
+							categories[type].items[card.name] = (categories[type].items[card.name] || 0) + 1;
+							break;
+						}
+					}
+				});
+				let html = '';
+				for (const category of Object.values(categories)) {
+					if (Object.keys(category.items).length === 0) continue;
+					html += `<div class="category">
+                   <div class="category-title">${category.name}</div>`;
+					const sorted = Object.entries(category.items)
+						.sort((a, b) => a[0].localeCompare(b[0], 'zh-Hans-CN'));
+					html += sorted.map(([name, count]) =>
+						`<div class="count-item">${name}：${count}</div>`
+					).join('');
+
+					html += '</div>';
+				}
+				document.getElementById('remaining-counts').innerHTML = html;
+			}
+
+			function drawCards(count) {
+				if (deck.length === 0) {
+					alert("牌堆已空，无法继续抽牌！");
+					return;
+				}
+				if (deck.length < count) {
+					alert(`牌堆仅剩${deck.length}张，自动抽取全部`);
+					count = deck.length;
+				}
+				for (let i = 0; i < count; i++) {
+					const drawnCard = deck.shift();
+					drawnCards.push(drawnCard);
+					hand.push(drawnCard);
+					if (drawnCard.name === "诸葛连弩") {
+						alert(`抽到AK！剩余牌堆：${deck.length}张`);
+					}
+				}
+				updateRemaining();
+				updateReshuffleButton();
+				updateUI();
+			}
+
+			function revealDeck() {
+				const container = document.getElementById('remaining');
+				if (deck.length === 0) {
+					container.innerHTML = `<h3>剩余牌堆 (0张)</h3><p>牌堆已空</p>`;
+					return;
+				}
+				container.innerHTML = `<h3>剩余牌堆 (${deck.length}张)</h3>`;
+				deck.forEach((card, index) => {
+					container.innerHTML += `
+                   <div class="card">
+                       ${index + 1}. ${card.name} ${card.suit}${getPointDisplay(card.point)}
+                   </div>`;
+				});
+			}
+
+			function highlightZhugeLianNu() {
+				const remainingCards = document.querySelectorAll('#remaining .card');
+				if (deck.length === 0) {
+					alert("牌堆已空，没有诸葛连弩！");
+					return;
+				}
+				const akCards = Array.from(remainingCards).filter(card =>
+					card.textContent.includes('诸葛连弩')
+				);
+				akCards.forEach(card => card.classList.add('highlight'));
+				const indices = akCards.map(card =>
+					Array.from(remainingCards).indexOf(card) + 1
+				);
+				indices.length > 0 ?
+					alert(`诸葛连弩位置：${indices.join(', ')}`) :
+					alert("剩余牌堆中没有诸葛连弩！");
+			}
+
+			function updateRemaining() {
+				document.getElementById('remaining').innerHTML = `剩余牌堆: ${deck.length}张`;
+				updateRemainingCounts();
+			}
+
+			function handleReshuffle() {
+				if (!validateReshuffle()) return;
+				log(`开始使用脚气卡（当前已用${reshuffleUsed}次）`);
+				const currentDrawn = hand.splice(-4, 4);
+				log(`回收手牌：${currentDrawn.map(c => c.name).join(', ')}`);
+				deck.unshift(...currentDrawn);
+				shuffleDeck();
+				reshuffleUsed++;
+				log(`脚气卡洗牌完成（${reshuffleUsed}/${MAX_RESHUFLE}次）`);
+				discardPile.push(...drawnCards);
+				drawnCards = [];
+				drawCards(4);
+				log(`重新抽取4张牌，剩余牌堆：${deck.length}张`);
+				updateCounter();
+				updateReshuffleButton();
+			}
+
+			function validateReshuffle() {
+				const isValid = hand.length === 4 &&
+					reshuffleUsed < MAX_RESHUFLE &&
+					deck.length + hand.length >= 4;
+				if (!isValid) {
+					log(`脚气卡使用失败，验证条件不满足：
+                 手牌数: ${hand.length}
+                 已用次数: ${reshuffleUsed}
+                 剩余牌数: ${deck.length}`);
+				}
+				return isValid;
+			}
+
+			function clearDisplay() {
+				document.getElementById('deck').innerHTML = '';
+			}
+
+			function updateReshuffleButton() {
+				const btn = document.getElementById('reshuffleBtn');
+				btn.disabled = !(drawnCards.length === 4 && reshuffleUsed < MAX_RESHUFLE);
+			}
+
+			function shuffleDeck() {
+				for (let i = deck.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[deck[i], deck[j]] = [deck[j], deck[i]];
+				}
+				if (!deck.some(c => c.name === currentWeapon)) {
+					currentWeapon = null;
+					hasZhugeLianNu = false;
+					killCount = 2;
+				}
+				peachCount = 1;
+				document.getElementById('peach-counter').textContent = `桃可用次数：1`;
+				wineCount = 1;
+				updateStatus();
+				generateDeckAES();
+				updateAESDisplay();
+			}
+
+			function startGame() {
+				drawCards(4);
+				phase = '准备';
+				document.getElementById('drawBtn').disabled = false;
+				document.getElementById('playBtn').disabled = true;
+				updateUI();
+			}
+
+			function initializeButtons() {
+				document.getElementById('drawBtn').disabled = false;
+				document.getElementById('playBtn').disabled = true;
+			}
+
+			function drawPhase() {
+				if (deck.length === 0) {
+					alert("牌堆已空，无法摸牌！");
+					return;
+				}
+				phase = '摸牌';
+				drawCards(3);
+				document.getElementById('drawBtn').disabled = true;
+				document.getElementById('playBtn').disabled = false;
+				updateUI();
+			}
+
+			function playPhase() {
+				phase = '出牌';
+				lastUsedCard = null;
+				document.getElementById('drawBtn').disabled = true;
+				document.getElementById('playBtn').disabled = true;
+				document.getElementById('endPlayBtn').disabled = false;
+				updateUI();
+			}
+
+			function useCard(card, index) {
+				if (phase !== '出牌') return;
+				log(`使用卡牌：${card.name} ${card.suit}${getPointDisplay(card.point)}`);
+				if (cardCategories.weapon.includes(card.name)) {
+					if (currentWeapon && currentWeapon !== card.name) {
+						if (currentWeapon === "诸葛连弩") {
+							hasZhugeLianNu = false;
+							killCount = 2;
+							log(`卸除诸葛连弩，杀次数重置为2`);
+						}
+					}
+					currentWeapon = card.name;
+					hasZhugeLianNu = (card.name === "诸葛连弩");
+					if (hasZhugeLianNu) {
+						log("装备诸葛连弩，杀次数限制解除");
+					}
+				}
+				if (['杀', '火杀', '雷杀'].includes(card.name)) {
+					if (!hasZhugeLianNu) {
+						if (killCount <= 0) {
+							alert("杀次数已用尽！");
+							return;
+						}
+						killCount--;
+						log(`使用${card.name}，剩余次数：${killCount}`);
+					}
+				}
+				if (card.name === "诸葛连弩") {
+					hasZhugeLianNu = true;
+					log("装备诸葛连弩，杀次数限制解除！");
+				}
+				if (card.name === "无中生有") {
+					log('使用无中生有，额外摸两张牌！');
+					drawCards(2);
+				}
+				if (card.name === '闪') {
+					alert("出牌阶段禁止使用闪！");
+					return;
+				}
+				if (card.name === '无懈可击') {
+					alert("出牌阶段禁止使用无懈可击");
+					return;
+				}
+				if (card.name === "铁索连环") {
+					showChainDialog(card, index);
+					return;
+				}
+				if (card.name === "借刀杀人") {
+					showJiedaoDialog(card, index);
+					return;
+				}
+				if (card.name === "桃") {
+					if (peachCount <= 0) {
+						alert("桃使用次数已耗尽！");
+						return;
+					}
+					peachCount--;
+					log(`使用桃，剩余次数：${peachCount}`);
+				}
+				if (card.name === "桃园结义") {
+					peachCount = Math.max(peachCount - 1, 0);
+					log(`使用桃园结义恢复体力，剩余次数：${peachCount}`);
+				}
+				if (card.name === "酒") {
+					if (wineCount <= 0) {
+						alert("酒使用次数已耗尽！");
+						return;
+					}
+					wineCount--;
+					log(`使用酒，剩余次数：${wineCount}`);
+				}
+				if (lastUsedCard && (card.suit === lastUsedCard.suit || card.point === lastUsedCard.point)) {
+					log('触发渐营，摸一张牌！');
+					drawCards(1);
+				}
+				lastUsedCard = card;
+				discardPile.push(hand.splice(index, 1)[0]);
+				updateStatus();
+				updateUI();
+			}
+
+			function updateStatus() {
+				const counter = document.getElementById('kill-counter');
+				const zhuge = document.getElementById('zhuge-status');
+				document.getElementById('peach-counter').textContent = `桃可用次数：${peachCount}`;
+				document.getElementById('wine-counter').textContent = `酒可用次数：${wineCount}`;
+				counter.innerHTML = hasZhugeLianNu ?
+					'杀可用次数：∞' :
+					`杀可用次数：${killCount}`;
+
+				zhuge.textContent = currentWeapon ?
+					`当前武器：${currentWeapon}` :
+					"当前武器：无";
+			}
+
+			function showChainDialog(card, index) {
+				const dialog = document.createElement('div');
+				dialog.style = `
+	           position: fixed;
+	           top: 50%;
+	           left: 50%;
+	           transform: translate(-50%, -50%);
+	           background: white;
+	           padding: 20px;
+	           border: 2px solid #666;
+	           z-index: 10000;
+	           box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	       `;
+				dialog.innerHTML = `
+	           <h3>铁索连环效果选择</h3>
+	           <p>请选择要执行的操作：</p>
+	           <button id="func1">功能1：重铸摸牌</button>
+	           <button id="func2">功能2：使用检索</button>
+	           <button id="cancel">取消</button>
+	       `;
+				const overlay = document.createElement('div');
+				overlay.style = `
+	           position: fixed;
+	           top: 0;
+	           left: 0;
+	           right: 0;
+	           bottom: 0;
+	           background: rgba(0,0,0,0.5);
+	           z-index: 9999;
+	       `;
+				dialog.querySelector('#func1').addEventListener('click', () => {
+					hand.splice(index, 1);
+					discardPile.push(card);
+					drawCards(1);
+					log(`重铸铁索连环，摸1张牌`);
+					cleanupDialog();
+				});
+				dialog.querySelector('#func2').addEventListener('click', () => {
+					if (lastUsedCard && (card.suit === lastUsedCard.suit || card.point === lastUsedCard.point)) {
+						log('触发渐营，摸一张牌！');
+						drawCards(1);
+					}
+					lastUsedCard = card;
+					discardPile.push(hand.splice(index, 1)[0]);
+					log(`使用铁索连环，花色${card.suit} 点数${getPointDisplay(card.point)}`);
+					cleanupDialog();
+				});
+				dialog.querySelector('#cancel').addEventListener('click', cleanupDialog);
+
+				function cleanupDialog() {
+					document.body.removeChild(overlay);
+					document.body.removeChild(dialog);
+					updateUI();
+				}
+				document.body.appendChild(overlay);
+				document.body.appendChild(dialog);
+			}
+
+			function showJiedaoDialog(card, index) {
+				const overlay = document.createElement('div');
+				overlay.className = 'modal-backdrop';
+				const dialog = document.createElement('div');
+				dialog.className = 'card-selector-modal';
+				dialog.innerHTML = `
+			        <h3>借刀杀人效果选择</h3>
+			        <p>请选择要执行的操作：</p>
+			        <div style="display: flex; flex-direction: column; gap: 10px;">
+			            <button id="func1" class="dialog-button">功能1：检索武器</button>
+			            <button id="func2" class="dialog-button">功能2：使用闪</button>
+			            <button id="cancel" class="dialog-button cancel">取消</button>
+			        </div>
+			    `;
+				const closeAllModals = () => {
+					document.body.removeChild(overlay);
+					document.body.removeChild(dialog);
+				};
+				dialog.querySelector('#func1').addEventListener('click', () => {
+					closeAllModals();
+					const weaponCards = deck.filter(c => cardCategories.weapon.includes(c.name));
+					if (weaponCards.length === 0) {
+						alert("牌堆中没有武器牌！");
+						return;
+					}
+					const weaponCard = weaponCards[0];
+					const deckIndex = deck.findIndex(c => c.uid === weaponCard.uid);
+					if (deckIndex === -1) {
+						logError(`武器牌 ${weaponCard.name} 不存在于牌堆中`);
+						return;
+					}
+					const [removed] = deck.splice(deckIndex, 1);
+					hand.push(removed);
+					log(`检索获得武器：${removed.name} ${removed.suit}${getPointDisplay(removed.point)}`);
+					finalizeJiedao(card, index);
+				});
+				dialog.querySelector('#func2').addEventListener('click', () => {
+					closeAllModals();
+					const shanCards = hand.filter(c => c.name === "闪");
+					if (shanCards.length === 0) {
+						showNoShanDialog(card, index);
+					} else {
+						showShanSelection(shanCards, card, index);
+					}
+					finalizeJiedao(card, index);
+				});
+				dialog.querySelector('#cancel').addEventListener('click', () => {
+					closeAllModals();
+					log("取消使用借刀杀人");
+				});
+				document.body.appendChild(overlay);
+				document.body.appendChild(dialog);
+				overlay.addEventListener('click', (e) => {
+					if (e.target === overlay) {
+						closeAllModals();
+						log("取消使用借刀杀人");
+					}
+				});
+			}
+
+			function showNoShanDialog(card, index) {
+				const dialog = document.createElement('div');
+				dialog.className = 'card-selector-modal';
+				dialog.innerHTML = `
+			        <h3>没有闪牌</h3>
+			        <p>请选择后续操作：</p>
+			        <button class="dialog-button" id="cancelUse">取消使用</button>
+			        <button class="dialog-button" id="noShan">坚持不出闪</button>
+			    `;
+				const overlay = document.createElement('div');
+				overlay.className = 'modal-backdrop';
+				dialog.querySelector('#cancelUse').addEventListener('click', () => {
+					document.body.removeChild(overlay);
+					document.body.removeChild(dialog);
+				});
+				dialog.querySelector('#noShan').addEventListener('click', () => {
+					document.body.removeChild(overlay);
+					document.body.removeChild(dialog);
+					peachCount = Math.min(peachCount + 1, 3);
+					log(`不出闪，桃可用次数+1，当前：${peachCount}`);
+					finalizeJiedao(card, index);
+				});
+				document.body.appendChild(overlay);
+				document.body.appendChild(dialog);
+			}
+
+			function showShanSelection(shanCards, card, index) {
+				const dialog = document.createElement('div');
+				dialog.className = 'card-selector-modal';
+				dialog.innerHTML = `
+			        <h3>选择要使用的闪牌</h3>
+			        <div id="shanList" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0;">
+			            ${shanCards.map((c, i) => `
+			                <button class="shan-card" data-index="${i}">
+			                    ${c.suit}${getPointDisplay(c.point)}
+			                </button>
+			            `).join('')}
+			        </div>
+			        <button class="dialog-button cancel" id="cancelShan">取消使用闪</button>
+			    `;
+				const overlay = document.createElement('div');
+				overlay.className = 'modal-backdrop';
+				dialog.querySelectorAll('.shan-card').forEach(btn => {
+					btn.addEventListener('click', (e) => {
+						const idx = parseInt(e.target.dataset.index);
+						const selectedCard = shanCards[idx];
+						const handIndex = hand.findIndex(c => c.uid === selectedCard.uid);
+						if (handIndex > -1) {
+							const [removed] = hand.splice(handIndex, 1);
+							discardPile.push(removed);
+							log(`使用闪牌：${removed.suit}${getPointDisplay(removed.point)}`);
+						}
+						document.body.removeChild(overlay);
+						document.body.removeChild(dialog);
+						finalizeJiedao(card, index);
+					});
+				});
+				dialog.querySelector('#cancelShan').addEventListener('click', () => {
+					document.body.removeChild(overlay);
+					document.body.removeChild(dialog);
+					peachCount = Math.min(peachCount + 1, 3);
+					log(`取消使用闪，桃可用次数+1，当前：${peachCount}`);
+					finalizeJiedao(card, index);
+				});
+				document.body.appendChild(overlay);
+				document.body.appendChild(dialog);
+			}
+
+			function finalizeJiedao(card, index) {
+				const jiedaoCard = hand.splice(index, 1)[0];
+				discardPile.push(jiedaoCard);
+				if (lastUsedCard && (jiedaoCard.suit === lastUsedCard.suit ||
+						jiedaoCard.point === lastUsedCard.point)) {
+					log('触发渐营，摸一张牌！');
+					drawCards(1);
+				}
+				lastUsedCard = jiedaoCard;
+				updateUI();
+				updateStatus();
+			}
+
+			function cleanupDialog() {
+				const dialogs = document.querySelectorAll('.modal-backdrop, .card-selector-modal');
+				dialogs.forEach(dialog => dialog.remove());
+			}
+
+			function updateUI() {
+				const stageInfo = document.getElementById('stageInfo');
+				if (stageInfo) {
+					stageInfo.textContent = `当前阶段：${phase}阶段`;
+				}
+				const handDiv = document.getElementById('hand');
+				handDiv.innerHTML = '<h3>手牌</h3>';
+				hand.forEach((card, i) => {
+					const div = document.createElement('div');
+					div.className = 'card';
+					if (['杀', '火杀', '雷杀'].includes(card.name)) {
+						if (!hasZhugeLianNu && killCount <= 0) {
+							div.classList.add('disabled');
+						}
+					}
+					if (card.name === "桃" && peachCount <= 0) {
+						div.classList.add('disabled');
+					}
+					if (card.name === "酒" && wineCount <= 0) {
+						div.classList.add('disabled');
+					}
+					if (card.name === '闪') {
+						div.classList.add('disabled');
+						div.onclick = () => alert("出牌阶段无法使用闪！");
+					}
+					if (card.name === '无懈可击') {
+						div.classList.add('disabled');
+						div.onclick = () => alert("出牌阶段无法使用无懈可击");
+					}
+					div.innerHTML = `${card.name}<br>${card.suit}${getPointDisplay(card.point)}`;
+					div.onclick = () => useCard(card, i);
+					handDiv.appendChild(div);
+				});
+				document.getElementById('playBtn').disabled = phase !== '摸牌';
+				document.getElementById('endPlayBtn').disabled = phase !== '出牌';
+			}
+
+			function endPlayPhase() {
+				phase = '准备';
+				lastUsedCard = null;
+				document.getElementById('drawBtn').disabled = false;
+				document.getElementById('endPlayBtn').disabled = true;
+				document.getElementById('playBtn').disabled = true;
+				if (currentWeapon !== "诸葛连弩") {
+					killCount = 2;
+					hasZhugeLianNu = false;
+				} else {
+					hasZhugeLianNu = true;
+					log("保留诸葛连弩效果，杀次数保持无限");
+				}
+				wineCount = 1;
+				updateStatus();
+				updateUI();
+				log("已结束出牌阶段");
+			}
+
+			function discardCard(card) {
+				if (card.name === "诸葛连弩") {
+					hasZhugeLianNu = false;
+					log("失去诸葛连弩，恢复次数限制");
+					updateStatus();
+				}
+
+			}
+
+			function updateHeaderPlaceholder() {
+				const header = document.querySelector('.header');
+				const placeholder = document.querySelector('.header-placeholder');
+				if (header && placeholder) {
+					const height = header.offsetHeight + 5;
+					placeholder.style.height = `${height}px`;
+				}
+			}
+			window.addEventListener('DOMContentLoaded', updateHeaderPlaceholder);
+			window.addEventListener('resize', updateHeaderPlaceholder);
+
+			function isWindowsOS() {
+				return navigator.userAgent.indexOf('Win') > -1;
+			}
+
+			function generateSecurityLog() {
+				const timeStamp = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+				const deckDetails = deck.map((card, index) =>
+					`[${index + 1}] ${card.name} - 花色:${card.suit} 点数:${getPointDisplay(card.point)} UID:${card.uid}`
+				).join('\n');
+				return `沮爹红利期模拟器安全日志\n
+	   生成时间: ${timeStamp}
+	   ==================== MD5 & AES ====================
+	   MD5标识符: ${currentMD5}
+	   AES编码: ${currentAES}
+	   =================== 牌堆详细信息 ===================
+	   总牌数: ${deck.length}
+	   当前牌堆顺序:
+	   ${deckDetails}
+	   ==================== 系统信息 ======================
+	   用户系统: ${navigator.userAgent}
+	   `;
+			}
+
+			function showSecurityAlert() {
+				const alertBox = document.createElement('div');
+				alertBox.className = 'security-alert';
+				alertBox.innerHTML = `
+	           <strong>安全提示</strong>
+	           <p>由于保障用户信息安全，该功能仅限Windows系统用户使用。该功能会在您的浏览器中生成一个包含本次牌堆的MD5、AES编码及牌堆详细信息的txt文件。</p>
+	           <p>请问是否继续创建？</p>
+	           <button class="confirm">是，继续创建</button>
+	           <button class="cancel">否，取消操作</button>
+	       `;
+				const backdrop = document.createElement('div');
+				backdrop.style = `
+	           position: fixed;
+	           top:0; left:0; right:0; bottom:0;
+	           background: rgba(0,0,0,0.5);
+	           display: flex;
+	           align-items: center;
+	           justify-content: center;
+	           z-index: 9999;
+	       `;
+				backdrop.appendChild(alertBox);
+				document.body.appendChild(backdrop);
+				return new Promise(resolve => {
+					alertBox.querySelector('.confirm').onclick = () => {
+						document.body.removeChild(backdrop);
+						resolve(true);
+					};
+					alertBox.querySelector('.cancel').onclick = () => {
+						document.body.removeChild(backdrop);
+						resolve(false);
+					};
+				});
+			}
+			document.getElementById('exportLog').addEventListener('click', async () => {
+				if (!isWindowsOS()) {
+					alert('当前功能仅限Windows系统用户使用');
+					return;
+				}
+				const userConfirm = await showSecurityAlert();
+				if (!userConfirm) {
+					log('用户取消了日志生成');
+					return;
+				}
+				try {
+					const content = generateSecurityLog();
+					const blob = new Blob([content], {
+						type: 'text/plain;charset=utf-8'
+					});
+					const downloadLink = document.createElement('a');
+					downloadLink.href = URL.createObjectURL(blob);
+					downloadLink.download = `PileLog_${Date.now()}.txt`;
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+					log('安全日志文件已生成');
+				} catch (error) {
+					console.error('导出失败:', error);
+					log('安全日志生成失败');
+				}
+			});
+
+			function log(message) {
+				const logDiv = document.getElementById('log');
+				const container = document.getElementById('log-container');
+				const newEntry = document.createElement('p');
+				newEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+				logDiv.appendChild(newEntry);
+				container.scrollTop = 0;
+			}
+			let isCollapsed = false;
+			document.getElementById('toggleCounter').addEventListener('click', () => {
+				const counter = document.getElementById('remaining-counts');
+				const btn = document.getElementById('toggleCounter');
+				isCollapsed = !isCollapsed;
+				counter.classList.toggle('collapsed');
+				btn.innerHTML = isCollapsed ? '▶ 展开' : '▼ 收起';
+			});
+
+			function toggleSection(sectionId, button, isCollapsedFlag) {
+				const section = document.getElementById(sectionId);
+				isCollapsedFlag = !isCollapsedFlag;
+				section.classList.toggle('collapsed');
+				button.innerHTML = isCollapsedFlag ? '▶ 展开' : '▼ 收起';
+				return isCollapsedFlag;
+			}
+			document.getElementById('toggleMD5AES').addEventListener('click', () => {
+				isMD5AESCollapsed = toggleSection('md5aes-container',
+					document.getElementById('toggleMD5AES'), isMD5AESCollapsed);
+			});
+
+			function handleKeyPress(event) {
+				if (document.activeElement.tagName === 'INPUT') return;
+				const reshuffleDisabled = document.getElementById('reshuffleBtn').disabled;
+				const playBtnDisabled = document.getElementById('playBtn').disabled;
+				const endPlayDisabled = document.getElementById('endPlayBtn').disabled;
+
+				switch (event.key.toUpperCase()) {
+					case 'Q':
+						if (confirm("确定要强制刷新页面吗？")) {
+							location.reload(true);
+						}
+						break;
+					case '1':
+						drawCards(1);
+						break;
+					case '2':
+						drawCards(2);
+						break;
+					case '3':
+						drawCards(3);
+						break;
+					case '4':
+						drawCards(4);
+						break;
+					case 'W':
+						revealDeck();
+						break;
+					case 'E':
+						highlightZhugeLianNu();
+						break;
+					case 'R':
+						initializeDeck();
+						log("快捷键洗牌");
+						break;
+					case 'T':
+						if (!reshuffleDisabled) handleReshuffle();
+						break;
+					case 'A':
+						if (phase === '准备') drawPhase();
+						break;
+					case 'S':
+						if (!playBtnDisabled) playPhase();
+						break;
+					case 'D':
+						if (!endPlayDisabled) endPlayPhase();
+						break;
+				}
+				if ('QWEASDTR1234'.includes(event.key.toUpperCase())) {
+					event.preventDefault();
+				}
+			}
+
+			function showCardSelector() {
+				const backdrop = document.createElement('div');
+				backdrop.className = 'modal-backdrop';
+				const modal = document.createElement('div');
+				modal.className = 'card-selector-modal';
+				modal.innerHTML = `
+			    <h3>选择要添加的卡牌类型</h3>
+			    <div id="cardButtons"></div>
+			    <button onclick="this.parentElement.parentElement.remove()" 
+			            style="margin-top:15px; padding:8px 20px;">
+			      关闭
+			    </button>
+			  `;
+				const buttonsContainer = modal.querySelector('#cardButtons');
+				const types = getAllCardTypes();
+				types.forEach(type => {
+					const btn = document.createElement('button');
+					btn.className = 'card-button';
+					btn.textContent = type;
+					btn.onclick = () => {
+						addSpecificCard(type);
+						backdrop.remove();
+					};
+					buttonsContainer.appendChild(btn);
+				});
+				backdrop.appendChild(modal);
+				document.body.appendChild(backdrop);
+				backdrop.onclick = (e) => {
+					if (e.target === backdrop) {
+						backdrop.remove();
+					}
+				};
+			}
+			document.getElementById('testCardBtn').addEventListener('click', showCardSelector);
+
+			function getAllCardTypes() {
+				const typeSet = new Set();
+				standardDeck.forEach(card => {
+					if (deck.some(c => c.name === card.name)) {
+						typeSet.add(card.name);
+					}
+				});
+				return Array.from(typeSet).sort((a, b) => a.localeCompare(b, 'zh-Hans-CN'));
+			}
+
+			function addSpecificCard(cardName) {
+				const availableCards = deck.filter(c => c.name === cardName);
+				if (availableCards.length === 0) {
+					alert(`牌堆中没有【${cardName}】！`);
+					log(`尝试添加${cardName}失败（牌堆无此卡）`);
+					return;
+				}
+				const randomBuffer = new Uint32Array(1);
+				window.crypto.getRandomValues(randomBuffer);
+				const selectedIndex = randomBuffer[0] % availableCards.length;
+				const selectedCard = availableCards[selectedIndex];
+				const deckIndex = deck.findIndex(c => c.uid === selectedCard.uid);
+				if (deckIndex > -1) {
+					const [removed] = deck.splice(deckIndex, 1);
+					hand.push(removed);
+					log(`手动添加卡牌：${removed.name} ${removed.suit}${getPointDisplay(removed.point)}`);
+					updateUI();
+					updateRemaining();
+					generateDeckMD5();
+					const feedback = document.createElement('div');
+					feedback.textContent = `已添加：${removed.name}`;
+					feedback.style =
+						'position:fixed; top:20px; left:50%; transform:translateX(-50%); padding:10px; background:#4CAF50; color:white;';
+					document.body.appendChild(feedback);
+					setTimeout(() => feedback.remove(), 2000);
+				}
+			}
+
+			function updateTooltipAlignment() {
+				const tooltipContainers = document.querySelectorAll('.tooltip-container');
+				tooltipContainers.forEach(container => {
+					const button = container.querySelector('button');
+					const tooltip = container.querySelector('.tooltip');
+					if (button && tooltip) {
+						const rect = button.getBoundingClientRect();
+						const viewportWidth = window.innerWidth;
+						const tooltipWidth = tooltip.offsetWidth || 350;
+						const leftSpace = rect.left;
+						const rightSpace = viewportWidth - rect.right;
+						if (rightSpace >= tooltipWidth) {
+							container.classList.remove('right-align');
+						} else if (leftSpace >= tooltipWidth) {
+							container.classList.add('right-align');
+						} else {
+							if (rightSpace > leftSpace) {
+								container.classList.remove('right-align');
+							} else {
+								container.classList.add('right-align');
+							}
+						}
+					}
+				});
+			}
+			window.addEventListener('load', () => {
+				setTimeout(updateTooltipAlignment, 100);
+			});
+			window.addEventListener('resize', updateTooltipAlignment);
+			window.addEventListener('scroll', updateTooltipAlignment);
+			document.querySelectorAll('.tooltip-container').forEach(container => {
+				container.addEventListener('mouseenter', updateTooltipAlignment);
+			});
+
+			function initializeGame() {
+				initializeDeck();
+				initializeButtons();
+				document.addEventListener('keydown', handleKeyPress);
+				document.getElementById('testUniformBtn').style.display = isDevMode ? 'inline' : 'none';
+				document.getElementById('testPerfBtn').style.display = isDevMode ? 'inline' : 'none';
+			}
+			document.getElementById('draw1Button').addEventListener('click', () => drawCards(1));
+			document.getElementById('draw2Button').addEventListener('click', () => drawCards(2));
+			document.getElementById('draw3Button').addEventListener('click', () => drawCards(3));
+			document.getElementById('draw4Button').addEventListener('click', () => drawCards(4));
+			document.getElementById('revealButton').addEventListener('click', revealDeck);
+			document.getElementById('highlightButton').addEventListener('click', highlightZhugeLianNu);
+			document.getElementById('shuffleButton').addEventListener('click', () => {
+				initializeDeck();
+				log("用户点击了重新洗牌按钮");
+			});
+			document.getElementById('reshuffleBtn').addEventListener('click', handleReshuffle);
+			document.getElementById('drawBtn').addEventListener('click', drawPhase);
+			document.getElementById('playBtn').addEventListener('click', playPhase);
+			document.getElementById('reloadButton').addEventListener('click', () => {
+				if (confirm("确定要强制刷新页面吗？网页将回到初始页面")) {
+					location.reload(true);
+				}
+			});
+			document.getElementById('endPlayBtn').addEventListener('click', endPlayPhase);
+			document.getElementById('testUniformBtn').addEventListener('click', async () => {
+				const userConfirm = await showPerformanceWarning();
+				if (userConfirm) {
+					console.log('开始执行均匀性测试');
+					testShuffleUniformity();
+				}
+			});
+			document.getElementById('testPerfBtn').addEventListener('click', async () => {
+				const userConfirm = await showPerformanceWarning();
+				if (userConfirm) {
+					console.log('开始执行性能测试');
+					testShufflePerformance();
+				}
+			});
+			initializeGame();
+		</script>
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-button" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="buttoncopy"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+	</body>
+</html>
