@@ -92,27 +92,52 @@
 					document.querySelector('.cd-loading').textContent = '加载失败: ' + error.message;
 				}
 			}
+			
+			function displayCode(code) {
+			    const output = document.getElementById('codeOutput');
+			    const loading = document.querySelector('.cd-loading');
+			    if (loading) loading.remove();
+			
+			    
+			    const pre = document.createElement('pre');
+			    pre.textContent = code;
+			    output.appendChild(pre);
+				}
 
 			// 显示代码并添加语法高亮
-			function displayCode(code) {
-				const output = document.getElementById('codeOutput');
-				const loading = document.querySelector('.cd-loading');
-
-				// 移除加载提示
-				if (loading) loading.remove();
-
-				// 添加基本语法高亮
-				const highlighted = code
-					.replace(/&/g, '&amp;')
-					.replace(/</g, '&lt;')
-					.replace(/>/g, '&gt;')
-					.replace(/(".*?")/g, '<span class="cd-html-string">$1</span>')
-					.replace(/(&lt;\/?[a-z][a-z0-9]*)/gi, '<span class="cd-html-tag">$1</span>')
-					.replace(/( [a-z\-]+=)/gi, '<span class="cd-html-attr">$1</span>')
-					.replace(/&lt;!--.*?--&gt;/g, '<span class="cd-html-comment">$&</span>');
-
-				output.innerHTML = highlighted;
-
+			function applyHighlights(node) {
+			        if (node.nodeType === Node.TEXT_NODE) {
+			            const text = node.textContent;
+			            
+			            // 转义HTML特殊字符
+			            const escaped = text
+			                .replace(/&/g, '&amp;')
+			                .replace(/</g, '&lt;')
+			                .replace(/>/g, '&gt;');
+			
+			            // 创建临时容器
+			            const temp = document.createElement('div');
+			            temp.innerHTML = escaped;
+			            
+			            // 应用语法高亮
+			            const highlight = temp.innerHTML
+			                .replace(/(&lt;\/?)(\w+)/g, '<span class="cd-html-tag">$1$2</span>')
+			                .replace(/\s([\w-]+)=/g, ' <span class="cd-html-attr">$1</span>=')
+			                .replace(/("(?:\\"|[^"])*")/g, '<span class="cd-html-string">$1</span>')
+			                .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="cd-html-comment">$1</span>');
+			            
+			            // 创建高亮元素
+			            const highlightSpan = document.createElement('span');
+			            highlightSpan.innerHTML = highlight;
+			            
+			            // 替换文本节点
+			            node.replaceWith(highlightSpan);
+			        } 
+			        else if (node.nodeType === Node.ELEMENT_NODE) {
+			            // 递归处理子节点
+			            Array.from(node.childNodes).forEach(applyHighlights);
+			        }
+	
 				// 添加全选功能
 				output.addEventListener('dblclick', function() {
 					selectAllCode();
