@@ -24,7 +24,8 @@
 			<p>操作台</p>
 			<!-- 操作台标题 -->
 			<button id="reloadButton" style="margin-left: 15px; background-color: #ff4444; color: white;">
-				强制刷新（Q）  <!-- 强制刷新按钮（快捷键Q） -->
+				强制刷新（Q）
+				<!-- 强制刷新按钮（快捷键Q） -->
 			</button>
 			<button id="draw1Button">发1张牌（1）</button>
 			<!-- 发1张牌按钮（快捷键1） -->
@@ -57,9 +58,9 @@
 		</div>
 		<div class="header-placeholder"></div>
 		<!-- 占位元素：确保内容不被顶部操作栏遮挡 -->
-		<h1>沮爹红利期模拟器纯随机版</h1>
+		<section class="hero-section">
+		<h1 class="hero-title">沮爹红利期模拟器纯随机版</h1>
 		<!-- 主标题：显示应用名称和版本 -->
-
 		<div class="tooltip-container">
 			<!-- 导航按钮容器 -->
 			<div class="nav-buttons">
@@ -71,17 +72,20 @@
 				<!--教学网页导航按钮-->
 			</div>
 		</div>
-		<p>
+		<h3 class="hero-title">
 			<!-- 使用说明 -->
-			说明：本代码的牌堆是真正的纯随机，专治各种嘴硬<br />
+			说明：<br/>
+			1.本代码的牌堆是真正的纯随机，专治各种嘴硬<br />
 			<!-- 换行：强调牌堆随机性 -->
-			请先查看剩余牌堆，再点高亮ak。<br />
+			2.请先查看剩余牌堆，再点高亮ak。<br />
 			<!-- 操作提示：查看牌堆后再高亮武器 -->
-			由于是纯随机序列，有一大堆杀闪扎堆属于正常现象（恭喜你刷到了沙摩柯的牌堆（bushi）），不想看到此类情况的，重新洗牌即可<br />
+			3.由于是纯随机序列，有一大堆杀闪扎堆属于正常现象（恭喜你刷到了沙摩柯的牌堆（bushi）），不想看到此类情况的，重新洗牌即可<br />
 			<!-- 解释随机现象及解决方法 -->
-			刷新按钮可在网页有不可逆的bug时将网页恢复到初始状态
+			4.刷新按钮可在网页有不可逆的bug时将网页恢复到初始状态
 			<!-- 刷新按钮的功能说明 -->
-		</p>
+		</h3>
+		</section>
+		
 		<h2>安全校验区MD5/AES编码
 			<button id="toggleMD5AES" style="font-size: 12px; padding: 2px 5px;">▼ 收起</button>
 			<!-- 安全区域标题和折叠按钮 -->
@@ -137,12 +141,13 @@
 				</div>
 				<div class="log-panel">
 					<button id="exportLog" class="md5-button log-button">
-						📄 生成安全日志文件  <!-- 日志导出按钮 -->
+						📄 生成安全日志文件
+						<!-- 日志导出按钮 -->
 					</button>
 				</div>
 			</div>
 		</div>
-		<h2>记牌器 
+		<h2>记牌器
 			<button id="toggleCounter" style="font-size: 12px; padding: 2px 5px;">▼ 收起</button>
 			<!-- 记牌器标题和折叠按钮 -->
 		</h2>
@@ -205,13 +210,13 @@
 			let currentWeapon = null; // 当前装备的武器
 			let peachCount = 1; // 可用的"桃"次数
 			let wineCount = 1; // 可用的"酒"次数
-		
+
 			// 初始化牌堆函数
 			function initializeDeck() {
 				// 清空操作日志
 				document.getElementById('log').innerHTML = '';
 				log("牌堆初始化开始");
-				
+
 				// 重置所有牌堆相关变量
 				deck = [];
 				drawnCards = [];
@@ -223,7 +228,7 @@
 				lastUsedCard = null; // 重置最后使用的卡牌
 				peachCount = 1; // 重置桃使用次数
 				wineCount = 1; // 重置酒使用次数
-		
+
 				// 使用外部定义的standardDeck（在card.js中）创建牌堆
 				standardDeck.forEach(card => {
 					// 处理每张卡牌的花色和点数
@@ -233,7 +238,7 @@
 						if (match) {
 							const suitPart = match[1]; // 提取花色部分
 							let point = match[2]; // 提取点数部分
-							
+
 							// 将字母点数转换为数字
 							switch (point) {
 								case 'J':
@@ -251,7 +256,7 @@
 								default:
 									point = parseInt(point, 10); // 数字点数直接转换为整数
 							}
-							
+
 							// 根据卡牌数量创建多个副本
 							for (let i = 0; i < card.count; i++) {
 								// 创建卡牌对象并添加到牌堆
@@ -265,12 +270,12 @@
 						}
 					});
 				});
-		
+
 				// 重置武器和攻击状态
 				currentWeapon = null;
 				killCount = 2;
 				hasZhugeLianNu = false;
-				
+
 				// 更新状态显示
 				updateStatus();
 				// 洗牌
@@ -289,7 +294,7 @@
 				startGame();
 				log("牌堆初始化完成");
 			}
-		
+
 			// 将卡牌点数转换为显示格式的函数
 			function getPointDisplay(point) {
 				switch (point) {
@@ -315,77 +320,79 @@
 					.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
 					// 用"@@"连接所有卡牌字符串
 					.join('@@');
-				
+
 				// 生成牌堆字符串的MD5哈希（第一次哈希）
 				const firstHash = CryptoJS.MD5(deckString).toString();
-				
+
 				// 获取当前时间戳并转换为16进制字符串（填充到16位）
 				const timestamp = Date.now().toString(16).padStart(16, '0');
-				
+
 				// 将第一次哈希结果与时间戳结合，生成最终的MD5值
 				currentMD5 = CryptoJS.MD5(firstHash + timestamp).toString();
-				
+
 				// 检查URL参数中是否有debug标志
 				const isDebug = new URLSearchParams(window.location.search).has('debug');
-				
+
 				// 调试模式下使用原始哈希（不含时间戳），否则使用带时间戳的哈希
 				currentMD5 = isDebug ? firstHash : CryptoJS.MD5(firstHash + timestamp).toString();
-				
+
 				// 在调试模式下输出原始哈希值
 				if (isDebug) console.log("调试模式MD5（不含时间戳）:", currentMD5);
 			}
-			
+
 			// 存储牌堆快照的对象
 			const deckSnapshots = {};
-			
+
 			// 保存当前牌堆快照
 			function saveSnapshot() {
 				// 创建牌堆快照对象
 				const snapshot = {
-					deck: deck.map(c => ({...c})), // 创建牌堆的深拷贝
-					md5: currentMD5,              // 当前MD5值
-					timestamp: Date.now()         // 当前时间戳
+					deck: deck.map(c => ({
+						...c
+					})), // 创建牌堆的深拷贝
+					md5: currentMD5, // 当前MD5值
+					timestamp: Date.now() // 当前时间戳
 				};
-				
+
 				// 以MD5为键存储快照
 				deckSnapshots[currentMD5] = snapshot;
-				
+
 				// 将快照保存到本地存储
 				localStorage.setItem('md5Snapshots', JSON.stringify(deckSnapshots));
-				
+
 				// 记录日志
 				log(`牌堆快照已保存 (MD5: ${currentMD5})`);
 			}
-			
+
 			// 加载指定MD5对应的牌堆快照
 			function loadSnapshot(targetMD5) {
 				// 获取对应MD5的快照
 				const snapshot = deckSnapshots[targetMD5];
-				
+
 				// 如果没有找到快照则提示用户
 				if (!snapshot) return alert("无此牌堆记录");
-				
+
 				// 恢复牌堆状态
 				deck = snapshot.deck;
 				currentMD5 = snapshot.md5;
-				
+
 				// 更新用户界面
 				updateUI();
-				
+
 				// 记录日志
 				log(`已加载牌堆快照 (MD5: ${targetMD5})`);
 			}
-			
+
 			// 更新MD5值的显示
 			function updateMD5Display() {
 				const display = document.getElementById('md5Value');
 				if (showMD5) {
 					// 格式化MD5值：每4个字符加一个连字符
 					const formatted = currentMD5
-						.match(/.{1,4}/g)  // 将字符串分割为每4个字符一组
-						.join('-')         // 用连字符连接各组
-						.toUpperCase();     // 转换为大写
-					
+						.match(/.{1,4}/g) // 将字符串分割为每4个字符一组
+						.join('-') // 用连字符连接各组
+						.toUpperCase(); // 转换为大写
+
 					// 显示格式化后的MD5值
 					display.textContent = formatted;
 					display.style.color = '#2196F3'; // 设置蓝色文本
@@ -395,39 +402,39 @@
 					display.style.color = '#666'; // 设置灰色文本
 				}
 			}
-			
+
 			// 为"显示/隐藏MD5"按钮添加点击事件
 			document.getElementById('toggleMD5').addEventListener('click', () => {
 				// 切换显示状态
 				showMD5 = !showMD5;
-				
+
 				// 更新按钮文本
 				document.getElementById('toggleMD5').textContent =
 					showMD5 ? '隐藏MD5' : '显示MD5';
-				
+
 				// 更新显示内容
 				updateMD5Display();
 			});
-			
+
 			// 为"复制MD5"按钮添加点击事件
 			document.getElementById('copyMD5').addEventListener('click', () => {
 				// 如果没有MD5值则直接返回
 				if (!currentMD5) return;
-				
+
 				// 定义复制函数
 				const copy = async () => {
 					try {
 						// 尝试使用现代剪贴板API
 						await navigator.clipboard.writeText(currentMD5);
-						
+
 						// 添加复制成功的视觉反馈
 						document.getElementById('copyMD5').classList.add('copied');
-						
+
 						// 1秒后移除视觉反馈
 						setTimeout(() => {
 							document.getElementById('copyMD5').classList.remove('copied');
 						}, 1000);
-						
+
 						// 记录日志
 						log('MD5已复制到剪贴板');
 					} catch (err) {
@@ -441,31 +448,31 @@
 						log('MD5已复制（传统方式）');
 					}
 				};
-				
+
 				// 执行复制并处理可能的错误
 				copy().catch(err => {
 					console.error('复制失败:', err);
 					log('复制失败，请手动选择复制');
 				});
 			});
-			
+
 			// 验证用户输入的MD5值
 			function verifyDeck() {
 				// 获取用户输入的MD5值并清理格式
 				const inputMD5 = document.getElementById('verifyMD5').value
-					.replace(/-/g, '')   // 移除连字符
-					.toLowerCase();      // 转换为小写
-				
+					.replace(/-/g, '') // 移除连字符
+					.toLowerCase(); // 转换为小写
+
 				// 与当前MD5比较
 				const isValid = currentMD5 === inputMD5;
-				
+
 				// 获取结果显示元素
 				const resultSpan = document.getElementById('verifyResult');
-				
+
 				// 设置验证结果文本和颜色
 				resultSpan.textContent = isValid ? '✅ 验证通过' : '❌ 验证失败';
 				resultSpan.style.color = isValid ? '#4CAF50' : '#f44336'; // 绿色/红色
-				
+
 				// 记录日志
 				log(`牌堆MD5验证${isValid ? '成功' : '失败'}`);
 			}
@@ -475,30 +482,32 @@
 				try {
 					// 简化牌堆数据结构（减少JSON大小）
 					const deckData = deck.map(c => ({
-						n: c.name,  // 卡牌名称（缩写）
-						s: c.suit,  // 花色
+						n: c.name, // 卡牌名称（缩写）
+						s: c.suit, // 花色
 						p: c.point, // 点数
-						u: c.uid   // 唯一ID（缩写）
+						u: c.uid // 唯一ID（缩写）
 					}));
-					
+
 					// 生成随机密钥（128位）
 					const key = CryptoJS.lib.WordArray.random(128 / 8);
-					
+
 					// 生成随机初始化向量（128位）
 					const iv = CryptoJS.lib.WordArray.random(128 / 8);
-					
+
 					// 使用AES-CBC模式加密牌堆数据
 					const encrypted = CryptoJS.AES.encrypt(
 						JSON.stringify(deckData), // 要加密的字符串化牌堆数据
-						key,                      // 加密密钥
-						{ iv: iv }                // 初始化向量
+						key, // 加密密钥
+						{
+							iv: iv
+						} // 初始化向量
 					);
-					
+
 					// 构建AES编码：密钥::初始化向量::加密数据
 					currentAES = [
-						key.toString(CryptoJS.enc.Base64),  // Base64编码的密钥
-						iv.toString(CryptoJS.enc.Base64),   // Base64编码的初始化向量
-						encrypted.toString()                // 加密后的字符串
+						key.toString(CryptoJS.enc.Base64), // Base64编码的密钥
+						iv.toString(CryptoJS.enc.Base64), // Base64编码的初始化向量
+						encrypted.toString() // 加密后的字符串
 					].join('::');
 				} catch (e) {
 					// 错误处理：输出错误并设置错误标识
@@ -506,18 +515,18 @@
 					currentAES = 'ERROR';
 				}
 			}
-			
+
 			// 更新AES值的显示
 			function updateAESDisplay() {
 				const display = document.getElementById('aesValue');
 				if (!display) return; // 安全检查：确保元素存在
-				
+
 				if (showAES) {
 					// 格式化显示：每24个字符换行
 					const formatted = currentAES
 						.match(/.{1,24}/g) // 将字符串分割成最多24字符的片段
-						.join('\n');       // 用换行符连接
-					
+						.join('\n'); // 用换行符连接
+
 					// 显示格式化后的AES值
 					display.textContent = formatted;
 					display.style.color = '#2196F3'; // 设置蓝色文本
@@ -527,39 +536,39 @@
 					display.style.color = '#666'; // 设置灰色文本
 				}
 			}
-			
+
 			// 为"显示/隐藏AES"按钮添加点击事件
 			document.getElementById('toggleAES').addEventListener('click', () => {
 				// 切换显示状态
 				showAES = !showAES;
-				
+
 				// 更新按钮文本
 				document.getElementById('toggleAES').textContent =
 					showAES ? '隐藏AES' : '显示AES';
-				
+
 				// 更新显示内容
 				updateAESDisplay();
 			});
-			
+
 			// 为"复制AES"按钮添加点击事件
 			document.getElementById('copyAES').addEventListener('click', () => {
 				// 检查AES值是否有效
 				if (!currentAES || currentAES === '​**​*​**​*') return;
-				
+
 				// 定义复制函数
 				const copy = async () => {
 					try {
 						// 尝试使用现代剪贴板API
 						await navigator.clipboard.writeText(currentAES);
-						
+
 						// 添加复制成功的视觉反馈
 						document.getElementById('copyAES').classList.add('copied');
-						
+
 						// 1秒后移除视觉反馈
 						setTimeout(() => {
 							document.getElementById('copyAES').classList.remove('copied');
 						}, 1000);
-						
+
 						// 记录日志
 						log('AES编码已复制');
 					} catch (err) {
@@ -573,67 +582,69 @@
 						log('AES编码已复制（传统方式）');
 					}
 				};
-				
+
 				// 执行复制并处理可能的错误
 				copy().catch(err => {
 					console.error('复制失败:', err);
 					log('AES复制失败，请手动选择复制');
 				});
 			});
-			
+
 			// 验证并解密用户输入的AES编码
 			function verifyAESDeck() {
 				// 获取用户输入的AES编码
 				const input = document.getElementById('verifyAES').value.trim();
 				const resultSpan = document.getElementById('verifyAESResult');
-				
+
 				// 检查输入是否为空
 				if (!input) {
 					resultSpan.textContent = '❌ 请输入编码';
 					resultSpan.style.color = '#f44336'; // 红色错误提示
 					return;
 				}
-				
+
 				try {
 					// 分割输入：格式应为 密钥::初始化向量::加密数据
 					const [keyB64, ivB64, data] = input.split('::');
-					
+
 					// 验证格式是否正确
 					if (!keyB64 || !ivB64 || !data) throw new Error('格式无效');
-					
+
 					// 从Base64解析密钥和初始化向量
 					const key = CryptoJS.enc.Base64.parse(keyB64);
 					const iv = CryptoJS.enc.Base64.parse(ivB64);
-					
+
 					// 使用AES解密数据
-					const decrypted = CryptoJS.AES.decrypt(data, key, { iv: iv });
-					
+					const decrypted = CryptoJS.AES.decrypt(data, key, {
+						iv: iv
+					});
+
 					// 将解密结果转换为UTF-8字符串
 					const utf8String = decrypted.toString(CryptoJS.enc.Utf8);
-					
+
 					// 检查解密是否成功
 					if (!utf8String) throw new Error('解密失败');
-					
+
 					// 解析解密后的JSON数据
 					const decoded = JSON.parse(utf8String);
-					
+
 					// 重建牌堆数据结构
 					deck = decoded.map(c => ({
-						name: c.n,  // 恢复卡牌名称
-						suit: c.s,  // 恢复花色
+						name: c.n, // 恢复卡牌名称
+						suit: c.s, // 恢复花色
 						point: c.p, // 恢复点数
-						uid: c.u    // 恢复唯一ID
+						uid: c.u // 恢复唯一ID
 					}));
-					
+
 					// 更新相关状态和显示
-					generateDeckMD5();   // 重新生成MD5
-					updateMD5Display();  // 更新MD5显示
-					updateRemaining();   // 更新剩余牌数
-					revealDeck();        // 显示牌堆
-					
+					generateDeckMD5(); // 重新生成MD5
+					updateMD5Display(); // 更新MD5显示
+					updateRemaining(); // 更新剩余牌数
+					revealDeck(); // 显示牌堆
+
 					// 记录日志
 					log('AES解码成功，牌堆已加载');
-					
+
 					// 显示验证成功
 					resultSpan.textContent = '✅ 验证通过';
 					resultSpan.style.color = '#4CAF50'; // 绿色成功提示
@@ -651,10 +662,10 @@
 				if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
 					// 创建一个Uint32Array来存储随机值
 					const randomBuffer = new Uint32Array(1);
-					
+
 					// 使用加密安全方法填充随机值
 					window.crypto.getRandomValues(randomBuffer);
-					
+
 					// 返回0到max之间的随机索引
 					return randomBuffer[0] % (max + 1);
 				} else {
@@ -662,18 +673,18 @@
 					return Math.floor(Math.random() * (max + 1));
 				}
 			}
-			
+
 			// 执行洗牌均匀性测试
 			async function testShuffleUniformity() {
 				// 测试配置
 				const CONFIG = {
 					TOTAL_TRIALS: 100000, // 总测试次数
-					BATCH_SIZE: 5000,     // 每批测试次数
-					DECK_SIZE: 160,       // 牌堆大小
-					AK_COUNT: 2,          // 诸葛连弩(AK)数量
-					CHECK_SIZE: 7         // 检查前几张牌
+					BATCH_SIZE: 5000, // 每批测试次数
+					DECK_SIZE: 160, // 牌堆大小
+					AK_COUNT: 2, // 诸葛连弩(AK)数量
+					CHECK_SIZE: 7 // 检查前几张牌
 				};
-				
+
 				// 创建模态背景
 				const backdrop = document.createElement('div');
 				backdrop.style.cssText = `
@@ -686,7 +697,7 @@
 					z-index: 9998;
 					backdrop-filter: blur(3px);
 				`;
-				
+
 				// 创建测试面板
 				const panel = document.createElement('div');
 				panel.className = 'scrollable-panel';
@@ -706,7 +717,7 @@
 					overflow-y: auto;
 					font-family: Arial, sans-serif;
 				`;
-				
+
 				// 面板内容HTML
 				panel.innerHTML = `
 					<div style="position: relative; margin-bottom: 20px;">
@@ -770,11 +781,11 @@
 					<progress value="0" max="${CONFIG.TOTAL_TRIALS}" style="width:100%; height:8px; margin:15px 0;"></progress>
 					<div id="akStats" style="color:#666; font-size:14px;"></div>
 				`;
-				
+
 				// 添加面板到文档
 				document.body.appendChild(backdrop);
 				document.body.appendChild(panel);
-				
+
 				// 添加滚动条样式
 				panel.style.cssText += `
 					::-webkit-scrollbar { width: 12px; }
@@ -782,81 +793,86 @@
 					::-webkit-scrollbar-thumb { background: #4CAF50; border-radius: 10px; }
 					::-webkit-scrollbar-thumb:hover { background: #3e8e41; }
 				`;
-				
+
 				// 初始化测试状态变量
 				let isClosing = false;
-				let stats = { single: 0, double: 0 };
+				let stats = {
+					single: 0,
+					double: 0
+				};
 				let completed = 0;
-				
+
 				// 关闭面板函数
 				const closePanel = () => {
 					if (isClosing) return;
 					isClosing = true;
-					
+
 					// 添加淡出动画
 					panel.style.transition = 'opacity 0.3s, transform 0.3s';
 					panel.style.opacity = '0';
 					panel.style.transform = 'translate(-50%, -50%) scale(0.9)';
-					
+
 					backdrop.style.transition = 'opacity 0.3s';
 					backdrop.style.opacity = '0';
-					
+
 					// 延迟移除元素
 					setTimeout(() => {
 						document.body.removeChild(backdrop);
 						document.body.removeChild(panel);
 					}, 300);
 				};
-				
+
 				// 添加关闭和重新测试按钮事件
 				panel.querySelector('#closePanel').addEventListener('click', closePanel);
 				panel.querySelector('#rerunTest').addEventListener('click', () => {
 					closePanel();
 					testShuffleUniformity();
 				});
-				
+
 				// 生成测试牌堆（包含AK标记）
-				const generateTestDeck = () => 
-					Array.from({ length: CONFIG.DECK_SIZE }, (_, i) => ({
+				const generateTestDeck = () =>
+					Array.from({
+						length: CONFIG.DECK_SIZE
+					}, (_, i) => ({
 						isAK: i < CONFIG.AK_COUNT, // 前两张牌标记为AK
-						id: i                     // 唯一标识符
+						id: i // 唯一标识符
 					}));
-				
+
 				// 运行一批测试
 				const runBatch = async () => {
 					for (let i = 0; i < CONFIG.BATCH_SIZE; i++) {
 						if (isClosing) return;
-						
+
 						// 生成测试牌堆
 						const deck = generateTestDeck();
-						
+
 						// Fisher-Yates洗牌算法
 						for (let j = deck.length - 1; j > 0; j--) {
 							const k = Math.floor(Math.random() * (j + 1));
 							[deck[j], deck[k]] = [deck[k], deck[j]];
 						}
-						
+
 						// 检查前CHECK_SIZE张牌中AK的数量
 						const akCount = deck.slice(0, CONFIG.CHECK_SIZE)
 							.filter(c => c.isAK).length;
-						
+
 						// 更新统计
 						if (akCount >= 1) stats.single++;
 						if (akCount >= 2) stats.double++;
 					}
-					
+
 					// 更新完成数量
 					completed += CONFIG.BATCH_SIZE;
-					
+
 					// 更新进度条
 					panel.querySelector('progress').value = completed;
-					
+
 					// 更新统计显示
-					panel.querySelector('#actualSingle').textContent = 
+					panel.querySelector('#actualSingle').textContent =
 						`${stats.single} (${(stats.single / completed * 100).toFixed(2)}%)`;
-					panel.querySelector('#actualDouble').textContent = 
+					panel.querySelector('#actualDouble').textContent =
 						`${stats.double} (${(stats.double / completed * 100).toFixed(2)}%)`;
-					
+
 					// 更新统计面板
 					panel.querySelector('#akStats').innerHTML = `
 						<p>已测试：${completed.toLocaleString()} 次</p>
@@ -864,26 +880,26 @@
 						<p>双AK概率：${(stats.double / completed * 100).toFixed(2)}%</p>
 					`;
 				};
-				
+
 				try {
 					// 记录开始时间
 					const startTime = performance.now();
-					
+
 					// 运行测试直到完成或关闭
 					while (completed < CONFIG.TOTAL_TRIALS && !isClosing) {
-						await new Promise(resolve => 
+						await new Promise(resolve =>
 							requestAnimationFrame(async () => {
 								await runBatch();
 								resolve();
 							})
 						);
 					}
-					
+
 					// 测试完成且面板未关闭
 					if (!isClosing) {
 						// 计算总耗时
 						const totalTime = ((performance.now() - startTime) / 1000).toFixed(1);
-						
+
 						// 添加最终统计
 						panel.querySelector('#akStats').innerHTML += `
 							<div style="margin-top:15px; padding-top:15px; border-top:1px solid #eee;">
@@ -903,7 +919,7 @@
 					`;
 				}
 			}
-			
+
 			// 绑定洗牌均匀性测试按钮
 			document.getElementById('testPerfBtn').addEventListener('click', async () => {
 				// 显示性能警告并确认
@@ -913,7 +929,7 @@
 					testShuffleUniformity();
 				}
 			});
-			
+
 			// 显示性能警告弹窗
 			function showPerformanceWarning() {
 				// 返回一个Promise，用于处理用户选择
@@ -932,7 +948,7 @@
 						justify-content: center;
 						align-items: center;
 					`;
-					
+
 					// 创建警告弹窗
 					const alertBox = document.createElement('div');
 					alertBox.style.cssText = `
@@ -943,7 +959,7 @@
 						max-width: 90vw;
 						box-shadow: 0 4px 20px rgba(0,0,0,0.25);
 					`;
-					
+
 					// 弹窗内容
 					alertBox.innerHTML = `
 						<h2 style="margin:0 0 15px; font-size:20px; color:#d32f2f;">⚠️ 性能警告</h2>
@@ -963,34 +979,34 @@
 									   cursor:pointer;">取消操作</button>
 						</div>
 					`;
-					
+
 					// 关闭弹窗并返回结果
 					const close = (result) => {
 						document.body.removeChild(backdrop);
 						resolve(result);
 					};
-					
+
 					// 绑定按钮事件
 					alertBox.querySelector('#confirmBtn').addEventListener('click', () => close(true));
 					alertBox.querySelector('#cancelBtn').addEventListener('click', () => close(false));
-					
+
 					// 点击背景关闭（相当于取消）
 					backdrop.addEventListener('click', (e) => {
 						if (e.target === backdrop) close(false);
 					});
-					
+
 					// 添加元素到DOM
 					backdrop.appendChild(alertBox);
 					document.body.appendChild(backdrop);
 				});
 			}
-			
+
 			// 构建AK统计结果的HTML字符串
 			function buildAKStats(total, single, double, totalAK) {
 				// 计算单AK和双AK的概率
 				const singleRate = (single / total * 100).toFixed(2);
 				const doubleRate = (double / total * 100).toFixed(2);
-				
+
 				// 返回格式化后的统计信息HTML
 				return `
 					<div style="border-top:1px solid #ddd; padding-top:10px;">
@@ -1004,20 +1020,20 @@
 					</div>
 				`;
 			}
-			
+
 			// 更新AK统计显示
 			function updateAKStats(progress, completed, single, double) {
 				// 获取统计显示区域
 				const statsDiv = progress.querySelector('#akStats');
 				if (!statsDiv) return;
-				
+
 				// 格式化数字（千位分隔符）
 				const current = completed.toLocaleString();
-				
+
 				// 计算当前概率
 				const singleRate = (single / completed * 100).toFixed(2);
 				const doubleRate = (double / completed * 100).toFixed(2);
-				
+
 				// 更新统计显示内容
 				statsDiv.innerHTML = `
 					<p>实时统计（已测试${current}次）:</p>
@@ -1029,7 +1045,7 @@
 			// 生成标准牌堆
 			function generateStandardDeck() {
 				const deck = []; // 创建空牌堆数组
-				
+
 				// 遍历外部定义的standardDeck数组
 				standardDeck.forEach(card => {
 					// 遍历每张卡牌的花色字符串
@@ -1039,33 +1055,42 @@
 						if (match) {
 							const suitPart = match[1]; // 提取花色部分
 							let point = match[2]; // 提取点数部分
-							
+
 							// 将字母点数转换为数字
 							switch (point) {
-								case 'J': point = 11; break;
-								case 'Q': point = 12; break;
-								case 'K': point = 13; break;
-								case 'A': point = 1; break;
-								default: point = parseInt(point, 10); // 数字直接转换
+								case 'J':
+									point = 11;
+									break;
+								case 'Q':
+									point = 12;
+									break;
+								case 'K':
+									point = 13;
+									break;
+								case 'A':
+									point = 1;
+									break;
+								default:
+									point = parseInt(point, 10); // 数字直接转换
 							}
-							
+
 							// 根据卡牌数量创建多个副本
 							for (let i = 0; i < card.count; i++) {
 								// 添加卡牌对象到牌堆
 								deck.push({
-									name: card.name,   // 卡牌名称
-									suit: suitPart,    // 花色
-									point: point,      // 点数（数字）
+									name: card.name, // 卡牌名称
+									suit: suitPart, // 花色
+									point: point, // 点数（数字）
 									uid: CryptoJS.lib.WordArray.random(16).toString() // 唯一ID
 								});
 							}
 						}
 					});
 				});
-				
+
 				return deck; // 返回生成的牌堆
 			}
-			
+
 			// 显示性能警告弹窗（改进版）
 			async function showPerformanceWarning(testFunction) {
 				// 返回Promise以处理用户选择
@@ -1085,11 +1110,11 @@
 						<button class="confirm">继续执行</button>
 						<button class="cancel">取消操作</button>
 					`;
-					
+
 					// 创建模态背景
 					const backdrop = document.createElement('div');
 					backdrop.className = 'modal-backdrop';
-					
+
 					// 创建容器居中弹窗
 					const container = document.createElement('div');
 					container.style.cssText = `
@@ -1102,41 +1127,59 @@
 						justify-content: center;
 						align-items: center;
 					`;
-					
+
 					// 组装元素
 					container.appendChild(alertBox);
 					backdrop.appendChild(container);
 					document.body.appendChild(backdrop);
-					
+
 					// 处理用户选择
 					const handler = (result) => {
 						document.body.removeChild(backdrop); // 移除弹窗
 						resolve(result); // 返回用户选择
 					};
-					
+
 					// 绑定按钮事件
 					alertBox.querySelector('.confirm').addEventListener('click', () => handler(true));
 					alertBox.querySelector('.cancel').addEventListener('click', () => handler(false));
-					
+
 					// 点击背景关闭（相当于取消）
 					backdrop.addEventListener('click', (e) => {
 						if (e.target === backdrop) handler(false);
 					});
 				});
 			}
-			
+
 			// 更新剩余卡牌计数显示
 			function updateRemainingCounts() {
 				// 定义卡牌分类结构
 				const categories = {
-					basic: { name: "基本牌", items: {} },
-					trick: { name: "普通锦囊牌", items: {} },
-					ystrick: { name: "延时锦囊牌", items: {} },
-					weapon: { name: "武器", items: {} },
-					armor: { name: "防具", items: {} },
-					horse: { name: "坐骑", items: {} }
+					basic: {
+						name: "基本牌",
+						items: {}
+					},
+					trick: {
+						name: "普通锦囊牌",
+						items: {}
+					},
+					ystrick: {
+						name: "延时锦囊牌",
+						items: {}
+					},
+					weapon: {
+						name: "武器",
+						items: {}
+					},
+					armor: {
+						name: "防具",
+						items: {}
+					},
+					horse: {
+						name: "坐骑",
+						items: {}
+					}
 				};
-				
+
 				// 遍历牌堆中的所有卡牌
 				deck.forEach(card => {
 					// 使用外部定义的cardCategories进行分类
@@ -1144,35 +1187,35 @@
 						// 检查当前卡牌是否属于此分类
 						if (items.includes(card.name)) {
 							// 初始化或增加该卡牌的计数
-							categories[type].items[card.name] = 
+							categories[type].items[card.name] =
 								(categories[type].items[card.name] || 0) + 1;
 							break; // 找到分类后跳出循环
 						}
 					}
 				});
-				
+
 				let html = ''; // 初始化HTML字符串
-				
+
 				// 遍历所有分类
 				for (const category of Object.values(categories)) {
 					// 跳过没有卡牌的分类
 					if (Object.keys(category.items).length === 0) continue;
-					
+
 					// 添加分类标题
 					html += `<div class="category"><div class="category-title">${category.name}</div>`;
-					
+
 					// 对卡牌名称按中文排序
 					const sorted = Object.entries(category.items)
 						.sort((a, b) => a[0].localeCompare(b[0], 'zh-Hans-CN'));
-					
+
 					// 添加卡牌计数项
 					html += sorted.map(([name, count]) =>
 						`<div class="count-item">${name}：${count}</div>`
 					).join('');
-					
+
 					html += '</div>'; // 关闭分类div
 				}
-				
+
 				// 更新DOM显示
 				document.getElementById('remaining-counts').innerHTML = html;
 			}
@@ -1184,44 +1227,44 @@
 					alert("牌堆已空，无法继续抽牌！");
 					return;
 				}
-				
+
 				// 如果抽牌数大于剩余牌数，自动调整
 				if (deck.length < count) {
 					alert(`牌堆仅剩${deck.length}张，自动抽取全部`);
 					count = deck.length;
 				}
-				
+
 				// 抽取指定数量的卡牌
 				for (let i = 0; i < count; i++) {
 					const drawnCard = deck.shift(); // 从牌堆顶部取出一张牌
-					drawnCards.push(drawnCard);    // 添加到已抽取卡牌列表
-					hand.push(drawnCard);          // 添加到玩家手牌
-					
+					drawnCards.push(drawnCard); // 添加到已抽取卡牌列表
+					hand.push(drawnCard); // 添加到玩家手牌
+
 					// 特殊处理：抽到诸葛连弩（AK）时提示
 					if (drawnCard.name === "诸葛连弩") {
 						alert(`抽到AK！剩余牌堆：${deck.length}张`);
 					}
 				}
-				
+
 				// 更新界面
-				updateRemaining();         // 更新剩余牌数显示
-				updateReshuffleButton();    // 更新脚气卡按钮状态
-				updateUI();                // 更新整体界面
+				updateRemaining(); // 更新剩余牌数显示
+				updateReshuffleButton(); // 更新脚气卡按钮状态
+				updateUI(); // 更新整体界面
 			}
-			
+
 			// 展示剩余牌堆详情
 			function revealDeck() {
 				const container = document.getElementById('remaining');
-				
+
 				// 检查牌堆是否为空
 				if (deck.length === 0) {
 					container.innerHTML = `<h3>剩余牌堆 (0张)</h3><p>牌堆已空</p>`;
 					return;
 				}
-				
+
 				// 显示牌堆标题
 				container.innerHTML = `<h3>剩余牌堆 (${deck.length}张)</h3>`;
-				
+
 				// 遍历牌堆中的每张牌
 				deck.forEach((card, index) => {
 					// 添加每张牌的详细信息
@@ -1231,87 +1274,87 @@
 						</div>`;
 				});
 			}
-			
+
 			// 高亮显示诸葛连弩（AK）
 			function highlightZhugeLianNu() {
 				const remainingCards = document.querySelectorAll('#remaining .card');
-				
+
 				// 检查牌堆是否为空
 				if (deck.length === 0) {
 					alert("牌堆已空，没有诸葛连弩！");
 					return;
 				}
-				
+
 				// 找出所有AK牌
 				const akCards = Array.from(remainingCards).filter(card =>
 					card.textContent.includes('诸葛连弩')
 				);
-				
+
 				// 为AK牌添加高亮样式
 				akCards.forEach(card => card.classList.add('highlight'));
-				
+
 				// 获取AK牌的位置
 				const indices = akCards.map(card =>
 					Array.from(remainingCards).indexOf(card) + 1
 				);
-				
+
 				// 显示提示信息
 				indices.length > 0 ?
 					alert(`诸葛连弩位置：${indices.join(', ')}`) :
 					alert("剩余牌堆中没有诸葛连弩！");
 			}
-			
+
 			// 更新剩余牌数显示
 			function updateRemaining() {
 				// 显示剩余牌数
 				document.getElementById('remaining').innerHTML = `剩余牌堆: ${deck.length}张`;
-				
+
 				// 更新各类卡牌计数
 				updateRemainingCounts();
 			}
-			
+
 			// 处理脚气卡使用（重新洗牌）
 			function handleReshuffle() {
 				// 验证脚气卡使用条件
 				if (!validateReshuffle()) return;
-				
+
 				// 记录日志
 				log(`开始使用脚气卡（当前已用${reshuffleUsed}次）`);
-				
+
 				// 回收当前手牌
 				const currentDrawn = hand.splice(-4, 4);
 				log(`回收手牌：${currentDrawn.map(c => c.name).join(', ')}`);
-				
+
 				// 将手牌放回牌堆顶部
 				deck.unshift(...currentDrawn);
-				
+
 				// 洗牌
 				shuffleDeck();
-				
+
 				// 更新脚气卡使用次数
 				reshuffleUsed++;
 				log(`脚气卡洗牌完成（${reshuffleUsed}/${MAX_RESHUFLE}次）`);
-				
+
 				// 清空已抽取牌堆
 				discardPile.push(...drawnCards);
 				drawnCards = [];
-				
+
 				// 重新抽牌
 				drawCards(4);
 				log(`重新抽取4张牌，剩余牌堆：${deck.length}张`);
-				
+
 				// 更新界面
 				updateCounter();
 				updateReshuffleButton();
 			}
-			
+
 			// 验证脚气卡使用条件
 			function validateReshuffle() {
 				// 脚气卡使用条件：手牌4张、未达使用上限、牌堆+手牌≥4
 				const isValid = hand.length === 4 &&
 					reshuffleUsed < MAX_RESHUFLE &&
 					deck.length + hand.length >= 4;
-				
+
 				// 记录无效尝试日志
 				if (!isValid) {
 					log(`脚气卡使用失败，验证条件不满足：
@@ -1319,23 +1362,23 @@
 					已用次数: ${reshuffleUsed}
 					剩余牌数: ${deck.length}`);
 				}
-				
+
 				return isValid;
 			}
-			
+
 			// 清空牌堆显示
 			function clearDisplay() {
 				document.getElementById('deck').innerHTML = '';
 			}
-			
+
 			// 更新脚气卡按钮状态
 			function updateReshuffleButton() {
 				const btn = document.getElementById('reshuffleBtn');
-				
+
 				// 按钮启用条件：已抽4张牌且未达使用上限
 				btn.disabled = !(drawnCards.length === 4 && reshuffleUsed < MAX_RESHUFLE);
 			}
-			
+
 			// 洗牌函数
 			function shuffleDeck() {
 				// Fisher-Yates洗牌算法
@@ -1343,44 +1386,44 @@
 					const j = Math.floor(Math.random() * (i + 1));
 					[deck[i], deck[j]] = [deck[j], deck[i]];
 				}
-				
+
 				// 如果装备的武器不在牌堆中，重置武器状态
 				if (!deck.some(c => c.name === currentWeapon)) {
 					currentWeapon = null;
 					hasZhugeLianNu = false;
 					killCount = 2;
 				}
-				
+
 				// 重置桃和酒的使用次数
 				peachCount = 1;
 				document.getElementById('peach-counter').textContent = `桃可用次数：1`;
 				wineCount = 1;
-				
+
 				// 更新状态
 				updateStatus();
-				
+
 				// 生成新的AES编码
 				generateDeckAES();
 				updateAESDisplay();
 			}
-			
+
 			// 开始游戏
 			function startGame() {
 				drawCards(4); // 初始抽4张牌
 				phase = '准备'; // 设置游戏阶段
-				
+
 				// 设置按钮状态
 				document.getElementById('drawBtn').disabled = false; // 摸牌阶段可用
-				document.getElementById('playBtn').disabled = true;  // 出牌阶段禁用
-				
+				document.getElementById('playBtn').disabled = true; // 出牌阶段禁用
+
 				// 更新界面
 				updateUI();
 			}
-			
+
 			// 初始化按钮状态
 			function initializeButtons() {
 				document.getElementById('drawBtn').disabled = false; // 摸牌阶段可用
-				document.getElementById('playBtn').disabled = true;   // 出牌阶段禁用
+				document.getElementById('playBtn').disabled = true; // 出牌阶段禁用
 			}
 
 			// 摸牌阶段处理
@@ -1390,46 +1433,46 @@
 					alert("牌堆已空，无法摸牌！");
 					return;
 				}
-				
+
 				// 设置游戏阶段为"摸牌"
 				phase = '摸牌';
-				
+
 				// 摸3张牌
 				drawCards(3);
-				
+
 				// 更新按钮状态
-				document.getElementById('drawBtn').disabled = true;    // 禁用摸牌按钮
-				document.getElementById('playBtn').disabled = false;   // 启用出牌按钮
-				
+				document.getElementById('drawBtn').disabled = true; // 禁用摸牌按钮
+				document.getElementById('playBtn').disabled = false; // 启用出牌按钮
+
 				// 更新界面
 				updateUI();
 			}
-			
+
 			// 出牌阶段处理
 			function playPhase() {
 				// 设置游戏阶段为"出牌"
 				phase = '出牌';
-				
+
 				// 重置最后使用的卡牌
 				lastUsedCard = null;
-				
+
 				// 更新按钮状态
-				document.getElementById('drawBtn').disabled = true;    // 禁用摸牌按钮
-				document.getElementById('playBtn').disabled = true;    // 禁用出牌按钮
+				document.getElementById('drawBtn').disabled = true; // 禁用摸牌按钮
+				document.getElementById('playBtn').disabled = true; // 禁用出牌按钮
 				document.getElementById('endPlayBtn').disabled = false; // 启用结束出牌按钮
-				
+
 				// 更新界面
 				updateUI();
 			}
-			
+
 			// 使用卡牌
 			function useCard(card, index) {
 				// 只能在出牌阶段使用卡牌
 				if (phase !== '出牌') return;
-				
+
 				// 记录使用卡牌日志
 				log(`使用卡牌：${card.name} ${card.suit}${getPointDisplay(card.point)}`);
-				
+
 				// 武器类卡牌处理
 				if (cardCategories.weapon.includes(card.name)) {
 					// 如果已装备其他武器，先卸除
@@ -1441,17 +1484,17 @@
 							log(`卸除诸葛连弩，杀次数重置为2`);
 						}
 					}
-					
+
 					// 装备新武器
 					currentWeapon = card.name;
 					hasZhugeLianNu = (card.name === "诸葛连弩");
-					
+
 					// 如果是诸葛连弩，记录日志
 					if (hasZhugeLianNu) {
 						log("装备诸葛连弩，杀次数限制解除");
 					}
 				}
-				
+
 				// 杀类卡牌处理
 				if (['杀', '火杀', '雷杀'].includes(card.name)) {
 					// 如果没有装备诸葛连弩
@@ -1466,43 +1509,43 @@
 						log(`使用${card.name}，剩余次数：${killCount}`);
 					}
 				}
-				
+
 				// 特殊卡牌：诸葛连弩
 				if (card.name === "诸葛连弩") {
 					hasZhugeLianNu = true;
 					log("装备诸葛连弩，杀次数限制解除！");
 				}
-				
+
 				// 特殊卡牌：无中生有
 				if (card.name === "无中生有") {
 					log('使用无中生有，额外摸两张牌！');
 					drawCards(2); // 摸两张牌
 				}
-				
+
 				// 禁止使用的卡牌：闪
 				if (card.name === '闪') {
 					alert("出牌阶段禁止使用闪！");
 					return; // 提前返回，不执行后续操作
 				}
-				
+
 				// 禁止使用的卡牌：无懈可击
 				if (card.name === '无懈可击') {
 					alert("出牌阶段禁止使用无懈可击");
 					return; // 提前返回，不执行后续操作
 				}
-				
+
 				// 特殊卡牌：铁索连环
 				if (card.name === "铁索连环") {
 					showChainDialog(card, index); // 显示选择对话框
 					return; // 提前返回，对话框会处理后续操作
 				}
-				
+
 				// 特殊卡牌：借刀杀人
 				if (card.name === "借刀杀人") {
 					showJiedaoDialog(card, index); // 显示选择对话框
 					return; // 提前返回，对话框会处理后续操作
 				}
-				
+
 				// 桃类卡牌处理
 				if (card.name === "桃") {
 					// 检查桃使用次数
@@ -1514,14 +1557,14 @@
 					peachCount--;
 					log(`使用桃，剩余次数：${peachCount}`);
 				}
-				
+
 				// 特殊卡牌：桃园结义
 				if (card.name === "桃园结义") {
 					// 减少桃次数（至少为0）
 					peachCount = Math.max(peachCount - 1, 0);
 					log(`使用桃园结义恢复体力，剩余次数：${peachCount}`);
 				}
-				
+
 				// 酒类卡牌处理
 				if (card.name === "酒") {
 					// 检查酒使用次数
@@ -1533,39 +1576,39 @@
 					wineCount--;
 					log(`使用酒，剩余次数：${wineCount}`);
 				}
-				
+
 				// 渐营技能检查（连续使用相同花色或点数的牌）
 				if (lastUsedCard && (card.suit === lastUsedCard.suit || card.point === lastUsedCard.point)) {
 					log('触发渐营，摸一张牌！');
 					drawCards(1); // 额外摸一张牌
 				}
-				
+
 				// 更新最后使用的卡牌
 				lastUsedCard = card;
-				
+
 				// 从手牌移除并放入弃牌堆
 				discardPile.push(hand.splice(index, 1)[0]);
-				
+
 				// 更新状态和界面
 				updateStatus();
 				updateUI();
 			}
-			
+
 			// 更新状态显示
 			function updateStatus() {
 				// 获取DOM元素
 				const counter = document.getElementById('kill-counter');
 				const zhuge = document.getElementById('zhuge-status');
-				
+
 				// 更新桃和酒的使用次数
 				document.getElementById('peach-counter').textContent = `桃可用次数：${peachCount}`;
 				document.getElementById('wine-counter').textContent = `酒可用次数：${wineCount}`;
-				
+
 				// 更新杀次数显示（根据是否装备诸葛连弩）
 				counter.innerHTML = hasZhugeLianNu ?
 					'杀可用次数：∞' : // 无限次
 					`杀可用次数：${killCount}`; // 显示剩余次数
-				
+
 				// 更新武器状态
 				zhuge.textContent = currentWeapon ?
 					`当前武器：${currentWeapon}` : // 显示当前武器
@@ -1587,7 +1630,7 @@
 					z-index: 10000;
 					box-shadow: 0 0 10px rgba(0,0,0,0.5);
 				`;
-				
+
 				// 对话框内容
 				dialog.innerHTML = `
 					<h3>铁索连环效果选择</h3>
@@ -1596,7 +1639,7 @@
 					<button id="func2" style="margin:5px; padding:8px; background:#C8E6C9;">功能2：使用检索</button>
 					<button id="cancel" style="margin:5px; padding:8px; background:#FFCDD2;">取消</button>
 				`;
-				
+
 				// 创建模态背景
 				const overlay = document.createElement('div');
 				overlay.style = `
@@ -1608,25 +1651,25 @@
 					background: rgba(0,0,0,0.5);
 					z-index: 9999;
 				`;
-				
+
 				// 功能1：重铸摸牌
 				dialog.querySelector('#func1').addEventListener('click', () => {
 					// 从手牌移除铁索连环
 					hand.splice(index, 1);
-					
+
 					// 加入弃牌堆
 					discardPile.push(card);
-					
+
 					// 摸一张牌
 					drawCards(1);
-					
+
 					// 记录日志
 					log(`重铸铁索连环，摸1张牌`);
-					
+
 					// 关闭对话框
 					cleanupDialog();
 				});
-				
+
 				// 功能2：使用检索
 				dialog.querySelector('#func2').addEventListener('click', () => {
 					// 检查渐营技能是否触发
@@ -1634,41 +1677,41 @@
 						log('触发渐营，摸一张牌！');
 						drawCards(1);
 					}
-					
+
 					// 更新最后使用的卡牌
 					lastUsedCard = card;
-					
+
 					// 从手牌移除并加入弃牌堆
 					discardPile.push(hand.splice(index, 1)[0]);
-					
+
 					// 记录日志
 					log(`使用铁索连环，花色${card.suit} 点数${getPointDisplay(card.point)}`);
-					
+
 					// 关闭对话框
 					cleanupDialog();
 				});
-				
+
 				// 取消按钮
 				dialog.querySelector('#cancel').addEventListener('click', cleanupDialog);
-				
+
 				// 关闭对话框的函数
 				function cleanupDialog() {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
 					updateUI(); // 更新界面
 				}
-				
+
 				// 添加元素到DOM
 				document.body.appendChild(overlay);
 				document.body.appendChild(dialog);
 			}
-			
+
 			// 借刀杀人卡牌效果选择对话框
 			function showJiedaoDialog(card, index) {
 				// 创建模态背景
 				const overlay = document.createElement('div');
 				overlay.className = 'modal-backdrop';
-				
+
 				// 创建对话框
 				const dialog = document.createElement('div');
 				dialog.className = 'card-selector-modal';
@@ -1681,58 +1724,58 @@
 						<button id="cancel" class="dialog-button cancel" style="background:#FFCDD2;">取消</button>
 					</div>
 				`;
-				
+
 				// 关闭所有弹窗的函数
 				const closeAllModals = () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
 				};
-				
+
 				// 功能1：检索武器
 				dialog.querySelector('#func1').addEventListener('click', () => {
 					closeAllModals(); // 关闭当前对话框
-					
+
 					// 获取牌堆中的所有武器牌
 					const weaponCards = deck.filter(c => cardCategories.weapon.includes(c.name));
-					
+
 					// 检查是否有武器牌
 					if (weaponCards.length === 0) {
 						alert("牌堆中没有武器牌！");
 						return;
 					}
-					
+
 					// 获取第一张武器牌（随机选择更合理，这里简化处理）
 					const weaponCard = weaponCards[0];
-					
+
 					// 在牌堆中查找该武器牌的位置
 					const deckIndex = deck.findIndex(c => c.uid === weaponCard.uid);
-					
+
 					// 安全验证
 					if (deckIndex === -1) {
 						console.error(`武器牌 ${weaponCard.name} 不存在于牌堆中`);
 						return;
 					}
-					
+
 					// 从牌堆中移除武器牌
 					const [removed] = deck.splice(deckIndex, 1);
-					
+
 					// 添加到手牌
 					hand.push(removed);
-					
+
 					// 记录日志
 					log(`检索获得武器：${removed.name} ${removed.suit}${getPointDisplay(removed.point)}`);
-					
+
 					// 完成借刀杀人效果
 					finalizeJiedao(card, index);
 				});
-				
+
 				// 功能2：使用闪
 				dialog.querySelector('#func2').addEventListener('click', () => {
 					closeAllModals(); // 关闭当前对话框
-					
+
 					// 获取手牌中的所有闪牌
 					const shanCards = hand.filter(c => c.name === "闪");
-					
+
 					// 检查是否有闪牌
 					if (shanCards.length === 0) {
 						// 没有闪牌时显示特殊对话框
@@ -1741,17 +1784,17 @@
 						// 有闪牌时显示选择对话框
 						showShanSelection(shanCards, card, index);
 					}
-					
+
 					// 完成借刀杀人效果
 					finalizeJiedao(card, index);
 				});
-				
+
 				// 取消按钮
 				dialog.querySelector('#cancel').addEventListener('click', () => {
 					closeAllModals();
 					log("取消使用借刀杀人");
 				});
-				
+
 				// 点击背景关闭
 				overlay.addEventListener('click', (e) => {
 					if (e.target === overlay) {
@@ -1759,7 +1802,7 @@
 						log("取消使用借刀杀人");
 					}
 				});
-				
+
 				// 添加元素到DOM
 				document.body.appendChild(overlay);
 				document.body.appendChild(dialog);
@@ -1776,35 +1819,35 @@
 					<button class="dialog-button" id="cancelUse">取消使用</button>
 					<button class="dialog-button" id="noShan">坚持不出闪</button>
 				`;
-				
+
 				// 创建模态背景
 				const overlay = document.createElement('div');
 				overlay.className = 'modal-backdrop';
-				
+
 				// 取消使用按钮
 				dialog.querySelector('#cancelUse').addEventListener('click', () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
 				});
-				
+
 				// 坚持不出闪按钮
 				dialog.querySelector('#noShan').addEventListener('click', () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
-					
+
 					// 增加桃使用次数（最多3次）
 					peachCount = Math.min(peachCount + 1, 3);
 					log(`不出闪，桃可用次数+1，当前：${peachCount}`);
-					
+
 					// 完成借刀杀人效果
 					finalizeJiedao(card, index);
 				});
-				
+
 				// 添加元素到DOM
 				document.body.appendChild(overlay);
 				document.body.appendChild(dialog);
 			}
-			
+
 			// 选择要使用的闪牌对话框
 			function showShanSelection(shanCards, card, index) {
 				// 创建对话框
@@ -1821,86 +1864,86 @@
 					</div>
 					<button class="dialog-button cancel" id="cancelShan">取消使用闪</button>
 				`;
-				
+
 				// 创建模态背景
 				const overlay = document.createElement('div');
 				overlay.className = 'modal-backdrop';
-				
+
 				// 闪牌选择事件
 				dialog.querySelectorAll('.shan-card').forEach(btn => {
 					btn.addEventListener('click', (e) => {
 						// 获取选中的闪牌索引
 						const idx = parseInt(e.target.dataset.index);
 						const selectedCard = shanCards[idx];
-						
+
 						// 在手牌中查找该闪牌
 						const handIndex = hand.findIndex(c => c.uid === selectedCard.uid);
-						
+
 						// 如果找到则使用该闪牌
 						if (handIndex > -1) {
 							const [removed] = hand.splice(handIndex, 1);
 							discardPile.push(removed);
 							log(`使用闪牌：${removed.suit}${getPointDisplay(removed.point)}`);
 						}
-						
+
 						// 关闭对话框
 						document.body.removeChild(overlay);
 						document.body.removeChild(dialog);
-						
+
 						// 完成借刀杀人效果
 						finalizeJiedao(card, index);
 					});
 				});
-				
+
 				// 取消使用闪按钮
 				dialog.querySelector('#cancelShan').addEventListener('click', () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
-					
+
 					// 增加桃使用次数（最多3次）
 					peachCount = Math.min(peachCount + 1, 3);
 					log(`取消使用闪，桃可用次数+1，当前：${peachCount}`);
-					
+
 					// 完成借刀杀人效果
 					finalizeJiedao(card, index);
 				});
-				
+
 				// 添加元素到DOM
 				document.body.appendChild(overlay);
 				document.body.appendChild(dialog);
 			}
-			
+
 			// 完成借刀杀人效果
 			function finalizeJiedao(card, index) {
 				// 从手牌中移除借刀杀人卡牌
 				const jiedaoCard = hand.splice(index, 1)[0];
 				discardPile.push(jiedaoCard);
-				
+
 				// 检查渐营技能
-				if (lastUsedCard && 
-					(jiedaoCard.suit === lastUsedCard.suit || 
-					 jiedaoCard.point === lastUsedCard.point)) {
+				if (lastUsedCard &&
+					(jiedaoCard.suit === lastUsedCard.suit ||
+						jiedaoCard.point === lastUsedCard.point)) {
 					log('触发渐营，摸一张牌！');
 					drawCards(1);
 				}
-				
+
 				// 更新最后使用的卡牌
 				lastUsedCard = jiedaoCard;
-				
+
 				// 更新界面和状态
 				updateUI();
 				updateStatus();
 			}
-			
+
 			// 清理所有对话框
 			function cleanupDialog() {
 				// 选择所有模态背景和对话框
 				const dialogs = document.querySelectorAll('.modal-backdrop, .card-selector-modal');
-				
+
 				// 移除它们
 				dialogs.forEach(dialog => dialog.remove());
 			}
-			
+
 			// 更新游戏界面
 			function updateUI() {
 				// 更新阶段信息
@@ -1908,57 +1951,57 @@
 				if (stageInfo) {
 					stageInfo.textContent = `当前阶段：${phase}阶段`;
 				}
-				
+
 				// 更新手牌显示
 				const handDiv = document.getElementById('hand');
 				handDiv.innerHTML = '<h3>手牌</h3>';
-				
+
 				// 遍历手牌
 				hand.forEach((card, i) => {
 					const div = document.createElement('div');
 					div.className = 'card';
-					
+
 					// 杀类卡牌禁用检查
 					if (['杀', '火杀', '雷杀'].includes(card.name)) {
 						if (!hasZhugeLianNu && killCount <= 0) {
 							div.classList.add('disabled');
 						}
 					}
-					
+
 					// 桃禁用检查
 					if (card.name === "桃" && peachCount <= 0) {
 						div.classList.add('disabled');
 					}
-					
+
 					// 酒禁用检查
 					if (card.name === "酒" && wineCount <= 0) {
 						div.classList.add('disabled');
 					}
-					
+
 					// 闪禁用处理
 					if (card.name === '闪') {
 						div.classList.add('disabled');
 						div.onclick = () => alert("出牌阶段无法使用闪！");
 					}
-					
+
 					// 无懈可击禁用处理
 					if (card.name === '无懈可击') {
 						div.classList.add('disabled');
 						div.onclick = () => alert("出牌阶段无法使用无懈可击");
 					}
-					
+
 					// 设置卡牌内容
 					div.innerHTML = `${card.name}<br>${card.suit}${getPointDisplay(card.point)}`;
-					
+
 					// 添加点击事件（禁用卡牌除外）
 					if (!div.classList.contains('disabled')) {
 						div.onclick = () => useCard(card, i);
 					}
-					
+
 					// 添加到手牌区域
 					handDiv.appendChild(div);
 				});
-				
+
 				// 更新按钮状态
 				document.getElementById('playBtn').disabled = phase !== '摸牌';
 				document.getElementById('endPlayBtn').disabled = phase !== '出牌';
@@ -1968,15 +2011,15 @@
 			function endPlayPhase() {
 				// 设置游戏阶段为准备阶段
 				phase = '准备';
-				
+
 				// 重置最后使用的卡牌
 				lastUsedCard = null;
-				
+
 				// 更新按钮状态
-				document.getElementById('drawBtn').disabled = false;    // 启用摸牌按钮
-				document.getElementById('endPlayBtn').disabled = true;  // 禁用结束出牌按钮
-				document.getElementById('playBtn').disabled = true;     // 禁用出牌按钮
-				
+				document.getElementById('drawBtn').disabled = false; // 启用摸牌按钮
+				document.getElementById('endPlayBtn').disabled = true; // 禁用结束出牌按钮
+				document.getElementById('playBtn').disabled = true; // 禁用出牌按钮
+
 				// 武器状态处理
 				if (currentWeapon !== "诸葛连弩") {
 					// 如果不是诸葛连弩，重置杀次数
@@ -1987,73 +2030,73 @@
 					hasZhugeLianNu = true;
 					log("保留诸葛连弩效果，杀次数保持无限");
 				}
-				
+
 				// 重置酒使用次数
 				wineCount = 1;
-				
+
 				// 更新状态显示
 				updateStatus();
-				
+
 				// 更新界面
 				updateUI();
-				
+
 				// 记录日志
 				log("已结束出牌阶段");
 			}
-			
+
 			// 弃置卡牌
 			function discardCard(card) {
 				// 如果弃置的是诸葛连弩
 				if (card.name === "诸葛连弩") {
 					// 重置诸葛连弩状态
 					hasZhugeLianNu = false;
-					
+
 					// 记录日志
 					log("失去诸葛连弩，恢复次数限制");
-					
+
 					// 更新状态显示
 					updateStatus();
 				}
 			}
-			
+
 			// 更新顶部操作栏占位符高度
 			function updateHeaderPlaceholder() {
 				// 获取顶部操作栏和占位元素
 				const header = document.querySelector('.header');
 				const placeholder = document.querySelector('.header-placeholder');
-				
+
 				// 确保元素存在
 				if (header && placeholder) {
 					// 计算高度（操作栏高度 + 5px缓冲）
 					const height = header.offsetHeight + 5;
-					
+
 					// 设置占位元素高度
 					placeholder.style.height = `${height}px`;
 				}
 			}
-			
+
 			// 页面加载和窗口大小变化时更新占位符
 			window.addEventListener('DOMContentLoaded', updateHeaderPlaceholder);
 			window.addEventListener('resize', updateHeaderPlaceholder);
-			
+
 			// 检测是否Windows系统
 			function isWindowsOS() {
 				// 检查用户代理是否包含"Win"关键词
 				return navigator.userAgent.indexOf('Win') > -1;
 			}
-			
+
 			// 生成安全日志内容
 			function generateSecurityLog() {
 				// 格式化当前时间
 				const timeStamp = new Date().toISOString()
-					.replace(/T/, ' ')     // 将T替换为空格
-					.replace(/\..+/, '');  // 移除毫秒部分
-				
+					.replace(/T/, ' ') // 将T替换为空格
+					.replace(/\..+/, ''); // 移除毫秒部分
+
 				// 生成牌堆详细信息
 				const deckDetails = deck.map((card, index) =>
 					`[${index + 1}] ${card.name} - 花色:${card.suit} 点数:${getPointDisplay(card.point)} UID:${card.uid}`
 				).join('\n'); // 每张卡信息一行
-				
+
 				// 构建日志内容
 				return `沮爹红利期模拟器安全日志\n
 			    生成时间: ${timeStamp}
@@ -2068,7 +2111,7 @@
 			    用户系统: ${navigator.userAgent}
 			    `;
 			}
-			
+
 			// 显示安全警告弹窗
 			function showSecurityAlert() {
 				// 创建警告弹窗
@@ -2081,7 +2124,7 @@
 			        <button class="confirm">是，继续创建</button>
 			        <button class="cancel">否，取消操作</button>
 			    `;
-				
+
 				// 创建模态背景
 				const backdrop = document.createElement('div');
 				backdrop.style = `
@@ -2093,11 +2136,11 @@
 			        justify-content: center;
 			        z-index: 9999;
 			    `;
-				
+
 				// 添加弹窗到背景
 				backdrop.appendChild(alertBox);
 				document.body.appendChild(backdrop);
-				
+
 				// 返回Promise处理用户选择
 				return new Promise(resolve => {
 					// 确认按钮点击处理
@@ -2105,7 +2148,7 @@
 						document.body.removeChild(backdrop);
 						resolve(true);
 					};
-					
+
 					// 取消按钮点击处理
 					alertBox.querySelector('.cancel').onclick = () => {
 						document.body.removeChild(backdrop);
@@ -2113,7 +2156,7 @@
 					};
 				});
 			}
-			
+
 			// 绑定日志导出按钮事件
 			document.getElementById('exportLog').addEventListener('click', async () => {
 				// 检查操作系统
@@ -2121,35 +2164,35 @@
 					alert('当前功能仅限Windows系统用户使用');
 					return;
 				}
-				
+
 				// 显示安全警告并等待用户确认
 				const userConfirm = await showSecurityAlert();
 				if (!userConfirm) {
 					log('用户取消了日志生成');
 					return;
 				}
-				
+
 				try {
 					// 生成日志内容
 					const content = generateSecurityLog();
-					
+
 					// 创建Blob对象
 					const blob = new Blob([content], {
 						type: 'text/plain;charset=utf-8'
 					});
-					
+
 					// 创建下载链接
 					const downloadLink = document.createElement('a');
 					downloadLink.href = URL.createObjectURL(blob);
 					downloadLink.download = `PileLog_${Date.now()}.txt`; // 唯一文件名
-					
+
 					// 添加链接到DOM并模拟点击
 					document.body.appendChild(downloadLink);
 					downloadLink.click();
-					
+
 					// 清理DOM
 					document.body.removeChild(downloadLink);
-					
+
 					// 记录日志
 					log('安全日志文件已生成');
 				} catch (error) {
@@ -2158,63 +2201,63 @@
 					log('安全日志生成失败');
 				}
 			});
-			
+
 			// 记录操作日志
 			function log(message) {
 				// 获取日志容器元素
 				const logDiv = document.getElementById('log');
 				const container = document.getElementById('log-container');
-				
+
 				// 创建新日志条目
 				const newEntry = document.createElement('p');
-				
+
 				// 设置日志内容（带时间戳）
 				newEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-				
+
 				// 添加到日志容器
 				logDiv.appendChild(newEntry);
-				
+
 				// 滚动到顶部（最新日志）
 				container.scrollTop = 0;
 			}
-			
+
 			// 记牌器折叠/展开状态
 			let isCollapsed = false;
-			
+
 			// 绑定记牌器折叠按钮事件
 			document.getElementById('toggleCounter').addEventListener('click', () => {
 				// 获取记牌器元素和按钮
 				const counter = document.getElementById('remaining-counts');
 				const btn = document.getElementById('toggleCounter');
-				
+
 				// 切换折叠状态
 				isCollapsed = !isCollapsed;
-				
+
 				// 切换CSS类
 				counter.classList.toggle('collapsed');
-				
+
 				// 更新按钮文本
 				btn.innerHTML = isCollapsed ? '▶ 展开' : '▼ 收起';
 			});
-			
+
 			// 通用折叠/展开函数
 			function toggleSection(sectionId, button, isCollapsedFlag) {
 				// 获取目标元素
 				const section = document.getElementById(sectionId);
-				
+
 				// 切换状态
 				isCollapsedFlag = !isCollapsedFlag;
-				
+
 				// 切换CSS类
 				section.classList.toggle('collapsed');
-				
+
 				// 更新按钮文本
 				button.innerHTML = isCollapsedFlag ? '▶ 展开' : '▼ 收起';
-				
+
 				// 返回新状态
 				return isCollapsedFlag;
 			}
-			
+
 			// 绑定安全校验区折叠按钮事件
 			document.getElementById('toggleMD5AES').addEventListener('click', () => {
 				// 使用通用函数切换MD5/AES区域
@@ -2224,17 +2267,17 @@
 					isMD5AESCollapsed
 				);
 			});
-			
+
 			// 键盘快捷键处理
 			function handleKeyPress(event) {
 				// 如果焦点在输入框，则忽略
 				if (document.activeElement.tagName === 'INPUT') return;
-				
+
 				// 获取按钮状态
 				const reshuffleDisabled = document.getElementById('reshuffleBtn').disabled;
 				const playBtnDisabled = document.getElementById('playBtn').disabled;
 				const endPlayDisabled = document.getElementById('endPlayBtn').disabled;
-				
+
 				// 处理快捷键
 				switch (event.key.toUpperCase()) {
 					case 'Q': // 强制刷新
@@ -2277,13 +2320,13 @@
 						if (!endPlayDisabled) endPlayPhase();
 						break;
 				}
-				
+
 				// 阻止这些键的默认行为
 				if ('QWEASDTR1234'.includes(event.key.toUpperCase())) {
 					event.preventDefault();
 				}
 			}
-			
+
 			// 获取卡牌分类
 			function getCardCategory(cardName) {
 				// 遍历外部定义的卡牌分类
@@ -2302,7 +2345,7 @@
 				// 创建模态背景
 				const backdrop = document.createElement('div');
 				backdrop.className = 'modal-backdrop';
-				
+
 				// 创建对话框
 				const modal = document.createElement('div');
 				modal.className = 'card-selector-modal';
@@ -2314,13 +2357,13 @@
 						关闭
 					</button>
 				`;
-				
+
 				// 获取按钮容器
 				const buttonsContainer = modal.querySelector('#cardButtons');
-				
+
 				// 获取所有卡牌类型
 				const types = getAllCardTypes();
-				
+
 				// 为每种卡牌类型创建按钮
 				types.forEach(type => {
 					const btn = document.createElement('button');
@@ -2334,12 +2377,12 @@
 					};
 					buttonsContainer.appendChild(btn);
 				});
-				
+
 				// 添加对话框到背景
 				backdrop.appendChild(modal);
 				// 添加到文档
 				document.body.appendChild(backdrop);
-				
+
 				// 点击背景关闭对话框
 				backdrop.onclick = (e) => {
 					if (e.target === backdrop) {
@@ -2347,15 +2390,15 @@
 					}
 				};
 			}
-			
+
 			// 绑定测试按钮事件
 			document.getElementById('testCardBtn').addEventListener('click', showCardSelector);
-			
+
 			// 获取所有卡牌类型
 			function getAllCardTypes() {
 				// 使用Set去重
 				const typeSet = new Set();
-				
+
 				// 遍历标准牌堆
 				standardDeck.forEach(card => {
 					// 只添加牌堆中存在的卡牌类型
@@ -2363,50 +2406,50 @@
 						typeSet.add(card.name);
 					}
 				});
-				
+
 				// 转换为数组并排序（中文排序）
 				return Array.from(typeSet).sort((a, b) => a.localeCompare(b, 'zh-Hans-CN'));
 			}
-			
+
 			// 添加特定卡牌到手牌
 			function addSpecificCard(cardName) {
 				// 在牌堆中查找该类型卡牌
 				const availableCards = deck.filter(c => c.name === cardName);
-				
+
 				// 检查是否存在
 				if (availableCards.length === 0) {
 					alert(`牌堆中没有【${cardName}】！`);
 					log(`尝试添加${cardName}失败（牌堆无此卡）`);
 					return;
 				}
-				
+
 				// 使用加密随机数选择一张牌
 				const randomBuffer = new Uint32Array(1);
 				window.crypto.getRandomValues(randomBuffer);
 				const selectedIndex = randomBuffer[0] % availableCards.length;
 				const selectedCard = availableCards[selectedIndex];
-				
+
 				// 在牌堆中查找该牌的位置
 				const deckIndex = deck.findIndex(c => c.uid === selectedCard.uid);
-				
+
 				// 如果找到则移动该牌
 				if (deckIndex > -1) {
 					// 从牌堆移除
 					const [removed] = deck.splice(deckIndex, 1);
-					
+
 					// 添加到手牌
 					hand.push(removed);
-					
+
 					// 记录日志
 					log(`手动添加卡牌：${removed.name} ${removed.suit}${getPointDisplay(removed.point)}`);
-					
+
 					// 更新界面
 					updateUI();
 					updateRemaining();
-					
+
 					// 重新生成MD5（牌堆已改变）
 					generateDeckMD5();
-					
+
 					// 显示操作成功反馈
 					const feedback = document.createElement('div');
 					feedback.textContent = `已添加：${removed.name}`;
@@ -2421,33 +2464,33 @@
 						z-index:10000;
 					`;
 					document.body.appendChild(feedback);
-					
+
 					// 2秒后移除反馈
 					setTimeout(() => feedback.remove(), 2000);
 				}
 			}
-			
+
 			// 更新提示框位置（防止超出屏幕）
 			function updateTooltipAlignment() {
 				// 获取所有提示容器
 				const tooltipContainers = document.querySelectorAll('.tooltip-container');
-				
+
 				// 遍历每个容器
 				tooltipContainers.forEach(container => {
 					const button = container.querySelector('button');
 					const tooltip = container.querySelector('.tooltip');
-					
+
 					// 确保元素存在
 					if (button && tooltip) {
 						// 获取按钮位置信息
 						const rect = button.getBoundingClientRect();
 						const viewportWidth = window.innerWidth;
 						const tooltipWidth = tooltip.offsetWidth || 350; // 默认宽度
-						
+
 						// 计算左右可用空间
 						const leftSpace = rect.left;
 						const rightSpace = viewportWidth - rect.right;
-						
+
 						// 根据空间决定提示框位置
 						if (rightSpace >= tooltipWidth) {
 							// 右侧空间足够
@@ -2466,7 +2509,7 @@
 					}
 				});
 			}
-			
+
 			// 添加事件监听器确保提示框位置正确
 			window.addEventListener('load', () => {
 				// 延迟100ms确保页面完全加载
@@ -2483,50 +2526,50 @@
 			function initializeGame() {
 				// 初始化牌堆
 				initializeDeck();
-				
+
 				// 初始化按钮状态
 				initializeButtons();
-				
+
 				// 绑定键盘事件
 				document.addEventListener('keydown', handleKeyPress);
-				
+
 				// 根据开发模式显示/隐藏测试按钮
 				const isDevMode = true; // 在实际应用中应从配置获取
 				document.getElementById('testUniformBtn').style.display = isDevMode ? 'inline' : 'none';
 				document.getElementById('testPerfBtn').style.display = isDevMode ? 'inline' : 'none';
 			}
-			
+
 			// 绑定抽牌按钮事件
 			document.getElementById('draw1Button').addEventListener('click', () => drawCards(1));
 			document.getElementById('draw2Button').addEventListener('click', () => drawCards(2));
 			document.getElementById('draw3Button').addEventListener('click', () => drawCards(3));
 			document.getElementById('draw4Button').addEventListener('click', () => drawCards(4));
-			
+
 			// 绑定牌堆操作按钮事件
 			document.getElementById('revealButton').addEventListener('click', revealDeck);
 			document.getElementById('highlightButton').addEventListener('click', highlightZhugeLianNu);
-			
+
 			// 洗牌按钮
 			document.getElementById('shuffleButton').addEventListener('click', () => {
 				initializeDeck(); // 重新初始化牌堆
 				log("用户点击了重新洗牌按钮");
 			});
-			
+
 			// 脚气卡按钮
 			document.getElementById('reshuffleBtn').addEventListener('click', handleReshuffle);
-			
+
 			// 游戏阶段按钮
 			document.getElementById('drawBtn').addEventListener('click', drawPhase);
 			document.getElementById('playBtn').addEventListener('click', playPhase);
 			document.getElementById('endPlayBtn').addEventListener('click', endPlayPhase);
-			
+
 			// 强制刷新按钮
 			document.getElementById('reloadButton').addEventListener('click', () => {
 				if (confirm("确定要强制刷新页面吗？网页将回到初始页面")) {
 					location.reload(true);
 				}
 			});
-			
+
 			// 洗牌均匀性测试按钮
 			document.getElementById('testUniformBtn').addEventListener('click', async () => {
 				// 显示性能警告
@@ -2536,7 +2579,7 @@
 					testShuffleUniformity();
 				}
 			});
-			
+
 			// 洗牌性能测试按钮
 			document.getElementById('testPerfBtn').addEventListener('click', async () => {
 				// 显示性能警告
@@ -2546,7 +2589,7 @@
 					testShufflePerformance();
 				}
 			});
-			
+
 			// 启动游戏
 			initializeGame();
 		</script>
@@ -2556,16 +2599,17 @@
 					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
 						target="_blank">bilibili月が綺麗ですね_</a><br />
 					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
-					有什么新功能或建议欢迎骚扰（著名来意）<br/>
-						<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
 				</p>
 			</div>
-			<div class="code-update">
+		 <div class="code-update">
 				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
-					class="bili-button" rel="noopener noreferrer">
+					class="bili-btn" rel="noopener noreferrer">
 					[bilibili]获取更新动态
 				</a>
-				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="buttoncopy" rel="noopener noreferrer">
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
 					[GitHub]获取后续代码更新
 				</a>
 			</div>
@@ -2573,14 +2617,12 @@
 				<p>
 					Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
 					Released under the
-					<a href="MIT LICENSE.html" title="查看MIT许可证"
-						class="license-link" target="_blank">
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
 						MIT License
 					</a>
 				</p>
 				<p class="i18n-annotation">
-					(法律条款以英文版<a href="MIT LICENSE.html"
-						target="_blank">LICENSE</a>文件为准)
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
 				</p>
 			</div>
 		</footer>
