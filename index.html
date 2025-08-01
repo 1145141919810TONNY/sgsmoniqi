@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>主页</title>
 		<link rel="stylesheet" href="css/head.css">
+		<script src="js/card.js"></script>
 	</head>
 	<style>
 		body {
@@ -21,9 +22,10 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V5.3</h2>
+			<h2 class="hero-title">V5.4</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		</section>
+		
 		<div class="main-content">
 			<div class="feature-grid">
 				<a href="jushou.html" class="feature-card" target="_blank">
@@ -64,19 +66,26 @@
 				</a>
 			</div>
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容</h3>
-				<div class="update-content">
-					<div class="update-info">
-						<p>1.修复了页尾bilibili和github按钮可能会长短不一的问题<br />
-							2.将单机版V5.0的代码开源并允许通过复制粘贴后运行<br />
-							由于现在开发的方向已经让文件数量越来越多，单机版版本号只会停留在V5.0了，见谅。GitHub的版本会继续更新，除非在原有的基础上开发其他卡牌的作用<br/>
-							3.统一了非模拟器页面顶部的css</p>
-					</div>
-					<div class="update-btn">
-						<a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
-					</div>
-				</div>
+			    <h3 class="update-title">最新版本更新内容 V5.4</h3>
+			    <div class="update-content">
+			        <div class="update-info">
+			            <p>
+			                1. CSS性能优化：删除冗余CSS规则，删除约200行css代码。目前head.css代码量为1574行<br />
+			                2. 关键问题修复：修正header占位符拼写错误（影响3个核心页面）<br />
+			                3. 实现CSS规则100%利用率（消除所有未使用样式）<br />
+			                4. 增加移动端响应式备用高度方案<br />
+			                5. 为所有页面添加"回到顶部"按钮<br />
+			                6. 为更新页面添加"滚到底部"按钮<br />
+			                7. 为所有历史版本添加更新时间显示<br />
+			                8. 优化牌堆数组（card.js），减少代码量（284行→244行）
+			            </p>
+			        </div>
+			        <div class="update-btn">
+			            <a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
+			        </div>
+			    </div>
 			</div>
+			<button id="backToTopBtn">回到顶部</button>
 	</body>
 	<footer class="site-footer">
 		<div class="author-info">
@@ -111,4 +120,25 @@
 			</p>
 		</div>
 	</footer>
+	<script>
+		// 获取按钮
+		const backToTopBtn = document.getElementById('backToTopBtn');
+		
+		// 滚动事件监听，控制按钮显示隐藏
+		window.addEventListener('scroll', () => {
+		  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+		    backToTopBtn.style.display = 'block';
+		  } else {
+		    backToTopBtn.style.display = 'none';
+		  }
+		});
+		
+		// 点击按钮回到顶部
+		backToTopBtn.addEventListener('click', () => {
+		  window.scrollTo({
+		    top: 0,
+		    behavior: 'smooth' // 平滑滚动
+		  });
+		});
+	</script>
 </html>
