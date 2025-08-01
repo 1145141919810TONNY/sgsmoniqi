@@ -228,6 +228,7 @@
 				SOFTWARE.</p>
 		</div>
 		<h1>文本以英文版原文为准，其他版本只做参考</h1>
+		<button id="backToTopBtn">回到顶部</button>
 
 		<footer class="site-footer">
 			<div class="author-info">
@@ -448,6 +449,26 @@
 					}
 				});
 			}
+			
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
+			
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+			  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+			    backToTopBtn.style.display = 'block';
+			  } else {
+			    backToTopBtn.style.display = 'none';
+			  }
+			});
+			
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+			  window.scrollTo({
+			    top: 0,
+			    behavior: 'smooth' // 平滑滚动
+			  });
+			});
 
 			// 页面加载完成后初始化
 			document.addEventListener('DOMContentLoaded', initLanguageSwitcher);
