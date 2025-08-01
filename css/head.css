@@ -41,7 +41,7 @@ body {
 	box-sizing: border-box;
 }
 
-.header-plaeholder {
+.header-placeholdereholder {
 	height: 50px;
 	width: 100%;
 }
@@ -612,18 +612,6 @@ button::after {
 	min-width: 100px;
 }
 
-
-
-.gitee-button:hover {
-	opacity: 0.9;
-}
-
-
-
-.bili-button:hover {
-	opacity: 0.9;
-}
-
 .site-footer {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -738,7 +726,7 @@ button::after {
 		font-size: 14px;
 	}
 
-	.header-plaeholder {
+	.header-placeholder {
 		height: 45px;
 	}
 
@@ -1231,36 +1219,7 @@ button::after {
             flex-direction: column;
             gap: 15px;
         }
-        
-        .bili-button,
-        .buttoncopy {
-            position: relative;
-            padding: 10px 20px;
-            background: linear-gradient(to bottom, #8e0e00, #1f1c18);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        .bili-button:hover,
-        .buttoncopy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to bottom, #a52a2a, #351c1c);
-        }
-        
-        .bili-button:active,
-        .buttoncopy:active {
-            transform: translateY(1px);
-        }
+
         
         .license-link {
             color: #4CAF50;
@@ -1556,3 +1515,60 @@ button::after {
 			margin: 10px auto;
 			border-radius: 2px;
 		}
+		
+		.btn input{
+			background-color:#ff8726;
+			color: #FFFFFF;
+			border: none;
+			}
+			
+			/* 定义回到顶部按钮的样式 */
+			  #backToTopBtn {
+			    position: fixed; /* 固定位置 */
+			    bottom: 20px; /* 距离底部20像素 */
+			    right: 20px; /* 距离右侧20像素 */
+			    display: none; /* 初始隐藏 */
+			    padding: 10px 20px; /* 内边距 */
+			    background-color: #ff8726; /* 蓝色背景 */
+			    color: white; /* 白色文字 */
+			    border: none; /* 无边框 */
+			    border-radius: 5px; /* 圆角 */
+			    cursor: pointer; /* 鼠标悬停时显示手型 */
+			    z-index: 1000; /* 确保按钮在最上层 */
+			    font-size: 14px; /* 字体大小 */
+			    outline: none; /* 去掉点击时的边框 */
+			    transition: opacity 0.3s ease; /* 透明度过渡效果 */
+			  }
+			
+			  #backToTopBtn:hover {
+			    opacity: 0.8; /* 鼠标悬停时降低透明度 */
+			  }
+			  
+			  /* 滚到底部按钮CSS */
+			  #scrollToBottomBtn {
+			      position: fixed; 
+			      bottom: 60px; /* 放置在回到顶部按钮上方 */
+			      right: 20px;
+			      padding: 10px 20px;
+			      background-color: #3498db; /* 蓝色背景 */
+			      color: white;
+			      border: none;
+			      border-radius: 5px;
+			      cursor: pointer;
+			      z-index: 1000; /* 确保在最上层 */
+			      font-size: 14px;
+			      outline: none;
+			      transition: background-color 0.3s, transform 0.3s; /* 只保留颜色和位置变换的过渡 */
+			      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			      font-weight: 600;
+			  }
+			  
+			  #scrollToBottomBtn:hover {
+			      background-color: #2980b9;
+			      transform: translateY(-2px); /* 悬停时轻微上移 */
+			      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+			  }
+			  
+			  #scrollToBottomBtn:active {
+			      transform: translateY(1px); /* 点击时轻微下移 */
+			  }
