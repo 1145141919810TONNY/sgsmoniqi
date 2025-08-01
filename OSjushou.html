@@ -190,6 +190,8 @@
 		</style>
 	</head>
 	<body>
+		
+		<button id="backToTopBtn">回到顶部</button>
 
 		<div class="header-placeholder"></div>
 		<section class="hero-section">
@@ -5251,4 +5253,25 @@
 			</div>
 		</footer>
 	</body>
+	<script>
+		// 获取按钮
+		const backToTopBtn = document.getElementById('backToTopBtn');
+		
+		// 滚动事件监听，控制按钮显示隐藏
+		window.addEventListener('scroll', () => {
+		  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+		    backToTopBtn.style.display = 'block';
+		  } else {
+		    backToTopBtn.style.display = 'none';
+		  }
+		});
+		
+		// 点击按钮回到顶部
+		backToTopBtn.addEventListener('click', () => {
+		  window.scrollTo({
+		    top: 0,
+		    behavior: 'smooth' // 平滑滚动
+		  });
+		});
+	</script>
 </html>
