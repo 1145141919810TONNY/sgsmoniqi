@@ -40,6 +40,7 @@
 		<h2>若加载失败，请直接前往效果页面</h2>
 		<div class="cd-copy-instructions">1.右键页面，然后点击查看页面源代码</div>
 		<div class="cd-copy-instructions">2.跟着上面的第二步开始</div>
+		
 
 		<footer class="site-footer">
 			<div class="author-info">
@@ -74,6 +75,8 @@
 				</p>
 			</div>
 		</footer>
+		
+		<button id="backToTopBtn">回到顶部</button>
 
 		<script>
 			// 使用fetch API加载代码文件
@@ -170,6 +173,27 @@
 					setTimeout(() => document.body.removeChild(hint), 500);
 				}, 2500);
 			}
+			
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
+			
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+			  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+			    backToTopBtn.style.display = 'block';
+			  } else {
+			    backToTopBtn.style.display = 'none';
+			  }
+			});
+			
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+			  window.scrollTo({
+			    top: 0,
+			    behavior: 'smooth' // 平滑滚动
+			  });
+			});
+			    
 
 			// 页面加载完成后开始加载代码
 			window.addEventListener('DOMContentLoaded', loadCode);
