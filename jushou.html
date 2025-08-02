@@ -53,8 +53,6 @@
 			<!-- 测试功能按钮 -->
 			<button id="testUniformBtn">洗牌均匀性测试</button>
 			<!-- 洗牌测试按钮 -->
-			<button id="testPerfBtn">洗牌性能测试（暂未编写代码）</button>
-			<!-- 性能测试按钮（未实现） -->
 		</div>
 		<div class="header-placeholder"></div>
 		<!-- 占位元素：确保内容不被顶部操作栏遮挡 -->
@@ -922,16 +920,7 @@
 				}
 			}
 
-			// 绑定洗牌均匀性测试按钮
-			document.getElementById('testPerfBtn').addEventListener('click', async () => {
-				// 显示性能警告并确认
-				const confirmed = await showPerformanceWarning();
-				if (confirmed) {
-					// 执行洗牌均匀性测试
-					testShuffleUniformity();
-				}
-			});
-
+			
 			// 显示性能警告弹窗
 			function showPerformanceWarning() {
 				// 返回一个Promise，用于处理用户选择
@@ -2538,7 +2527,6 @@
 				// 根据开发模式显示/隐藏测试按钮
 				const isDevMode = true; // 在实际应用中应从配置获取
 				document.getElementById('testUniformBtn').style.display = isDevMode ? 'inline' : 'none';
-				document.getElementById('testPerfBtn').style.display = isDevMode ? 'inline' : 'none';
 			}
 
 			// 绑定抽牌按钮事件
@@ -2579,16 +2567,6 @@
 				if (userConfirm) {
 					console.log('开始执行均匀性测试');
 					testShuffleUniformity();
-				}
-			});
-
-			// 洗牌性能测试按钮
-			document.getElementById('testPerfBtn').addEventListener('click', async () => {
-				// 显示性能警告
-				const userConfirm = await showPerformanceWarning();
-				if (userConfirm) {
-					console.log('开始执行性能测试');
-					testShufflePerformance();
 				}
 			});
 
