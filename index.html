@@ -22,15 +22,21 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V5.4</h2>
+			<h2 class="hero-title">V6.0</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		</section>
-		
+
 		<div class="main-content">
 			<div class="feature-grid">
 				<a href="jushou.html" class="feature-card" target="_blank">
 					<div class="card-content">
-						<h2 class="card-title">沮授模拟器</h2>
+						<h2 class="card-title">沮爹模拟器（纯随机版）</h2>
+						<span class="btn-primary">开始模拟</span>
+					</div>
+				</a>
+				<a href="jushouhlq.html" class="feature-card" target="_blank">
+					<div class="card-content">
+						<h2 class="card-title">沮爹模拟器（红利期版）</h2>
 						<span class="btn-primary">开始模拟</span>
 					</div>
 				</a>
@@ -43,6 +49,12 @@
 				<a href="OSjushou.html" class="feature-card" target="_blank">
 					<div class="card-content">
 						<h2 class="card-title">沮爹模拟器开源教学网页</h2>
+						<span class="btn-primary">查看内容</span>
+					</div>
+				</a>
+				<a href="code comparison js.html" class="feature-card" target="_blank">
+					<div class="card-content">
+						<h2 class="card-title">洗牌代码对比页面</h2>
 						<span class="btn-primary">查看内容</span>
 					</div>
 				</a>
@@ -66,26 +78,33 @@
 				</a>
 			</div>
 			<div class="update-highlight">
-			    <h3 class="update-title">最新版本更新内容 V5.4</h3>
-			    <div class="update-content">
-			        <div class="update-info">
-			            <p>
-			                1. CSS性能优化：删除冗余CSS规则，删除约200行css代码。目前head.css代码量为1574行<br />
-			                2. 关键问题修复：修正header占位符拼写错误（影响3个核心页面）<br />
-			                3. 实现CSS规则100%利用率（消除所有未使用样式）<br />
-			                4. 增加移动端响应式备用高度方案<br />
-			                5. 为所有页面添加"回到顶部"按钮<br />
-			                6. 为更新页面添加"滚到底部"按钮<br />
-			                7. 为所有历史版本添加更新时间显示<br />
-			                8. 优化牌堆数组（card.js），减少代码量（284行→244行）
-			            </p>
-			        </div>
-			        <div class="update-btn">
-			            <a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
-			        </div>
-			    </div>
-			</div>
-			<button id="backToTopBtn">回到顶部</button>
+				<h3 class="update-title">最新版本更新内容 V6.0</h3>
+				<div class="update-content">
+					<div class="update-info">
+						<li>1.删除了随机版的性能测试按钮以及对应js代码。通过优化代码，已经做到不怎么消耗性能了，因此将其删除(减少代码量约100行)</li>
+						<li>
+							2.新增沮爹模拟器红利期算法版本：
+							<ul>
+								<li>2.1:红利期算法会将诸葛连弩锁定在手牌的第一张</li>
+								<li>2.2:红利期算法以红利牌和黑利牌作为媒介洗牌</li>
+								<ul>
+									<li>2.2.1:目前被定义为红利的牌为：【无中生有】，【顺手牵羊】，【过河拆桥】。这些牌将会有90%的几率出现在牌堆顶</li>
+									<li>2.2.2:目前被定义为黑利的牌为：【闪】，【桃】以及其他武器牌。这些牌将会有90%的几率出现在牌堆底</li>
+									<li>2.2.3:其他卡牌依旧为随机方式插入到牌堆的其他空位上</li>
+									<li>2.2.4:无论是红利牌还是黑利牌，在没有通过红利期算法随机到对应牌堆顶/底的情况时，也会加入到随机洗牌的序列</li>
+									<li>2.2.5:牌堆顶的定义是：除了开局抽的4张牌外，牌堆顶的30张牌（第5~34张）。</li>
+									<li>2.2.6:牌堆底的定义是：牌堆倒数30张牌</li>
+									<li>2.2.7:出现牌堆没有按照预设属于正常现象，调教的概率不为100%，以尽可能贴近真实的红利期牌堆</li>
+									<li>2.2.8:红利期版本删除脚气卡的使用，请直接点击重新洗牌以代替其效果</li>
+								</ul>
+							</ul>
+						<li>3.新增核心洗牌对比代码页面</li>
+							<div class="update-btn">
+								<a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
+							</div>
+					</div>
+				</div>
+				<button id="backToTopBtn">回到顶部</button>
 	</body>
 	<footer class="site-footer">
 		<div class="author-info">
@@ -123,22 +142,22 @@
 	<script>
 		// 获取按钮
 		const backToTopBtn = document.getElementById('backToTopBtn');
-		
+
 		// 滚动事件监听，控制按钮显示隐藏
 		window.addEventListener('scroll', () => {
-		  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
-		    backToTopBtn.style.display = 'block';
-		  } else {
-		    backToTopBtn.style.display = 'none';
-		  }
+			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+				backToTopBtn.style.display = 'block';
+			} else {
+				backToTopBtn.style.display = 'none';
+			}
 		});
-		
+
 		// 点击按钮回到顶部
 		backToTopBtn.addEventListener('click', () => {
-		  window.scrollTo({
-		    top: 0,
-		    behavior: 'smooth' // 平滑滚动
-		  });
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 平滑滚动
+			});
 		});
 	</script>
 </html>
