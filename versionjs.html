@@ -37,7 +37,7 @@
 		<div class="update-section">
 			<h2 class="version-title">V2.1更新内容</h2>
 			<div class="update-date">更新时间：2025/3/25</div>
-		 <ul class="version-list">
+			<ul class="version-list">
 				<li>1.新增了<span class="highlight">脚气卡</span>的使用，在发的牌等于4张且每次洗牌时少于7次可使用</li>
 				<li>2.优化了更新内容的排版，更加简洁界面</li>
 				<li>3.优化了<span class="highlight">基锦装</span>的组合代码，使代码更加简洁</li>
@@ -99,7 +99,7 @@
 			<div class="update-date">更新时间：2025/5/1</div>
 			<ul class="version-list">
 				<li>1.新增<span class="highlight">操作台的快捷键</span></li>
-		 	<li>2.新增以下牌的作用：
+				<li>2.新增以下牌的作用：
 					<ul>
 						<li>2.1：【<span
 								class="highlight">借刀杀人</span>】：功能1:从牌堆里检索并获得一张武器牌<br>功能2:让自己能使用一张闪，如果不使用闪的话，状态区桃可使用的次数+1
@@ -136,7 +136,7 @@
 		</div>
 
 		<div class="update-section">
-		 <h2 class="version-title">V4.2更新内容</h2>
+			<h2 class="version-title">V4.2更新内容</h2>
 			<div class="update-date">更新时间：2025/5/24</div>
 			<ul class="version-list">
 				<li>1.1：新增<span class="highlight">洗牌均匀性测试窗口</span>重新测试按钮</li>
@@ -175,7 +175,7 @@
 			<ul class="version-list">
 				<li>1.由于gitee莫名其妙被封号，因此<span class="highlight">单机版不再更新</span></li>
 				<li>2.原因同上，导致开源协议丢失，新写了一个<span class="highlight">五国语言的MIT LICENSE页面</span>，入口和以前的一样，点击对应页尾文字即可</li>
-				<li>3.由于准备开发红利期洗牌算法，与随机版会分开。现在统一版本号到主页部分</li>
+				<li>3.由于准备开发红利期洗牌算法，与随机版会分开。现在统一版本号到主页部分(现已着手开发)</li>
 			</ul>
 		</div>
 
@@ -202,7 +202,7 @@
 				<li>
 					2. <strong>关键问题修复</strong>：
 					<ul>
-				  <li>2.1 修正<span class="highlight">header占位符</span>拼写错误（影响3个核心页面）</li>
+						<li>2.1 修正<span class="highlight">header占位符</span>拼写错误（影响3个核心页面）</li>
 					</ul>
 				</li>
 				<li>
@@ -217,6 +217,32 @@
 				<li>5.为所有历史版本（及以后版本）前方添加<span class="highlight">更新时间</span></li>
 				<li>6.优化牌堆数组（card.js），<span class="highlight">减少代码量（284行→244行）</span></li>
 			</ul>
+		</div>
+		
+		<div class="update-section">
+		    <h2 class="version-title">V6.0更新内容</h2>
+		    <div class="update-date">更新时间：2025/8/2</div>
+		    <ul class="version-list">
+		        <li>1.删除了<span class="highlight">随机版的性能测试按钮</span>以及对应js代码。通过优化代码，已经做到不怎么消耗性能了，因此将其删除(减少代码量约<span class="highlight">100行</span>)</li>
+		        <li>
+		            2.<span class="highlight">新增沮爹模拟器红利期算法版本：</span>
+		            <ul>
+		                <li>2.1:红利期算法会将<span class="highlight">诸葛连弩</span>锁定在手牌的第一张</li>
+		                <li>2.2:红利期算法以<span class="highlight">红利牌</span>和<span class="highlight">黑利牌</span>作为媒介洗牌</li>
+		                <ul>
+		                    <li>2.2.1:目前被定义为<span class="highlight">红利牌</span>为：【<span class="highlight">无中生有</span>】，【<span class="highlight">顺手牵羊</span>】，【<span class="highlight">过河拆桥</span>】。这些牌将会有<span class="highlight">90%</span>的几率出现在<span class="highlight">牌堆顶</span></li>
+		                    <li>2.2.2:目前被定义为<span class="highlight">黑利牌</span>为：【<span class="highlight">闪</span>】，【<span class="highlight">桃</span>】以及<span class="highlight">其他武器牌</span>。这些牌将会有<span class="highlight">90%</span>的几率出现在<span class="highlight">牌堆底</span></li>
+		                    <li>2.2.3:其他卡牌依旧为随机方式插入到牌堆的其他空位上</li>
+		                    <li>2.2.4:无论是红利牌还是黑利牌，在没有通过红利期算法随机到对应牌堆顶/底的情况时，也会加入到随机洗牌的序列</li>
+		                    <li>2.2.5:牌堆顶的定义是：除了开局抽的4张牌外，牌堆顶的<span class="highlight">30张牌</span>（第5~34张）。</li>
+		                    <li>2.2.6:牌堆底的定义是：牌堆倒数<span class="highlight">30张牌</span></li>
+		                    <li>2.2.7:出现牌堆没有按照预设属于正常现象，调教的概率不为100%，以尽可能贴近真实的红利期牌堆</li>
+							<li>2.2.8:红利期版本删除脚气卡的使用，请直接点击重新洗牌以代替其效果</li>
+		                </ul>	
+		            </ul>
+					<li>3.新增核心洗牌对比代码页面</li>
+		        </li>
+		    </ul>
 		</div>
 
 		<footer class="site-footer">
