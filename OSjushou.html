@@ -5,192 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>沮爹模拟器开源教学网页</title>
 		<link rel="stylesheet" href="css/head.css">
-		<style>
-			.function-container {
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 20px;
-				background: #fff;
-				border-radius: 8px;
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-			}
-
-			.function-header {
-				text-align: center;
-				margin-bottom: 30px;
-				padding-bottom: 15px;
-				border-bottom: 2px solid #8e0e00;
-			}
-
-			.function-item {
-				margin: 20px 0;
-				padding: 15px;
-				background: #f8f9fa;
-				border-radius: 6px;
-				border-left: 4px solid #1a73e8;
-				transition: all 0.3s ease;
-			}
-
-			.function-item:hover {
-				background: #e8f0fe;
-				transform: translateY(-2px);
-			}
-
-			.function-name {
-				font-weight: bold;
-				font-size: 18px;
-				color: #1a73e8;
-				cursor: help;
-				display: inline-block;
-				padding: 5px 10px;
-				border-radius: 4px;
-				position: relative;
-			}
-
-			.function-name:hover {
-				background: rgba(26, 115, 232, 0.1);
-			}
-
-			.function-tooltip {
-				position: absolute;
-				bottom: 100%;
-				left: 0;
-				width: 600px;
-				max-width: 90vw;
-				background: #f8f9fa;
-				color: #202124;
-				text-align: left;
-				border-radius: 8px;
-				padding: 15px;
-				z-index: 1000;
-				box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-				border: 1px solid #dadce0;
-				font-family: 'Consolas', 'Monaco', monospace;
-				font-size: 13px;
-				line-height: 1.5;
-				white-space: pre-wrap;
-				overflow: auto;
-				max-height: 400px;
-				display: none;
-			}
-
-			.function-name:hover .function-tooltip {
-				display: block;
-			}
-
-			.function-tooltip code {
-				display: block;
-				background: #2d2d2d;
-				color: #f8f8f2;
-				padding: 15px;
-				border-radius: 4px;
-				overflow-x: auto;
-			}
-
-			.function-description {
-				margin-top: 10px;
-				color: #5f6368;
-				font-size: 14px;
-			}
-
-			.function-category {
-				margin-top: 40px;
-				padding-bottom: 10px;
-				border-bottom: 1px solid #e0e0e0;
-				color: #8e0e00;
-				font-weight: bold;
-				font-size: 20px;
-			}
-
-			.instructions {
-				background: #e8f5e9;
-				padding: 15px;
-				border-radius: 8px;
-				margin: 30px 0;
-				border-left: 4px solid #4CAF50;
-			}
-
-			.key-points {
-				background: #e3f2fd;
-				padding: 15px;
-				border-radius: 8px;
-				margin: 15px 0;
-				border-left: 4px solid #2196F3;
-			}
-
-			.key-points h3 {
-				margin-top: 0;
-				color: #0d47a1;
-			}
-
-			.key-points ul {
-				padding-left: 20px;
-			}
-
-			.key-points li {
-				margin-bottom: 8px;
-			}
-
-			/* 配套CSS部分样式 */
-			.css-section {
-				margin-top: 15px;
-				padding-top: 15px;
-				border-top: 1px dashed #ddd;
-			}
-
-			.css-name {
-				font-weight: bold;
-				color: #e91e63;
-				cursor: help;
-				display: inline-block;
-				padding: 3px 8px;
-				border-radius: 3px;
-				position: relative;
-			}
-
-			.css-name:hover {
-				background: rgba(233, 30, 99, 0.1);
-			}
-
-			.css-tooltip {
-				position: absolute;
-				bottom: 100%;
-				left: 0;
-				width: 600px;
-				max-width: 90vw;
-				background: #f8f9fa;
-				color: #202124;
-				text-align: left;
-				border-radius: 8px;
-				padding: 15px;
-				z-index: 1000;
-				box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-				border: 1px solid #dadce0;
-				font-family: 'Consolas', 'Monaco', monospace;
-				font-size: 13px;
-				line-height: 1.5;
-				white-space: pre-wrap;
-				overflow: auto;
-				max-height: 400px;
-				display: none;
-			}
-
-			.css-name:hover .css-tooltip {
-				display: block;
-			}
-
-			.css-tooltip code {
-				display: block;
-				background: #2d2d2d;
-				color: #f8f8f2;
-				padding: 15px;
-				border-radius: 4px;
-				overflow-x: auto;
-			}
-		</style>
 	</head>
 	<body>
-		
+
 		<button id="backToTopBtn">回到顶部</button>
 
 		<div class="header-placeholder"></div>
@@ -5256,22 +5073,22 @@
 	<script>
 		// 获取按钮
 		const backToTopBtn = document.getElementById('backToTopBtn');
-		
+
 		// 滚动事件监听，控制按钮显示隐藏
 		window.addEventListener('scroll', () => {
-		  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
-		    backToTopBtn.style.display = 'block';
-		  } else {
-		    backToTopBtn.style.display = 'none';
-		  }
+			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+				backToTopBtn.style.display = 'block';
+			} else {
+				backToTopBtn.style.display = 'none';
+			}
 		});
-		
+
 		// 点击按钮回到顶部
 		backToTopBtn.addEventListener('click', () => {
-		  window.scrollTo({
-		    top: 0,
-		    behavior: 'smooth' // 平滑滚动
-		  });
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 平滑滚动
+			});
 		});
 	</script>
 </html>
