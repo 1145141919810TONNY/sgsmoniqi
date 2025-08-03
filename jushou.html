@@ -1512,6 +1512,12 @@
 					log('使用无中生有，额外摸两张牌！');
 					drawCards(2); // 摸两张牌
 				}
+				
+				//顺手牵羊
+				if (card.name === "顺手牵羊") {
+					log('使用顺手牵羊，额外摸一张牌');
+					drawCards(1);//摸一张牌
+				}
 
 				// 禁止使用的卡牌：闪
 				if (card.name === '闪') {
@@ -1605,6 +1611,8 @@
 					`当前武器：${currentWeapon}` : // 显示当前武器
 					"当前武器：无"; // 没有装备武器
 			}
+			
+	
 
 			// 铁索连环卡牌效果选择对话框
 			function showChainDialog(card, index) {
