@@ -22,7 +22,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V6.0</h2>
+			<h2 class="hero-title">V6.1</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		</section>
 
@@ -78,33 +78,23 @@
 				</a>
 			</div>
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容 V6.0</h3>
+				<h3 class="update-title">最新版本更新内容 V6.1</h3>
 				<div class="update-content">
 					<div class="update-info">
-						<li>1.删除了随机版的性能测试按钮以及对应js代码。通过优化代码，已经做到不怎么消耗性能了，因此将其删除(减少代码量约100行)</li>
-						<li>
-							2.新增沮爹模拟器红利期算法版本：
-							<ul>
-								<li>2.1:红利期算法会将诸葛连弩锁定在手牌的第一张</li>
-								<li>2.2:红利期算法以红利牌和黑利牌作为媒介洗牌</li>
-								<ul>
-									<li>2.2.1:目前被定义为红利的牌为：【无中生有】，【顺手牵羊】，【过河拆桥】。这些牌将会有90%的几率出现在牌堆顶</li>
-									<li>2.2.2:目前被定义为黑利的牌为：【闪】，【桃】以及其他武器牌。这些牌将会有90%的几率出现在牌堆底</li>
-									<li>2.2.3:其他卡牌依旧为随机方式插入到牌堆的其他空位上</li>
-									<li>2.2.4:无论是红利牌还是黑利牌，在没有通过红利期算法随机到对应牌堆顶/底的情况时，也会加入到随机洗牌的序列</li>
-									<li>2.2.5:牌堆顶的定义是：除了开局抽的4张牌外，牌堆顶的30张牌（第5~34张）。</li>
-									<li>2.2.6:牌堆底的定义是：牌堆倒数30张牌</li>
-									<li>2.2.7:出现牌堆没有按照预设属于正常现象，调教的概率不为100%，以尽可能贴近真实的红利期牌堆</li>
-									<li>2.2.8:红利期版本删除脚气卡的使用，请直接点击重新洗牌以代替其效果</li>
-								</ul>
-							</ul>
-						<li>3.新增核心洗牌对比代码页面</li>
-							<div class="update-btn">
-								<a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
-							</div>
+						<li>1.新增【<span class="highlight">顺手牵羊</span>】卡牌的作用：使用时额外从牌堆顶摸1张牌</li>
+						<li>2.紧急调整红利期算法：</li>
+						<ul>
+							<li>2.1:牌堆顶的定义改为：牌堆顶的<span class="highlight">10张牌</span>（第5~14张）。</li>
+							<li>2.2:牌堆底的定义改为：牌堆倒数<span class="highlight">10张牌</span></li>
+							<li>修改原因是因为还是要增加牌堆的其他随机性，61张牌已经占据牌堆的约38%了</li>
+						</ul>
+						<div class="update-btn">
+							<a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
+						</div>
 					</div>
 				</div>
-				<button id="backToTopBtn">回到顶部</button>
+			</div>
+			<button id="backToTopBtn">回到顶部</button>
 	</body>
 	<footer class="site-footer">
 		<div class="author-info">
