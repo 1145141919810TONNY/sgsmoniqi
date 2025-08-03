@@ -1188,6 +1188,12 @@
 					showChainDialog(card, index); // 显示选择对话框
 					return; // 提前返回，对话框会处理后续操作
 				}
+				
+				//顺手牵羊
+				if (card.name === "顺手牵羊") {
+					log('使用顺手牵羊，额外摸一张牌');
+					drawCards(1);//摸一张牌
+				}
 
 				// 特殊卡牌：借刀杀人
 				if (card.name === "借刀杀人") {
