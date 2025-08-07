@@ -1276,6 +1276,28 @@ button::after {
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
             transform: translateY(-2px);
         }
+		
+		.gitcode-btn {
+		    display: block;
+		    padding: 14px 20px;
+		    background: linear-gradient(135deg, #da203e, #831325);
+		    color: #f0f0f0;
+		    border-radius: 6px;
+		    font-size: 18px;
+		    font-weight: bold;
+		    text-align: center;
+		    border: none;
+		    transition: all 0.3s;
+		    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		    text-decoration: none;
+		    cursor: pointer;
+		}
+		
+		.gitcode-btn:hover {
+		    background: linear-gradient(135deg, #b91a38, #761025);
+		    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+		    transform: translateY(-2px);
+		}
         
         @media (max-width: 768px) {
             .cd-code-header {
@@ -1326,7 +1348,8 @@ button::after {
             }
             
             .bili-btn,
-            .github-btn {
+            .github-btn,
+			.gitcode-btn{
                 display: block;
                 width: 100%;
                 margin-bottom: 10px;
