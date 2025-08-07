@@ -4,7 +4,6 @@
 		<meta charset="utf-8">
 		<title>主页</title>
 		<link rel="stylesheet" href="css/head.css">
-		<script src="js/card.js"></script>
 	</head>
 	<style>
 		body {
@@ -22,7 +21,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V6.1</h2>
+			<h2 class="hero-title">V6.1.1.51</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		</section>
 
@@ -78,19 +77,26 @@
 				</a>
 			</div>
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容 V6.1</h3>
+				<h3 class="update-title">最新版本更新内容 V6.1.1.51</h3>
 				<div class="update-content">
 					<div class="update-info">
-						<li>1.新增【<span class="highlight">顺手牵羊</span>】卡牌的作用：使用时额外从牌堆顶摸1张牌</li>
-						<li>2.紧急调整红利期算法：</li>
+						<li>1.新增页尾处<span class="highlight">GitCode</span>链接按钮（经过一段时间的观望后，决定添加该按钮及链接）</li>
+						<li>2.新增卡牌【<span class="highlight">五谷丰登</span>】的作用：从牌堆顶翻开三张牌，选择其中一张加入手牌。</li>
+						<li>3.单机版代码同步</li>
 						<ul>
-							<li>2.1:牌堆顶的定义改为：牌堆顶的<span class="highlight">10张牌</span>（第5~14张）。</li>
-							<li>2.2:牌堆底的定义改为：牌堆倒数<span class="highlight">10张牌</span></li>
-							<li>修改原因是因为还是要增加牌堆的其他随机性，61张牌已经占据牌堆的约38%了</li>
+							<li>3.1:卡牌【<span class="highlight">顺手牵羊</span>】作用同步至单机版</li>
+							<li>3.2:将优化后的牌堆数组同步至单机版</li>
+							<li>3.3:卡牌【<span class="highlight">五谷丰登</span>】作用同步至单机版</li>
+							<li>3.4:删除单机版<span class="highlight">洗牌性能测试</span>按钮及其代码</li>
 						</ul>
-						<div class="update-btn">
-							<a href="versionjs.html" class="btn-primary">查看完整更新说明</a>
-						</div>
+						<li>4.新版本号的定义（以目前版本号V6.1.1.51举例“VX.Y.Z.AA”）</li>
+						<ul>
+							<li>4.1:当X+1时，标志着大版本更新，如V5.0的重构页面，V6.0的红利期算法更新。当X+1时，Y、Z会同步清0；</li>
+							<li>4.2:当Y+1时，标记着小版本更新，比如在主要模拟器页面新增一些功能，但是相对不那么重要。当Y+1时，Z会同步清0；</li>
+							<li>4.3:当Z+1时，标记着非常小的版本更新，如不新增功能，修复bug，优化css等，亦或有单机版的代码同步；</li>
+							<li>4.4:AA为单机版版本号，十位数或更高与版本号X同理，个位数与Y同理，当AA不动时，代表单机版没有改动或同步</li>
+							<li>4.5:X,Y,Z与AA区分，XYZ始终为主模拟器（联机版的版本号），AA只代表单机版去掉小数点的版本号</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -114,6 +120,10 @@
 			<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
 				rel="noopener noreferrer">
 				[GitHub]获取后续代码更新
+			</a>
+			<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+				class="gitcode-btn" rel="noopener noreferrer">
+				[GitCode]获取后续代码更新(国内git)
 			</a>
 		</div>
 		<div class="license-notice">
