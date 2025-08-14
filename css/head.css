@@ -1823,3 +1823,54 @@ h3.hero-title {
 	border-radius: 4px;
 	overflow-x: auto;
 }
+
+ /* 延时锦囊区域样式 */
+    #delay-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #ddd;
+    }
+    
+    .delay-section {
+        border: 1px solid #b38b6d;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fff8e1;
+    }
+    
+    .delay-section h4 {
+        margin: 0 0 8px;
+        text-align: center;
+        color: #8d6e63;
+    }
+    
+    .delay-cards {
+        min-height: 60px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+   .delay-card {
+       padding: 8px;
+       margin: 5px 0;
+       background-color: #f0f0f0;
+       border: 1px solid #ddd;
+       border-radius: 4px;
+       text-align: center;
+   }
+   
+   .delay-card.disabled {
+       color: #999;
+       font-style: italic;
+   }
+   
+   /* 延时锦囊区域标题样式 */
+   .delay-section h4 {
+       margin: 10px 0 5px;
+       font-size: 14px;
+       color: #555;
+   }
