@@ -159,6 +159,20 @@
 			<!-- 桃牌计数显示 -->
 			<div id="wine-counter">酒可用次数：1</div>
 			<!-- 酒牌计数显示 -->
+			<div id="delay-area">
+			    <div class="delay-section">
+			        <h4>兵粮寸断</h4>
+			        <div id="bingliang-container" class="delay-cards"></div>
+			    </div>
+			    <div class="delay-section">
+			        <h4>乐不思蜀</h4>
+			        <div id="lebu-container" class="delay-cards"></div>
+			    </div>
+			    <div class="delay-section">
+			        <h4>闪电</h4>
+			        <div id="shandian-container" class="delay-cards"></div>
+			    </div>
+			</div>
 		</div>
 		<div id="testProgress" style="display:none;">
 			<!-- 测试进度条（默认隐藏） -->
@@ -202,8 +216,13 @@
 			let currentWeapon = null; // 当前装备的武器
 			let peachCount = 1; // 可用的"桃"次数
 			let wineCount = 1; // 可用的"酒"次数
-
 			let reservedInitialAK = null; // 存储预留的诸葛连弩
+			// 状态变量定义（延时锦囊区域）
+			let bingliangArea = []; // 兵粮寸断存放区
+			let lebuArea = []; // 乐不思蜀存放区
+			const MAX_DELAY_CARDS = 2; // 每种牌上限2张
+			let shandianArea = []; // 闪电存放区
+			const MAX_SHANDIAN = 1; // 闪电上限1张
 
 			// 初始化牌堆函数
 			function initializeDeck() {
@@ -224,6 +243,10 @@
 				lastUsedCard = null; // 重置最后使用的卡牌
 				peachCount = 1; // 重置桃使用次数
 				wineCount = 1; // 重置酒使用次数
+				// 重置延时锦囊区
+				    bingliangArea = [];
+				    lebuArea = [];
+				    shandianArea = [];
 
 				// 使用外部定义的standardDeck（在card.js中）创建牌堆
 				standardDeck.forEach(card => {
@@ -271,6 +294,11 @@
 				currentWeapon = null;
 				killCount = 2;
 				hasZhugeLianNu = false;
+
+				//延时锦囊
+				bingliangArea = [];
+				lebuArea = [];
+				shandianArea = [];
 
 				// 更新状态显示
 				updateStatus();
@@ -805,6 +833,129 @@
 					log('AES解码失败: ' + e.message);
 				}
 			}
+
+			// 更新延时锦囊区域显示
+			function updateDelayArea() {
+			    const bingliangContainer = document.getElementById('bingliang-container');
+			    const lebuContainer = document.getElementById('lebu-container');
+			    const shandianContainer = document.getElementById('shandian-container'); // 确保选择器正确
+			    
+			    // 清空容器
+			    bingliangContainer.innerHTML = '';
+			    lebuContainer.innerHTML = '';
+			    shandianContainer.innerHTML = '';
+			    
+			    // 兵粮寸断区域更新
+			    if (bingliangArea.length === 0) {
+			        bingliangContainer.innerHTML = '<div class="delay-card disabled">空</div>';
+			    } else {
+			        bingliangArea.forEach(card => {
+			            const cardDiv = document.createElement('div');
+			            cardDiv.className = 'delay-card';
+			            cardDiv.textContent = `${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+			            bingliangContainer.appendChild(cardDiv);
+			        });
+			    }
+			    
+			    // 乐不思蜀区域更新
+			    if (lebuArea.length === 0) {
+			        lebuContainer.innerHTML = '<div class="delay-card disabled">空</div>';
+			    } else {
+			        lebuArea.forEach(card => {
+			            const cardDiv = document.createElement('div');
+			            cardDiv.className = 'delay-card';
+			            cardDiv.textContent = `${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+			            lebuContainer.appendChild(cardDiv);
+			        });
+			    }
+			    
+			    // 闪电区域更新
+			    if (shandianArea.length === 0) {
+			        shandianContainer.innerHTML = '<div class="delay-card disabled">空</div>';
+			    } else {
+			        shandianArea.forEach(card => {
+			            const cardDiv = document.createElement('div');
+			            cardDiv.className = 'delay-card';
+			            cardDiv.textContent = `${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+			            shandianContainer.appendChild(cardDiv);
+			        });
+			    }
+			}
+
+			// 处理延时锦囊牌使用
+			function handleDelayCard(card, index) {
+				let targetArea, areaName, maxCards;
+
+				switch (card.name) {
+					case "兵粮寸断":
+						targetArea = bingliangArea;
+						areaName = "兵粮寸断";
+						maxCards = MAX_DELAY_CARDS;
+						break;
+					case "乐不思蜀":
+						targetArea = lebuArea;
+						areaName = "乐不思蜀";
+						maxCards = MAX_DELAY_CARDS;
+						break;
+					case "闪电":
+						targetArea = shandianArea;
+						areaName = "闪电";
+						maxCards = MAX_SHANDIAN;
+						break;
+					default:
+						return false;
+				}
+
+				if (targetArea.length >= maxCards) {
+					alert(`${areaName}已达上限（${maxCards}张），无法使用！`);
+					return true;
+				}
+
+				// 从手牌移除
+				const usedCard = hand.splice(index, 1)[0];
+
+				// 放入状态区
+				targetArea.push(usedCard);
+
+				log(`使用${card.name}，放入${areaName}区`);
+
+				// 更新状态
+				updateStatus();
+				updateUI();
+
+				return true;
+			}
+
+			// 清空延时锦囊区
+			function clearDelayAreas() {
+				if (bingliangArea.length > 0 || lebuArea.length > 0 || shandianArea.length > 0) {
+					log(`结束出牌阶段，清空延时锦囊区`);
+				}
+
+				// 兵粮寸断区
+				bingliangArea.forEach(card => {
+					discardPile.push(card);
+					log(`弃置兵粮寸断: ${card.suit}${getPointDisplay(card.point)}`);
+				});
+				bingliangArea = [];
+
+				// 乐不思蜀区
+				lebuArea.forEach(card => {
+					discardPile.push(card);
+					log(`弃置乐不思蜀: ${card.suit}${getPointDisplay(card.point)}`);
+				});
+				lebuArea = [];
+
+				// 闪电区
+				shandianArea.forEach(card => {
+					discardPile.push(card);
+					log(`弃置闪电: ${card.suit}${getPointDisplay(card.point)}`);
+				});
+				shandianArea = [];
+
+				updateStatus();
+			}
+
 			// 生成安全的随机索引（用于抽牌）
 			function getSecureRandomIndex(max) {
 				// 检查浏览器是否支持加密安全的随机数生成器
@@ -1047,14 +1198,14 @@
 				updateRemainingCounts();
 			}
 
-			
+
 
 			// 清空牌堆显示
 			function clearDisplay() {
 				document.getElementById('deck').innerHTML = '';
 			}
 
-			
+
 
 			// 开始游戏
 			function startGame() {
@@ -1165,6 +1316,11 @@
 					log("装备诸葛连弩，杀次数限制解除！");
 				}
 
+				// 延时锦囊牌处理
+				if (["兵粮寸断", "乐不思蜀", "闪电"].includes(card.name)) {
+					if (handleDelayCard(card, index)) return;
+				}
+
 				// 特殊卡牌：无中生有
 				if (card.name === "无中生有") {
 					log('使用无中生有，额外摸两张牌！');
@@ -1188,17 +1344,17 @@
 					showChainDialog(card, index); // 显示选择对话框
 					return; // 提前返回，对话框会处理后续操作
 				}
-				
+
 				//五谷丰登
 				if (card.name === "五谷丰登") {
-				    showWugufengdengDialog(card, index); // 显示选择对话框
-				    return; // 提前返回，对话框会处理后续操作
+					showWugufengdengDialog(card, index); // 显示选择对话框
+					return; // 提前返回，对话框会处理后续操作
 				}
-				
+
 				//顺手牵羊
 				if (card.name === "顺手牵羊") {
 					log('使用顺手牵羊，额外摸一张牌');
-					drawCards(1);//摸一张牌
+					drawCards(1); //摸一张牌
 				}
 
 				// 特殊卡牌：借刀杀人
@@ -1274,8 +1430,10 @@
 				zhuge.textContent = currentWeapon ?
 					`当前武器：${currentWeapon}` : // 显示当前武器
 					"当前武器：无"; // 没有装备武器
+					
+					updateDelayArea(); 
 			}
-			
+
 			//五谷丰登对话框
 			function showWugufengdengDialog(card, index) {
 			    // 检查牌堆是否足够
@@ -1332,13 +1490,13 @@
 			            transition: all 0.3s;
 			            min-width: 100px;
 			        `;
-			        
+			
 			        cardDiv.innerHTML = `
 			            <div style="font-size: 18px; font-weight: bold; color:#5d4037;">${cardObj.name}</div>
 			            <div style="font-size: 24px;">${cardObj.suit}${getPointDisplay(cardObj.point)}</div>
 			            <div style="font-size: 14px; color:#8d6e63;">点击选择</div>
 			        `;
-			        
+			
 			        cardDiv.addEventListener('click', () => handleWugufengdengSelection(card, index, i, cardsToShow));
 			        cardDiv.addEventListener('mouseenter', () => {
 			            cardDiv.style.transform = 'translateY(-5px)';
@@ -1348,84 +1506,66 @@
 			            cardDiv.style.transform = 'none';
 			            cardDiv.style.boxShadow = 'none';
 			        });
-			        
+			
 			        cardOptions.appendChild(cardDiv);
 			    });
 			
-			    // 添加关闭按钮
-			    const closeBtn = document.createElement('button');
-			    closeBtn.textContent = '关闭';
-			    closeBtn.style = `
-			        padding: 8px 20px;
-			        background: #8d6e63;
-			        color: white;
-			        border: none;
-			        border-radius: 4px;
-			        cursor: pointer;
-			        margin-top: 10px;
-			    `;
-			    closeBtn.addEventListener('click', () => {
-			        document.body.removeChild(overlay);
-			        document.body.removeChild(dialog);
-			    });
-			    
-			    dialog.appendChild(closeBtn);
-			    
 			    // 添加元素到DOM
 			    document.body.appendChild(overlay);
 			    document.body.appendChild(dialog);
 			}
-			
+
 			// 处理五谷丰登选择
 			function handleWugufengdengSelection(wugufengdengCard, handIndex, selectedIndex, shownCards) {
-			    // 关闭所有对话框
-			    document.querySelectorAll('.modal-backdrop, .wugufengdeng-dialog').forEach(el => el.remove());
-			    
-			    // 选中的卡牌
-			    const selectedCard = shownCards[selectedIndex];
-			    
-			    // 从牌堆中移除展示的三张牌
-			    const removedCards = deck.splice(0, 3);
-			    
-			    // 添加选中的牌到玩家手牌
-			    hand.push(selectedCard);
-			    log(`五谷丰登获得: ${selectedCard.name} ${selectedCard.suit}${getPointDisplay(selectedCard.point)}`);
-			    
-			    // 其余两张牌置入弃牌堆
-			    shownCards.forEach((card, i) => {
-			        if (i !== selectedIndex) {
-			            discardPile.push(card);
-			            log(`弃置: ${card.name} ${card.suit}${getPointDisplay(card.point)}`);
-			        }
-			    });
-			    
-			    // 从手牌中移除五谷丰登
-			    const usedCard = hand.splice(handIndex, 1)[0];
-			    discardPile.push(usedCard);
-			    log(`使用五谷丰登`);
-			    
-			    // 检查渐营技能
-			    if (lastUsedCard && (wugufengdengCard.suit === lastUsedCard.suit || wugufengdengCard.point === lastUsedCard.point)) {
-			        log('触发渐营，摸一张牌！');
-			        drawCards(1);
-			    }
-			    
-			    // 更新最后使用的卡牌
-			    lastUsedCard = wugufengdengCard;
-			    
-			    // 更新界面
-			    updateUI();
-			    updateRemaining();
-			    
-			    // 显示操作反馈
-			    showFeedback(`已选择: ${selectedCard.name}`);
+				// 关闭所有对话框
+				document.querySelectorAll('.modal-backdrop, .wugufengdeng-dialog').forEach(el => el.remove());
+
+				// 选中的卡牌
+				const selectedCard = shownCards[selectedIndex];
+
+				// 从牌堆中移除展示的三张牌
+				const removedCards = deck.splice(0, 3);
+
+				// 添加选中的牌到玩家手牌
+				hand.push(selectedCard);
+				log(`五谷丰登获得: ${selectedCard.name} ${selectedCard.suit}${getPointDisplay(selectedCard.point)}`);
+
+				// 其余两张牌置入弃牌堆
+				shownCards.forEach((card, i) => {
+					if (i !== selectedIndex) {
+						discardPile.push(card);
+						log(`弃置: ${card.name} ${card.suit}${getPointDisplay(card.point)}`);
+					}
+				});
+
+				// 从手牌中移除五谷丰登
+				const usedCard = hand.splice(handIndex, 1)[0];
+				discardPile.push(usedCard);
+				log(`使用五谷丰登`);
+
+				// 检查渐营技能
+				if (lastUsedCard && (wugufengdengCard.suit === lastUsedCard.suit || wugufengdengCard.point === lastUsedCard
+						.point)) {
+					log('触发渐营，摸一张牌！');
+					drawCards(1);
+				}
+
+				// 更新最后使用的卡牌
+				lastUsedCard = wugufengdengCard;
+
+				// 更新界面
+				updateUI();
+				updateRemaining();
+
+				// 显示操作反馈
+				showFeedback(`已选择: ${selectedCard.name}`);
 			}
-			
+
 			// 添加反馈消息函数
 			function showFeedback(message) {
-			    const feedback = document.createElement('div');
-			    feedback.textContent = message;
-			    feedback.style = `
+				const feedback = document.createElement('div');
+				feedback.textContent = message;
+				feedback.style = `
 			        position: fixed;
 			        top: 20px;
 			        left: 50%;
@@ -1439,10 +1579,10 @@
 			        font-weight: bold;
 			        animation: fadeInOut 2.5s forwards;
 			    `;
-			    
-			    // 添加淡入淡出动画
-			    const style = document.createElement('style');
-			    style.textContent = `
+
+				// 添加淡入淡出动画
+				const style = document.createElement('style');
+				style.textContent = `
 			        @keyframes fadeInOut {
 			            0% { opacity: 0; top: 10px; }
 			            20% { opacity: 1; top: 20px; }
@@ -1450,18 +1590,18 @@
 			            100% { opacity: 0; top: 10px; }
 			        }
 			    `;
-			    document.head.appendChild(style);
-			    
-			    document.body.appendChild(feedback);
-			    
-			    // 2.5秒后移除
-			    setTimeout(() => {
-			        if (document.body.contains(feedback)) {
-			            document.body.removeChild(feedback);
-			        }
-			    }, 2500);
+				document.head.appendChild(style);
+
+				document.body.appendChild(feedback);
+
+				// 2.5秒后移除
+				setTimeout(() => {
+					if (document.body.contains(feedback)) {
+						document.body.removeChild(feedback);
+					}
+				}, 2500);
 			}
-			
+
 
 			// 铁索连环卡牌效果选择对话框
 			function showChainDialog(card, index) {
@@ -1826,6 +1966,24 @@
 						div.classList.add('disabled');
 					}
 
+					// 兵粮寸断禁用检查
+					if (card.name === "兵粮寸断" && bingliangArea.length >= MAX_DELAY_CARDS) {
+						div.classList.add('disabled');
+						div.onclick = () => alert("兵粮寸断已达上限，无法使用！");
+					}
+
+					// 乐不思蜀禁用检查
+					if (card.name === "乐不思蜀" && lebuArea.length >= MAX_DELAY_CARDS) {
+						div.classList.add('disabled');
+						div.onclick = () => alert("乐不思蜀已达上限，无法使用！");
+					}
+
+					// 闪电禁用检查
+					if (card.name === "闪电" && shandianArea.length >= MAX_SHANDIAN) {
+						div.classList.add('disabled');
+						div.onclick = () => alert("闪电已达上限，无法使用！");
+					}
+
 					// 闪禁用处理
 					if (card.name === '闪') {
 						div.classList.add('disabled');
@@ -1881,6 +2039,9 @@
 
 				// 重置酒使用次数
 				wineCount = 1;
+
+				// 清空延时锦囊区并放入弃牌堆
+				clearDelayAreas();
 
 				// 更新状态显示
 				updateStatus();
@@ -2155,7 +2316,7 @@
 						initializeDeck();
 						log("快捷键洗牌");
 						break;
-					
+
 					case 'A': // 进入摸牌阶段
 						if (phase === '准备') drawPhase();
 						break;
@@ -2453,8 +2614,8 @@
 					rel="noopener noreferrer">
 					[GitHub]获取后续代码更新
 				</a>
-				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank" class="gitcode-btn"
-					rel="noopener noreferrer">
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
 					[GitCode]获取后续代码更新(国内git)
 				</a>
 			</div>
