@@ -21,7 +21,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V6.2.1.52</h2>
+			<h2 class="hero-title">V6.3.0.54</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		</section>
 
@@ -77,76 +77,97 @@
 				</a>
 			</div>
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容 V6.2.1.52</h3>
+				<h3 class="update-title">最新版本更新内容 V6.3.0.54</h3>
 				<div class="update-content">
 					<div class="update-info">
-						<li>1.移除了【<span class="highlight">五谷丰登</span>】的取消按钮，以修复点击取消后无法正确触发渐营的问题</li>
-						<li>2.单机版代码同步：</li>
+						<li>1.新增了【<span class="highlight">过河拆桥</span>】卡牌的完整功能：</li>
 						<ul>
-							<li>2.1:同步了移除【<span class="highlight">五谷丰登</span>】的取消按钮代码</li>
+							<li>1.1: 当状态区有【<span class="highlight">兵粮寸断</span>】或【<span
+									class="highlight">乐不思蜀</span>】时，使用过河拆桥会弹出选择框</li>
+							<li>1.2:可选择<span class="highlight">拆除一张延时锦囊</span>或仅使用效果</li>
+							<li>1.3: 无论选择如何，都会触发<span class="highlight">渐营技能</span>检查</li>
 						</ul>
+						<li>2.新增了【<span class="highlight">顺手牵羊</span>】卡牌的完整功能：</li>
+						<ul>
+							<li>2.1: 当状态区有延时锦囊时，使用顺手牵羊会弹出选择框</li>
+							<li>2.2: 可选择<span class="highlight">获取一张延时锦囊</span>到手牌或仅摸一张牌</li>
+							<li>2.3: 无论选择如何，都会触发<span class="highlight">渐营技能</span>检查</li>
+						</ul>
+						<li>3.修复了<span class="highlight">延时锦囊牌使用时不触发技能</span>的问题：</li>
+						<ul>
+							<li>3.1: 使用【<span class="highlight">兵粮寸断</span>】、【<span
+									class="highlight">乐不思蜀</span>】或【<span class="highlight">闪电</span>】时，会正确检查<span
+									class="highlight">渐营技能</span>并触发额外摸牌效果</li>
+						</ul>
+						<li>4.单机版代码同步：</li>
+						<ul>
+							<li>4.1: 同步了过河拆桥和顺手牵羊的完整功能实现</li>
+							<li>4.2: 同步了延时锦囊牌触发技能的修复</li>
+						</ul>
+						<li>5.将更新日志从<span class="highlight">正序</span>调整为<span class="highlight">倒序</span>排列</li>
 					</div>
 				</div>
 			</div>
-			<button id="backToTopBtn">回到顶部</button></div>
-	
-	<footer class="site-footer">
-		<div class="author-info">
-			<p>
-				作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
-					target="_blank">bilibili月が綺麗ですね_</a><br />
-				联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
-				有什么新功能或建议欢迎骚扰（著名来意）<br />
-				<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
-			</p>
+			<button id="backToTopBtn">回到顶部</button>
 		</div>
-		<div class="code-update">
-			<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
-				class="bili-btn" rel="noopener noreferrer">
-				[bilibili]获取更新动态
-			</a>
-			<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
-				rel="noopener noreferrer">
-				[GitHub]获取后续代码更新
-			</a>
-			<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
-				class="gitcode-btn" rel="noopener noreferrer">
-				[GitCode]获取后续代码更新(国内git)
-			</a>
-		</div>
-		<div class="license-notice">
-			<p>
-				Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
-				Released under the
-				<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
-					MIT License
+
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
 				</a>
-			</p>
-			<p class="i18n-annotation">
-				(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
-			</p>
-		</div>
-	</footer>
-	<script>
-		// 获取按钮
-		const backToTopBtn = document.getElementById('backToTopBtn');
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取后续代码更新(国内git)
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+		<script>
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
 
-		// 滚动事件监听，控制按钮显示隐藏
-		window.addEventListener('scroll', () => {
-			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
-				backToTopBtn.style.display = 'block';
-			} else {
-				backToTopBtn.style.display = 'none';
-			}
-		});
-
-		// 点击按钮回到顶部
-		backToTopBtn.addEventListener('click', () => {
-			window.scrollTo({
-				top: 0,
-				behavior: 'smooth' // 平滑滚动
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+				if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+					backToTopBtn.style.display = 'block';
+				} else {
+					backToTopBtn.style.display = 'none';
+				}
 			});
-		});
-	</script>
+
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth' // 平滑滚动
+				});
+			});
+		</script>
 	</body>
 </html>
