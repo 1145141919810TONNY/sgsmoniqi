@@ -882,6 +882,100 @@
 				font-size: 14px;
 			 color: #555;
 			}
+			/* 对话框样式 */
+			.modal-backdrop {
+			    position: fixed;
+			    top: 0;
+			    left: 0;
+			    right: 0;
+			    bottom: 0;
+			    background: rgba(0,0,0,0.5);
+			    z-index: 9999;
+			    display: flex;
+			    justify-content: center;
+			    align-items: center;
+			}
+			
+			.card-selector-modal {
+			    background: white;
+			    padding: 25px;
+			    border-radius: 12px;
+			    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+			    min-width: 400px;
+			    max-width: 90vw;
+			    text-align: center;
+			}
+			
+			.dialog-button {
+			    padding: 12px 20px;
+			    border: none;
+			    border-radius: 6px;
+			    cursor: pointer;
+			    font-size: 16px;
+			    transition: all 0.2s;
+			    margin-top: 15px;
+			}
+			
+			.dialog-button:hover {
+			    transform: translateY(-2px);
+			    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+			}
+			
+			/* 可选择的延时锦囊样式 */
+			.delay-card-selectable {
+			    padding: 10px;
+			    border: 2px solid #8d6e63;
+			    border-radius: 8px;
+			    background: #fff8e1;
+			    cursor: pointer;
+			    transition: all 0.3s;
+			    min-width: 100px;
+			    text-align: center;
+			}
+			
+			.delay-card-selectable:hover {
+			    transform: translateY(-5px);
+			    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+			    background: #ffecb3;
+			}
+			
+			/* 不同锦囊类型的颜色区分 */
+			.delay-card-selectable:nth-child(odd) {
+			    background: #e8f5e9; /* 乐不思蜀浅绿色 */
+			}
+			
+			.delay-card-selectable:nth-child(even) {
+			    background: #fff8e1; /* 兵粮寸断浅黄色 */
+			}
+			/* 可选择的延时锦囊样式  */
+			.delay-card-selectable {
+			    padding: 10px;
+			    border: 2px solid #4caf50; /* 绿色边框表示获取 */
+			    border-radius: 8px;
+			    background: #e8f5e9; /* 浅绿色背景 */
+			    cursor: pointer;
+			    transition: all 0.3s;
+			    min-width: 100px;
+			    text-align: center;
+			    margin-bottom: 8px;
+			}
+			
+			.delay-card-selectable:hover {
+			    transform: translateY(-5px);
+			    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+			    background: #c8e6c9; /* 悬停时加深背景色 */
+			}
+			
+			/* 不同锦囊类型的颜色区分 */
+			.delay-card-selectable.bingliang {
+			    border-color: #ff9800; /* 兵粮寸断橙色边框 */
+			    background: #fff3e0; /* 兵粮寸断浅橙色背景 */
+			}
+			
+			.delay-card-selectable.lebu {
+			    border-color: #2196f3; /* 乐不思蜀蓝色边框 */
+			    background: #e3f2fd; /* 乐不思蜀浅蓝色背景 */
+			}
 		</style>
 	</head>
 	<body>
@@ -904,7 +998,7 @@
 			<button id="testUniformBtn">洗牌均匀性测试</button>
 		</div>
 		<div class="header-placeholder"></div>
-		<h1>沮爹红利期模拟器V5.3单机版</h1>
+		<h1>沮爹红利期模拟器V5.4单机版</h1>
 		<h2>注：本模拟器已接入GitHub Pages静态网页托管功能，网页链接：<a href="https://1145141919810tonny.github.io/sgsmoniqi/"
 				target="_blank">https://1145141919810tonny.github.io/sgsmoniqi/</a></h2>
 		<div class="tooltip-container">
@@ -1030,6 +1124,12 @@
 			<button>V5.3更新内容</button>
 			<div class="tooltip">
 				1.同步联机版修复卡牌【五谷丰登】的问题
+			</div>
+		</div>
+		<div class="tooltip-container">
+			<button>V5.4更新内容</button>
+			<div class="tooltip">
+				1.同步联机版V6.3.0.54版本的所有内容
 			</div>
 		</div>
 		<p>说明：本代码的牌堆是真正的纯随机，专治各种嘴硬<br />
@@ -2383,9 +2483,16 @@
 					peachCount = Math.max(peachCount - 1, 0);
 					log(`使用桃园结义恢复体力，剩余次数：${peachCount}`);
 				}
+				//过河拆桥
+				if (card.name === "过河拆桥") {
+					handleGuohe(card,index);
+					return;
+				}
+				
+				//顺手牵羊
 				if (card.name === "顺手牵羊") {
-					log('使用顺手牵羊，额外摸一张牌');
-					drawCards(1); //摸一张牌
+					handleShunshou(card,index);
+					return;
 				}
 				if (card.name === "酒") {
 					if (wineCount <= 0) {
@@ -2421,49 +2528,371 @@
 				updateDelayArea();
 
 			}
+			
+			// 处理过河拆桥效果
+			function handleGuohe(card, index) {
+			    // 获取所有可拆除的延时锦囊（兵粮寸断和乐不思蜀）
+			    const delayCards = [...bingliangArea, ...lebuArea];
+			    
+			    // 检查是否有可拆除的牌
+			    if (delayCards.length > 0) {
+			        // 有延时锦囊，显示选择对话框
+			        showGuoheDialog(card, index, delayCards);
+			    } else {
+			        // 没有延时锦囊，直接使用卡牌并检查渐营
+			        useGuohe(card, index);
+			    }
+			}
+			
+			// 显示过河拆桥选择对话框
+			function showGuoheDialog(card, index, delayCards) {
+			    // 创建模态背景
+			    const overlay = document.createElement('div');
+			    overlay.className = 'modal-backdrop';
+			    
+			    // 创建对话框
+			    const dialog = document.createElement('div');
+			    dialog.className = 'card-selector-modal';
+			    dialog.innerHTML = `
+			        <h3>过河拆桥 - 选择要拆除的延时锦囊</h3>
+			        <p>请选择要拆除的牌（点击卡牌选择）：</p>
+			        <div id="delayCardsContainer" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;"></div>
+			        <button id="noRemove" class="dialog-button" style="background:#C8E6C9;">
+			            不拆除，仅使用效果
+			        </button>
+			    `;
+			
+			    // 获取卡牌容器
+			    const cardsContainer = dialog.querySelector('#delayCardsContainer');
+			    
+			    // 添加每张可拆除的卡牌
+			    delayCards.forEach((delayCard, i) => {
+			        const cardDiv = document.createElement('div');
+			        cardDiv.className = 'delay-card-selectable';
+			        cardDiv.innerHTML = `
+			            <div>${delayCard.name}</div>
+			            <div>${delayCard.suit}${getPointDisplay(delayCard.point)}</div>
+			        `;
+			        
+			        // 添加点击事件
+			        cardDiv.addEventListener('click', () => {
+			            removeSpecificDelayCard(delayCard);
+			            useGuohe(card, index);
+			            closeAllModals();
+			        });
+			        
+			        cardsContainer.appendChild(cardDiv);
+			    });
+			
+			    // 关闭所有弹窗的函数
+			    const closeAllModals = () => {
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			    };
+			
+			    // "不拆除"按钮
+			    dialog.querySelector('#noRemove').addEventListener('click', () => {
+			        closeAllModals();
+			        useGuohe(card, index);
+			    });
+			
+			    // 添加元素到DOM
+			    document.body.appendChild(overlay);
+			    document.body.appendChild(dialog);
+			}
+			
+			// 移除指定的延时锦囊
+			function removeSpecificDelayCard(delayCard) {
+			    // 确定卡牌在哪个区域
+			    let area = null;
+			    let index = -1;
+			    
+			    // 检查兵粮寸断区
+			    index = bingliangArea.findIndex(c => c.uid === delayCard.uid);
+			    if (index !== -1) {
+			        area = bingliangArea;
+			    } 
+			    // 检查乐不思蜀区
+			    else {
+			        index = lebuArea.findIndex(c => c.uid === delayCard.uid);
+			        if (index !== -1) {
+			            area = lebuArea;
+			        }
+			    }
+			    
+			    // 如果找到卡牌，则移除
+			    if (area && index !== -1) {
+			        const removedCard = area.splice(index, 1)[0];
+			        discardPile.push(removedCard);
+			        log(`拆除${removedCard.name}: ${removedCard.suit}${getPointDisplay(removedCard.point)}`);
+			        
+			        // 更新状态显示
+			        updateStatus();
+			    }
+			}
+			
+			// 使用过河拆桥卡牌
+			function useGuohe(card, index) {
+			    // 从手牌移除
+			    const usedCard = hand.splice(index, 1)[0];
+			    
+			    // 放入弃牌堆
+			    discardPile.push(usedCard);
+			    
+			    log(`使用过河拆桥: ${usedCard.suit}${getPointDisplay(usedCard.point)}`);
+			    
+			    // 检查渐营技能
+			    if (lastUsedCard && 
+			        (usedCard.suit === lastUsedCard.suit || 
+			         usedCard.point === lastUsedCard.point)) {
+			        log('触发渐营，摸一张牌！');
+			        drawCards(1);
+			    }
+			    
+			    // 更新最后使用的卡牌
+			    lastUsedCard = usedCard;
+			    
+			    // 更新界面
+			    updateStatus();
+			    updateUI();
+			}
+			
+			// 更新延时锦囊区域显示
+			function updateDelayArea() {
+			    const bingliangContainer = document.getElementById('bingliang-container');
+			    const lebuContainer = document.getElementById('lebu-container');
+			    const shandianContainer = document.getElementById('shandian-container'); // 新增
+			    
+			    // 清空容器
+			    bingliangContainer.innerHTML = '';
+			    lebuContainer.innerHTML = '';
+			    shandianContainer.innerHTML = ''; // 新增
+			    
+			    // 兵粮寸断区域
+			    if (bingliangArea.length === 0) {
+			        bingliangContainer.innerHTML = '<div class="delay-card disabled">空</div>';
+			    } else {
+			        bingliangArea.forEach(card => {
+			            const cardDiv = document.createElement('div');
+			            cardDiv.className = 'delay-card';
+			            cardDiv.textContent = `${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+			            bingliangContainer.appendChild(cardDiv);
+			        });
+			    }
+			    
+			    // 乐不思蜀区域
+			    if (lebuArea.length === 0) {
+			        lebuContainer.innerHTML = '<div class="delay-card disabled">空</div>';
+			    } else {
+			        lebuArea.forEach(card => {
+			            const cardDiv = document.createElement('div');
+			            cardDiv.className = 'delay-card';
+			            cardDiv.textContent = `${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+			            lebuContainer.appendChild(cardDiv);
+			        });
+			    }
+			    
+			    // 闪电区域
+			    if (shandianArea.length === 0) {
+			        shandianContainer.innerHTML = '<div class="delay-card disabled">空</div>';
+			    } else {
+			        shandianArea.forEach(card => {
+			            const cardDiv = document.createElement('div');
+			            cardDiv.className = 'delay-card';
+			            cardDiv.textContent = `${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+			            shandianContainer.appendChild(cardDiv);
+			        });
+			    }
+			}
+			
+			// 处理顺手牵羊效果
+			function handleShunshou(card, index) {
+			    // 获取所有可获取的延时锦囊（兵粮寸断和乐不思蜀）
+			    const delayCards = [...bingliangArea, ...lebuArea];
+			    
+			    // 检查是否有可获取的牌
+			    if (delayCards.length > 0) {
+			        // 有延时锦囊，显示选择对话框
+			        showShunshouDialog(card, index, delayCards);
+			    } else {
+			        // 没有延时锦囊，直接使用卡牌并检查渐营
+			        useShunshou(card, index, false);
+			    }
+			}
+			
+			// 显示顺手牵羊选择对话框
+			function showShunshouDialog(card, index, delayCards) {
+			    // 创建模态背景
+			    const overlay = document.createElement('div');
+			    overlay.className = 'modal-backdrop';
+			    
+			    // 创建对话框
+			    const dialog = document.createElement('div');
+			    dialog.className = 'card-selector-modal';
+			    dialog.innerHTML = `
+			        <h3>顺手牵羊 - 选择要获取的延时锦囊</h3>
+			        <p>请选择要获取的牌（点击卡牌选择）：</p>
+			        <div id="delayCardsContainer" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0;"></div>
+			        <button id="noRemove" class="dialog-button" style="background:#C8E6C9;">
+			            不获取，仅使用效果
+			        </button>
+			    `;
+			
+			    // 获取卡牌容器
+			    const cardsContainer = dialog.querySelector('#delayCardsContainer');
+			    
+			    // 添加每张可获取的卡牌
+			    delayCards.forEach((delayCard, i) => {
+			        const cardDiv = document.createElement('div');
+			        cardDiv.className = 'delay-card-selectable';
+			        cardDiv.innerHTML = `
+			            <div>${delayCard.name}</div>
+			            <div>${delayCard.suit}${getPointDisplay(delayCard.point)}</div>
+			        `;
+			        
+			        // 添加点击事件
+			        cardDiv.addEventListener('click', () => {
+			            moveSpecificDelayCardToHand(delayCard);
+			            useShunshou(card, index, true); // true表示已获取牌
+			            closeAllModals();
+			        });
+			        
+			        cardsContainer.appendChild(cardDiv);
+			    });
+			
+			    // 关闭所有弹窗的函数
+			    const closeAllModals = () => {
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			    };
+			
+			    // "不获取"按钮
+			    dialog.querySelector('#noRemove').addEventListener('click', () => {
+			        closeAllModals();
+			        useShunshou(card, index, false); // false表示未获取牌
+			    });
+			
+			    // 添加元素到DOM
+			    document.body.appendChild(overlay);
+			    document.body.appendChild(dialog);
+			}
+			
+			// 移动指定的延时锦囊到手牌区
+			function moveSpecificDelayCardToHand(delayCard) {
+			    // 确定卡牌在哪个区域
+			    let area = null;
+			    let index = -1;
+			    
+			    // 检查兵粮寸断区
+			    index = bingliangArea.findIndex(c => c.uid === delayCard.uid);
+			    if (index !== -1) {
+			        area = bingliangArea;
+			    } 
+			    // 检查乐不思蜀区
+			    else {
+			        index = lebuArea.findIndex(c => c.uid === delayCard.uid);
+			        if (index !== -1) {
+			            area = lebuArea;
+			        }
+			    }
+			    
+			    // 如果找到卡牌，则移出手牌区
+			    if (area && index !== -1) {
+			        const removedCard = area.splice(index, 1)[0];
+			        hand.push(removedCard); // 添加到玩家手牌
+			        log(`获取${removedCard.name}: ${removedCard.suit}${getPointDisplay(removedCard.point)}`);
+			        
+			        // 更新状态显示
+			        updateStatus();
+			    }
+			}
+			
+			// 使用顺手牵羊卡牌
+			// movedCard: 是否已获取了牌
+			function useShunshou(card, index, movedCard) {
+			    // 从手牌移除顺手牵羊
+			    const usedCard = hand.splice(index, 1)[0];
+			    
+			    // 放入弃牌堆
+			    discardPile.push(usedCard);
+			    
+			    log(`使用顺手牵羊: ${usedCard.suit}${getPointDisplay(usedCard.point)}`);
+			    
+			    // 如果没有获取牌，需要额外摸一张牌
+			    if (!movedCard) {
+			        drawCards(1); // 额外摸一张牌
+			        log('没有获取牌，额外摸一张牌');
+			    }
+			    
+			    // 检查渐营技能
+			    if (lastUsedCard && 
+			        (usedCard.suit === lastUsedCard.suit || 
+			         usedCard.point === lastUsedCard.point)) {
+			        log('触发渐营，再摸一张牌！');
+			        drawCards(1);
+			    }
+			    
+			    // 更新最后使用的卡牌
+			    lastUsedCard = usedCard;
+			    
+			    // 更新界面
+			    updateStatus();
+			    updateUI();
+			}
 
 			// 处理延时锦囊牌使用
 			function handleDelayCard(card, index) {
-				let targetArea, areaName, maxCards;
-
-				switch (card.name) {
-					case "兵粮寸断":
-						targetArea = bingliangArea;
-						areaName = "兵粮寸断";
-						maxCards = MAX_DELAY_CARDS;
-						break;
-					case "乐不思蜀":
-						targetArea = lebuArea;
-						areaName = "乐不思蜀";
-						maxCards = MAX_DELAY_CARDS;
-						break;
-					case "闪电":
-						targetArea = shandianArea;
-						areaName = "闪电";
-						maxCards = MAX_SHANDIAN;
-						break;
-					default:
-						return false;
-				}
-
-				if (targetArea.length >= maxCards) {
-					alert(`${areaName}已达上限（${maxCards}张），无法使用！`);
-					return true;
-				}
-
-				// 从手牌移除
-				const usedCard = hand.splice(index, 1)[0];
-
-				// 放入状态区
-				targetArea.push(usedCard);
-
-				log(`使用${card.name}，放入${areaName}区`);
-
-				// 更新状态
-				updateStatus();
-				updateUI();
-
-				return true;
+			    let targetArea, areaName, maxCards;
+			    
+			    switch(card.name) {
+			        case "兵粮寸断":
+			            targetArea = bingliangArea;
+			            areaName = "兵粮寸断";
+			            maxCards = MAX_DELAY_CARDS;
+			            break;
+			        case "乐不思蜀":
+			            targetArea = lebuArea;
+			            areaName = "乐不思蜀";
+			            maxCards = MAX_DELAY_CARDS;
+			            break;
+			        case "闪电": 
+			            targetArea = shandianArea;
+			            areaName = "闪电";
+			            maxCards = MAX_SHANDIAN;
+			            break;
+			        default:
+			            return false;
+			    }
+			    
+			    if (targetArea.length >= maxCards) {
+			        alert(`${areaName}已达上限（${maxCards}张），无法使用！`);
+			        return true;
+			    }
+			    
+			    // 从手牌移除
+			    const usedCard = hand.splice(index, 1)[0];
+			    
+			    // 放入状态区
+			    targetArea.push(usedCard);
+			    
+			    log(`使用${card.name}，放入${areaName}区`);
+			    
+			    // 更新状态
+			    updateStatus();
+			    updateUI();
+			
+			    // 检查技能
+			    if (lastUsedCard && 
+			        (usedCard.suit === lastUsedCard.suit || 
+			         usedCard.point === lastUsedCard.point)) {
+			        log('触发渐营，摸一张牌！');
+			        drawCards(1);
+			    }
+			
+			    // 更新最后使用的卡牌
+			    lastUsedCard = usedCard;
+			    
+			    return true;
 			}
 
 			// 清空延时锦囊区
