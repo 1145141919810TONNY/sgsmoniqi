@@ -1874,3 +1874,98 @@ h3.hero-title {
        font-size: 14px;
        color: #555;
    }
+   
+   .modal-backdrop {
+       position: fixed;
+       top: 0;
+       left: 0;
+       right: 0;
+       bottom: 0;
+       background: rgba(0,0,0,0.5);
+       z-index: 9999;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
+   
+   .card-selector-modal {
+       background: white;
+       padding: 25px;
+       border-radius: 12px;
+       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+       min-width: 400px;
+       max-width: 90vw;
+       text-align: center;
+   }
+   
+   .dialog-button {
+       padding: 12px 20px;
+       border: none;
+       border-radius: 6px;
+       cursor: pointer;
+       font-size: 16px;
+       transition: all 0.2s;
+       margin-top: 15px;
+   }
+   
+   .dialog-button:hover {
+       transform: translateY(-2px);
+       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+   }
+   
+   /* 可选择的延时锦囊样式 */
+   .delay-card-selectable {
+       padding: 10px;
+       border: 2px solid #8d6e63;
+       border-radius: 8px;
+       background: #fff8e1;
+       cursor: pointer;
+       transition: all 0.3s;
+       min-width: 100px;
+       text-align: center;
+   }
+   
+   .delay-card-selectable:hover {
+       transform: translateY(-5px);
+       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+       background: #ffecb3;
+   }
+   
+   /* 不同锦囊类型的颜色区分 */
+   .delay-card-selectable:nth-child(odd) {
+       background: #e8f5e9; /* 乐不思蜀浅绿色 */
+   }
+   
+   .delay-card-selectable:nth-child(even) {
+       background: #fff8e1; /* 兵粮寸断浅黄色 */
+   }
+   
+   /* 可选择的延时锦囊样式 */
+   .delay-card-selectable {
+       padding: 10px;
+       border: 2px solid #4caf50; /* 绿色边框表示获取 */
+       border-radius: 8px;
+       background: #e8f5e9; /* 浅绿色背景 */
+       cursor: pointer;
+       transition: all 0.3s;
+       min-width: 100px;
+       text-align: center;
+       margin-bottom: 8px;
+   }
+   
+   .delay-card-selectable:hover {
+       transform: translateY(-5px);
+       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+       background: #c8e6c9; /* 悬停时加深背景色 */
+   }
+   
+   /* 不同锦囊类型的颜色区分 */
+   .delay-card-selectable.bingliang {
+       border-color: #ff9800; /* 兵粮寸断橙色边框 */
+       background: #fff3e0; /* 兵粮寸断浅橙色背景 */
+   }
+   
+   .delay-card-selectable.lebu {
+       border-color: #2196f3; /* 乐不思蜀蓝色边框 */
+       background: #e3f2fd; /* 乐不思蜀浅蓝色背景 */
+   }
