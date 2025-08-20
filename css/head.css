@@ -528,11 +528,50 @@ button {
 }
 
 #status-area {
-	border: 2px solid #666;
-	padding: 12px;
-	margin: 12px 0;
-	background: #f8f9fa;
+    display: grid;
+    grid-template-columns: 1fr 2fr; 
+    gap: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 15px 0;
+    width: 100%; 
+    box-sizing: border-box;
 }
+
+/* 左侧状态信息 */
+.status-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#damage-counter {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background-color: #ffeef0;
+    border-radius: 6px;
+    border-left: 4px solid #f44336;
+}
+
+#total-damage, #turn-damage {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#kill-counter, #zhuge-status, 
+#peach-counter, #wine-counter {
+    padding: 10px;
+    background-color: #e3f2fd;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 
 #kill-counter {
 	font-weight: bold;
@@ -1351,7 +1390,18 @@ button::after {
 		width: 80%;
 		margin-bottom: 10px;
 	}
-}
+	#status-area {
+	        grid-template-columns: 1fr;
+	    }
+	    
+	    #delay-area {
+	        flex-direction: column;
+	    }
+	    
+	    .delay-section {
+	        min-width: 100%;
+	        max-width: 100%;
+	    }
 }
 
 @media (max-width: 480px) {
@@ -1374,6 +1424,18 @@ button::after {
 		width: 80%;
 		margin-bottom: 10px;
 	}
+	#status-area {
+	        grid-template-columns: 1fr;
+	    }
+	    
+	    #delay-area {
+	        flex-direction: column;
+	    }
+	    
+	    .delay-section {
+	        min-width: 100%;
+	        max-width: 100%;
+	    }
 }
 
 .hero-section {
@@ -1826,42 +1888,53 @@ h3.hero-title {
 
  /* 延时锦囊区域样式 */
     #delay-area {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        display: flex;
         gap: 15px;
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 1px solid #ddd;
+        justify-content: space-between;
     }
     
     .delay-section {
+        flex: 1;
+        min-width: 120px;
+        max-width: 200px;
         border: 1px solid #b38b6d;
         border-radius: 8px;
         padding: 10px;
         background: #fff8e1;
+        display: flex;
+        flex-direction: column;
     }
     
     .delay-section h4 {
         margin: 0 0 8px;
         text-align: center;
         color: #8d6e63;
+        font-size: 14px;
+        border-bottom: 1px solid #b38b6d;
+        padding-bottom: 5px;
     }
     
     .delay-cards {
-        min-height: 60px;
+        flex-grow: 1;
+        min-height: 80px;
         display: flex;
         flex-wrap: wrap;
         gap: 5px;
+        justify-content: center;
+        align-items: flex-start;
     }
     
-   .delay-card {
-       padding: 8px;
-       margin: 5px 0;
-       background-color: #f0f0f0;
-       border: 1px solid #ddd;
-       border-radius: 4px;
-       text-align: center;
-   }
+    .delay-card {
+        padding: 6px;
+        margin: 3px 0;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 12px;
+        flex: 0 0 calc(50% - 10px);
+    }
+
    
    .delay-card.disabled {
        color: #999;
@@ -1969,3 +2042,26 @@ h3.hero-title {
        border-color: #2196f3; /* 乐不思蜀蓝色边框 */
        background: #e3f2fd; /* 乐不思蜀浅蓝色背景 */
    }
+   
+   #status-area {
+     display: grid;
+     grid-template-columns: 1fr 2fr;
+     gap: 20px;
+     padding: 15px;
+     background-color: #f8f9fa;
+     border-radius: 8px;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+     margin: 15px 0;
+     transition: none;
+   }
+   
+   #status-area.collapsed {
+     display: none;
+   }
+   
+   #status-area:not(.collapsed) {
+       display: grid; /* 保持网格布局 */
+       width: 100%; /* 强制100%宽度 */
+   }
+
+
