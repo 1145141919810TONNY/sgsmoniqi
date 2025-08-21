@@ -2064,4 +2064,38 @@ h3.hero-title {
        width: 100%; /* 强制100%宽度 */
    }
 
+/* 整理手牌按钮样式 */
+#organizeHandBtn {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
 
+#organizeHandBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+#organizeHandBtn:disabled {
+    cursor: not-allowed;
+}
+
+/* 火攻对话框样式 */
+.huogong-dialog, .huogong-options, .discard-options {
+    z-index: 10002;
+}
+
+.discard-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.3s;
+    min-width: 80px;
+}
+
+.discard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: #fff9c4;
+}
