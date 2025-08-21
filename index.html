@@ -21,7 +21,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V6.4.0.55</h2>
+			<h2 class="hero-title">V6.5.0.56</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		</section>
 
@@ -85,39 +85,39 @@
 			</div>
 
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容 V6.4.0.55</h3>
+				<h3 class="update-title">最新版本更新内容 V6.5.0.56</h3>
 				<div class="update-content">
 					<ul class="version-list">
-						<li>1.修复与优化：
+						<li>1.新增<span class="highlight">无懈可击</span>卡牌完整结算流程：
 							<ul>
-								<li>1.1：优化了<span class="highlight">状态信息区</span>的排布</li>
-								<li>1.2：修复了【<span class="highlight">杀</span>】与【<span
-										class="highlight">诸葛连弩</span>】的错误使用关系（原本卸掉诸葛连弩后杀会错误计数），并使用新的，更详细的计数方式</li>
-								<li>1.3：为<span class="highlight">状态信息区</span>添加展开与收起按钮</li>
+								<li>1.1：当使用锦囊牌时自动触发无懈可击检测</li>
+								<li>1.2：弹出交互式对话框显示可用的无懈可击牌</li>
+								<li>1.3：支持多张无懈可击连锁使用（偶数张生效，奇数张失效）</li>
+								<li>1.4：无懈可击使用后自动触发<span class="highlight">渐营</span>技能检查</li>
 							</ul>
 						</li>
-						<li>2.新增<span class="highlight">状态信息区</span>内的伤害显示，伤害数据如下：
+						<li>2.实现<span class="highlight">火攻</span>卡牌完整交互流程：
 							<ul>
-						  <li>2.1：【<span class="highlight">杀</span>】，【<span
-										class="highlight">雷杀</span>】的基础伤害为<span class="highlight">1</span></li>
-								<li>2.2：【<span class="highlight">火杀</span>】的基础伤害为<span class="highlight">2</span></li>
-								<li>2.3：【<span class="highlight">酒</span>】可使下一张【<span
-										class="highlight">杀</span>】的伤害<span class="highlight">+1</span></li>
-							</ul>
-						</li>
-						<li>3.新增以下卡牌的作用
-							<ul>
-								<li>3.1：【<span class="highlight">南蛮入侵</span>】、【<span
-										class="highlight">万箭齐发</span>】的伤害为<span class="highlight">2</span></li>
-								<li>3.2：【<span class="highlight">决斗</span>】的作用：
+								<li>2.1：目标选择阶段（自己/他人）</li>
+								<li>2.2：对自己使用时可选择：
 									<ul>
-										<li>3.2.1：不断打出【<span class="highlight">杀</span>】，但【<span
-												class="highlight">杀</span>】不检索技能</li>
-						 			<li>3.2.2：【<span class="highlight">桃</span>】可用次数<span
-												class="highlight">+1</span></li>
-										<li>3.2.3：伤害数值<span class="highlight">+1</span></li>
-						   </ul>
+										<li>▸ 结束结算（无事发生）</li>
+										<li>▸ 弃置手牌（桃可用次数+1）</li>
+									</ul>
 								</li>
+								<li>2.3：对他人使用时：
+									<ul>
+										<li>▸ 从牌堆顶亮出1张牌</li>
+										<li>▸ 可选择弃置同花色手牌（回合伤害+1）</li>
+									</ul>
+								</li>
+								<li>2.4：火攻使用后自动触发<span class="highlight">渐营</span>技能</li>
+							</ul>
+						</li>
+						<li>3.新增<span class="highlight">整理手牌</span>功能：
+							<ul>
+								<li>3.1：明确排序优先级规则：诸葛连弩→杀→酒→锦囊牌→装备牌→桃→闪→无懈可击</li>
+								<li>3.2：添加3秒操作冷却防止误触</li>
 							</ul>
 						</li>
 						<li>4.单机版同步：
