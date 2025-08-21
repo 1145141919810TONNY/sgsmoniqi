@@ -14,45 +14,96 @@
 				<button class="nav-button"><a href="jushou.html">进入沮爹模拟器</a></button>
 			</div>
 		</section>
-		
+
 		<div class="update-section">
-		  <h2 class="version-title">V6.4.0.55更新内容</h2>
-		  <div class="update-date">更新时间：2025/8/20</div>
-		  <ul class="version-list">
-		    <li>1.修复与优化：
-		      <ul>
-		        <li>1.1：优化了<span class="highlight">状态信息区</span>的排布</li>
-		        <li>1.2：修复了【<span class="highlight">杀</span>】与【<span class="highlight">诸葛连弩</span>】的错误使用关系（原本卸掉诸葛连弩后杀会错误计数），并使用新的，更详细的计数方式</li>
-		        <li>1.3：为<span class="highlight">状态信息区</span>添加展开与收起按钮</li>
-		      </ul>
-		    </li>
-		    <li>2.新增<span class="highlight">状态信息区</span>内的伤害显示，伤害数据如下：
-		      <ul>
-		        <li>2.1：【<span class="highlight">杀</span>】，【<span class="highlight">雷杀</span>】的基础伤害为<span class="highlight">1</span></li>
-		        <li>2.2：【<span class="highlight">火杀</span>】的基础伤害为<span class="highlight">2</span></li>
-		        <li>2.3：【<span class="highlight">酒</span>】可使下一张【<span class="highlight">杀</span>】的伤害<span class="highlight">+1</span></li>
-		      </ul>
-		    </li>
-		    <li>3.新增以下卡牌的作用
-		      <ul>
-		        <li>3.1：【<span class="highlight">南蛮入侵</span>】、【<span class="highlight">万箭齐发</span>】的伤害为<span class="highlight">2</span></li>
-		        <li>3.2：【<span class="highlight">决斗</span>】的作用：
-		          <ul>
-		            <li>3.2.1：不断打出【<span class="highlight">杀</span>】，但【<span class="highlight">杀</span>】不检索技能</li>
-		            <li>3.2.2：【<span class="highlight">桃</span>】可用次数<span class="highlight">+1</span></li>
-		            <li>3.2.3：伤害数值<span class="highlight">+1</span></li>
-		          </ul>
-		        </li>
-		      </ul>
-		    </li>
-		    <li>4.单机版同步：
-		      <ul>
-		        <li>4.1：同步了以上所有内容</li>
-		      </ul>
-		    </li>
-		  </ul>
+			<h2 class="version-title">V6.5.0.56更新内容</h2>
+			<div class="update-date">更新时间：2025/8/21</div>
+			<ul class="version-list">
+				<li>1.新增<span class="highlight">无懈可击</span>卡牌完整结算流程：
+					<ul>
+						<li>1.1：当使用锦囊牌时自动触发无懈可击检测</li>
+						<li>1.2：弹出交互式对话框显示可用的无懈可击牌</li>
+						<li>1.3：支持多张无懈可击连锁使用（偶数张生效，奇数张失效）</li>
+						<li>1.4：无懈可击使用后自动触发<span class="highlight">渐营</span>技能检查</li>
+					</ul>
+				</li>
+				<li>2.实现<span class="highlight">火攻</span>卡牌完整交互流程：
+					<ul>
+						<li>2.1：目标选择阶段（自己/他人）</li>
+						<li>2.2：对自己使用时可选择：
+							<ul>
+								<li>▸ 结束结算（无事发生）</li>
+								<li>▸ 弃置手牌（桃可用次数+1）</li>
+							</ul>
+						</li>
+						<li>2.3：对他人使用时：
+							<ul>
+								<li>▸ 从牌堆顶亮出1张牌</li>
+								<li>▸ 可选择弃置同花色手牌（回合伤害+1）</li>
+							</ul>
+						</li>
+						<li>2.4：火攻使用后自动触发<span class="highlight">渐营</span>技能</li>
+					</ul>
+				</li>
+				<li>3.新增<span class="highlight">整理手牌</span>功能：
+					<ul>
+						<li>3.1：明确排序优先级规则：诸葛连弩→杀→酒→锦囊牌→装备牌→桃→闪→无懈可击</li>
+						<li>3.2：添加3秒操作冷却防止误触</li>
+					</ul>
+				</li>
+				<li>4.单机版同步：
+					<ul>
+						<li>4.1：同步了以上所有内容</li>
+					</ul>
+				</li>
+				<h4>作者的一些话</h4>
+				<p>从V1.0开始（3月18日）到今天的V6.5.0.56，前后一共26个版本，全部文档加起来一共是22187行代码(不包括这段话)。一共写了五个月的时间。前前后后，基本上没有什么人看，也没有什么人去下载（倒也是，有这个功夫不如直接去游戏开一把），也不知道是什么东西支撑我继续写下去的。目前是一个无业游民的状况，如果日后找到工作的话，可能更新的频率也会有所下降吧（或者干脆丢掉不更新了）？毕竟好像也宣传不出去。直到到现在，无论是写新功能，还是测试都是我自己一个人，所以可能有很多潜在的功能或者bug没有被修复（诸葛连弩的错误一直都存在，但是到后面才被发现修复。没办法，一个人测试还真很难发现所有问题）。不过可能说是每次写出新功能或者测试出什么bug修复了之后会有成就感吧？还记得当时为了优化移动端的css，吧文件来回传了个十几二十次（乐），整个QQ的聊天记录都是zip（往事不堪回首）。<br />
+					无论下次更新内容大小，是否为重大革新（参考V5.0的代码重构接入在线服务，V6.0的红利期算法），都会将版本号提升至7.0.0。为了和现在的版本区分开（毕竟卡牌的作用已经全部写完了）</p>
+			</ul>
 		</div>
-		
+		<div class="update-section">
+			<h2 class="version-title">V6.4.0.55更新内容</h2>
+			<div class="update-date">更新时间：2025/8/20</div>
+			<ul class="version-list">
+				<li>1.修复与优化：
+					<ul>
+						<li>1.1：优化了<span class="highlight">状态信息区</span>的排布</li>
+						<li>1.2：修复了【<span class="highlight">杀</span>】与【<span
+								class="highlight">诸葛连弩</span>】的错误使用关系（原本卸掉诸葛连弩后杀会错误计数），并使用新的，更详细的计数方式</li>
+						<li>1.3：为<span class="highlight">状态信息区</span>添加展开与收起按钮</li>
+					</ul>
+				</li>
+				<li>2.新增<span class="highlight">状态信息区</span>内的伤害显示，伤害数据如下：
+					<ul>
+						<li>2.1：【<span class="highlight">杀</span>】，【<span class="highlight">雷杀</span>】的基础伤害为<span
+								class="highlight">1</span></li>
+						<li>2.2：【<span class="highlight">火杀</span>】的基础伤害为<span class="highlight">2</span></li>
+						<li>2.3：【<span class="highlight">酒</span>】可使下一张【<span class="highlight">杀</span>】的伤害<span
+								class="highlight">+1</span></li>
+					</ul>
+				</li>
+				<li>3.新增以下卡牌的作用
+					<ul>
+						<li>3.1：【<span class="highlight">南蛮入侵</span>】、【<span class="highlight">万箭齐发</span>】的伤害为<span
+								class="highlight">2</span></li>
+						<li>3.2：【<span class="highlight">决斗</span>】的作用：
+							<ul>
+								<li>3.2.1：不断打出【<span class="highlight">杀</span>】，但【<span
+										class="highlight">杀</span>】不检索技能</li>
+								<li>3.2.2：【<span class="highlight">桃</span>】可用次数<span class="highlight">+1</span></li>
+								<li>3.2.3：伤害数值<span class="highlight">+1</span></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>4.单机版同步：
+					<ul>
+						<li>4.1：同步了以上所有内容</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+
 		<div class="update-section">
 			<h2 class="version-title">V6.3.1.54更新内容</h2>
 			<div class="update-date">更新时间：2025/8/19</div>
@@ -60,7 +111,7 @@
 				<li>1.在主页里增加GitHub下载完整ZIP直链的按钮</li>
 			</ul>
 		</div>
-		
+
 
 		<div class="update-section">
 			<h2 class="version-title">V6.3.0.54更新内容</h2>
