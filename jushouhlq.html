@@ -1664,15 +1664,15 @@
 				log(`使用卡牌：${card.name} ${card.suit}${getPointDisplay(card.point)}`);
 
 				// 武器
-				if (cardCategories.weapon.includes(card.name)) {
-					if (currentWeapon && currentWeapon !== card.name && currentWeapon === "诸葛连弩") {
-						hasZhugeLianNu = false;
-						killCount = 2;
-						log(`卸除诸葛连弩，杀次数重置为2`);
-					}
-					currentWeapon = card.name;
-					hasZhugeLianNu = (card.name === "诸葛连弩");
-					if (hasZhugeLianNu) log("装备诸葛连弩，杀次数限制解除");
+				if (cardCategories.weapon.includes(card.name)  || card.name === "诸葛连弩") {
+				    if (currentWeapon && currentWeapon !== card.name && currentWeapon === "诸葛连弩") {
+				        hasZhugeLianNu = false;
+				        killCount = 2;
+				        log(`卸除诸葛连弩，杀次数重置为2`);
+				    }
+				    currentWeapon = card.name;
+				    hasZhugeLianNu = (card.name === "诸葛连弩");
+				    if (hasZhugeLianNu) log("装备诸葛连弩，杀次数限制解除");
 				}
 
 				// 杀类卡牌
