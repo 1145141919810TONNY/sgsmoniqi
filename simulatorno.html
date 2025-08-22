@@ -1994,11 +1994,20 @@
 					cardsContainer.innerHTML = `<p>没有符合条件的可弃置手牌</p>`;
 				}
 
-				// 取消按钮
+				// 取消弃牌但仍使用火攻
 				dialog.querySelector('#cancelDiscard').addEventListener('click', () => {
-					document.body.removeChild(overlay);
-					document.body.removeChild(dialog);
-					log("取消了弃牌操作");
+				    document.body.removeChild(overlay);
+				    document.body.removeChild(dialog);
+				
+				    // 火攻卡牌已从手牌移除并进入弃牌堆（在更早阶段已完成）
+				    log("取消弃牌，火攻已使用但不造成伤害");
+				
+				    // 渐营技能留存
+				
+				    // 更新最后使用的卡牌（火攻牌）
+				    lastUsedCard = huogongCard;
+				
+				    updateUI();
 				});
 
 				// 添加元素到DOM
@@ -3992,5 +4001,4 @@
 			</div>
 		</footer>
 	</body>
-
 </html>
