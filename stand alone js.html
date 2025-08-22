@@ -1141,9 +1141,9 @@
 			<button id="testUniformBtn">洗牌均匀性测试</button>
 		</div>
 		<div class="header-placeholder"></div>
-		<h1>沮爹红利期模拟器V5.6单机版</h1>
+		<h1>沮爹红利期模拟器V5.7单机版</h1>
 		<h2>注：本模拟器已接入GitHub Pages静态网页托管功能，网页链接：<a href="https://1145141919810tonny.github.io/sgsmoniqi/"
-				target="_blank">https://1145141919810tonny.github.io/sgsmoniqi/</a><br/>
+				target="_blank">https://1145141919810tonny.github.io/sgsmoniqi/</a><br />
 			GitHub下载zip直链：<a href="https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip"
 				target="_blank">https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip</a></h2>
 		<div class="tooltip-container">
@@ -1289,6 +1289,12 @@
 				1.同步联机版V6.5.0.56版本的所有内容
 			</div>
 		</div>
+		<div class="tooltip-container">
+			<button>V5.7更新内容</button>
+			<div class="tooltip">
+				1.同步联机版V7.0.1.57版本的所有内容
+			</div>
+		</div>
 		<p>说明：本代码的牌堆是真正的纯随机，专治各种嘴硬<br />
 			请先查看剩余牌堆，再点高亮ak。<br />
 			由于是纯随机序列，有一大堆杀闪扎堆属于正常现象（恭喜你刷到了沙摩柯的牌堆（bushi）），不想看到此类情况的，重新洗牌即可<br />
@@ -1373,13 +1379,13 @@
 		<div id="hand"></div>
 		<!-- 新增的整理手牌按钮 -->
 		<div style="margin-top: 15px; text-align: center;">
-		    <button id="organizeHandBtn"
-		        style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px;">
-		        整理手牌
-		    </button>
-		    <p style="font-size: 12px; color: #666; margin-top: 5px;">
-		        排序顺序：诸葛连弩→杀→酒→锦囊牌→装备牌（除诸葛连弩外）→桃→闪→无懈可击(有3秒冷却)
-		    </p>
+			<button id="organizeHandBtn"
+				style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px;">
+				整理手牌
+			</button>
+			<p style="font-size: 12px; color: #666; margin-top: 5px;">
+				排序顺序：诸葛连弩→杀→酒→锦囊牌→装备牌（除诸葛连弩外）→桃→闪→无懈可击(有3秒冷却)
+			</p>
 		</div>
 		<h3>操作日志</h3>
 		<div id="log-container">
@@ -2594,52 +2600,52 @@
 			// 使用卡牌
 			// 使用卡牌
 			function useCard(card, index) {
-			    // 只能在出牌阶段使用牌
-			    if (phase !== '出牌') return;
-			
-			    // 延时锦囊不参与无懈可击
-			    const isDelayTrick = ["兵粮寸断", "乐不思蜀", "闪电"].includes(card.name);
-			    const isTrick = cardCategories.trick.includes(card.name);
-			
-			    //  延时锦囊牌单独处理
-			    if (isDelayTrick) {
-			        handleDelayCard(card, index);
-			        return; // 重要：避免继续执行后续逻辑
-			    }
-			
-			    //  特殊处理：火攻（已单独处理无懈可击）
-			    if (card.name === "火攻") {
-			        resolveWuxie((shouldProceed) => {
-			            if (!shouldProceed) {
-			                // 被无懈：直接弃掉
-			                discardPile.push(hand.splice(index, 1)[0]);
-			                log(`${card.name}被无懈可击抵消`);
-			                updateUI();
-			                return;
-			            }
-			            // 无懈流程结束，继续正常结算
-			            handleHuogong(card, index);
-			        });
-			        return;
-			    }
-			
-			    // 通用锦囊处理（排除火攻和延时锦囊）
-			    if (isTrick && !isDelayTrick && card.name !== "火攻") {
-			        resolveWuxie((shouldProceed) => {
-			            if (!shouldProceed) {
-			                // 被无懈：直接弃掉
-			                discardPile.push(hand.splice(index, 1)[0]);
-			                log(`${card.name}被无懈可击抵消`);
-			                updateUI();
-			                return;
-			            }
-			            // 无懈流程结束，继续正常结算
-			            continueUseCard(card, index);
-			        });
-			    } else {
-			        // 基本牌 / 装备牌 直接结算
-			        continueUseCard(card, index);
-			    }
+				// 只能在出牌阶段使用牌
+				if (phase !== '出牌') return;
+
+				// 延时锦囊不参与无懈可击
+				const isDelayTrick = ["兵粮寸断", "乐不思蜀", "闪电"].includes(card.name);
+				const isTrick = cardCategories.trick.includes(card.name);
+
+			 //  延时锦囊牌单独处理
+				if (isDelayTrick) {
+					handleDelayCard(card, index);
+					return; // 重要：避免继续执行后续逻辑
+				}
+
+				//  特殊处理：火攻（已单独处理无懈可击）
+				if (card.name === "火攻") {
+					resolveWuxie((shouldProceed) => {
+						if (!shouldProceed) {
+							// 被无懈：直接弃掉
+			 			discardPile.push(hand.splice(index, 1)[0]);
+							log(`${card.name}被无懈可击抵消`);
+							updateUI();
+							return;
+						}
+						// 无懈流程结束，继续正常结算
+						handleHuogong(card, index);
+					});
+					return;
+				}
+
+				// 通用锦囊处理（排除火攻和延时锦囊）
+				if (isTrick && !isDelayTrick && card.name !== "火攻") {
+					resolveWuxie((shouldProceed) => {
+						if (!shouldProceed) {
+							// 被无懈：直接弃掉
+							discardPile.push(hand.splice(index, 1)[0]);
+							log(`${card.name}被无懈可击抵消`);
+							updateUI();
+							return;
+						}
+						// 无懈流程结束，继续正常结算
+						continueUseCard(card, index);
+					});
+				} else {
+					// 基本牌 / 装备牌 直接结算
+					continueUseCard(card, index);
+				}
 			}
 
 
@@ -2825,7 +2831,7 @@
 			function handleSelfHuogong(card, index) {
 				// 创建模态背景
 				const overlay = document.createElement('div');
-			 overlay.className = 'modal-backdrop';
+				overlay.className = 'modal-backdrop';
 
 				// 创建对话框
 				const dialog = document.createElement('div');
@@ -2860,7 +2866,7 @@
 
 				// 添加元素到DOM
 				document.body.appendChild(overlay);
-			 document.body.appendChild(dialog);
+				document.body.appendChild(dialog);
 
 				// 结束结算选项
 				dialog.querySelector('#selfEnd').addEventListener('click', () => {
@@ -2916,7 +2922,7 @@
 				overlay.className = 'modal-backdrop';
 
 				// 创建对话框
-			 const dialog = document.createElement('div');
+				const dialog = document.createElement('div');
 				dialog.className = 'huogong-options';
 				dialog.style = `
 			        position: fixed;
@@ -2959,7 +2965,7 @@
 				// 结束结算选项
 				dialog.querySelector('#otherEnd').addEventListener('click', () => {
 					document.body.removeChild(overlay);
-			  document.body.removeChild(dialog);
+					document.body.removeChild(dialog);
 					// 从手牌中移除火攻
 					const usedCard = hand.splice(index, 1)[0];
 					discardPile.push(usedCard);
@@ -2978,7 +2984,7 @@
 					// 更新最后使用的卡牌
 					lastUsedCard = usedCard;
 					updateUI();
-			 });
+				});
 
 				// 弃置手牌选项
 				dialog.querySelector('#otherDiscard').addEventListener('click', () => {
@@ -3000,7 +3006,7 @@
 			function showDiscardOptions(huogongCard, isSelf, requiredSuit = null) {
 				// 创建模态背景
 				const overlay = document.createElement('div');
-			 overlay.className = 'modal-backdrop';
+				overlay.className = 'modal-backdrop';
 
 				// 创建对话框
 				const dialog = document.createElement('div');
@@ -3054,7 +3060,8 @@
 						const discardedCard = hand.splice(i, 1)[0];
 						discardPile.push(discardedCard);
 						log(
-						`弃置手牌：${discardedCard.name} ${discardedCard.suit}${getPointDisplay(discardedCard.point)}`);
+							`弃置手牌：${discardedCard.name} ${discardedCard.suit}${getPointDisplay(discardedCard.point)}`
+							);
 
 						// 应用火攻效果
 						if (isSelf) {
@@ -3094,11 +3101,26 @@
 					cardsContainer.innerHTML = `<p>没有符合条件的可弃置手牌</p>`;
 				}
 
-			 // 取消按钮
+				// 取消弃牌但仍使用火攻
 				dialog.querySelector('#cancelDiscard').addEventListener('click', () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
-					log("取消了弃牌操作");
+
+					// 火攻卡牌已从手牌移除并进入弃牌堆（在更早阶段已完成）
+					log("取消弃牌，火攻已使用但不造成伤害");
+
+					// 检查渐营技能（使用火攻牌）
+					if (lastUsedCard &&
+						(huogongCard.suit === lastUsedCard.suit ||
+							huogongCard.point === lastUsedCard.point)) {
+						log('触发渐营，摸一张牌！');
+						drawCards(1);
+					}
+
+					// 更新最后使用的卡牌（火攻牌）
+					lastUsedCard = huogongCard;
+
+					updateUI();
 				});
 
 				// 添加元素到DOM
@@ -3123,37 +3145,37 @@
 
 				updateDelayArea();
 			}
-			
+
 			function resolveWuxie(callback) {
 				const wuxieCards = hand.filter(c => c.name === '无懈可击');
 				if (wuxieCards.length === 0) {
 					callback(true); // 没有无懈，锦囊生效
 					return;
 				}
-			
+
 				let useCount = 0;
-			
+
 				function promptNext() {
 					const remaining = hand.filter(c => c.name === '无懈可击');
 					if (remaining.length === 0) {
 						callback(useCount % 2 === 0); // 偶数生效，奇数失效
 						return;
 					}
-			
+
 					// 修改点：添加useCount参数
-			 	showWuxieDialog(remaining, useCount, (usedCard) => {
+					showWuxieDialog(remaining, useCount, (usedCard) => {
 						if (!usedCard) {
 							callback(useCount % 2 === 0); // 用户选择不再使用
 							return;
 						}
-			
+
 						// 使用无懈可击
 						const idx = hand.findIndex(c => c.uid === usedCard.uid);
 						if (idx !== -1) {
 							discardPile.push(hand.splice(idx, 1)[0]);
 							log(`使用无懈可击: ${usedCard.suit}${getPointDisplay(usedCard.point)}`);
 							useCount++;
-			
+
 							// 触发渐营
 							if (lastUsedCard && (usedCard.suit === lastUsedCard.suit || usedCard.point === lastUsedCard
 									.point)) {
@@ -3162,21 +3184,21 @@
 							}
 							lastUsedCard = usedCard;
 						}
-			
+
 						promptNext(); // 递归继续
 					});
 				}
-			
+
 				promptNext();
 			}
-			
+
 			function showWuxieDialog(wuxieCards, useCount, callback) {
 				const overlay = document.createElement('div');
 				overlay.className = 'modal-backdrop';
-			
+
 				const dialog = document.createElement('div');
 				dialog.className = 'card-selector-modal';
-			
+
 				// 添加状态提示信息
 				dialog.innerHTML = `
 			        <h3>是否使用无懈可击？</h3>
@@ -3197,10 +3219,10 @@
 			        </div>
 			        <button class="dialog-button" id="stopWuxie">不再使用无懈可击</button>
 			    `;
-			
+
 				document.body.appendChild(overlay);
 				document.body.appendChild(dialog);
-			
+
 				dialog.querySelectorAll('.wuxie-card').forEach(btn => {
 					btn.addEventListener('click', () => {
 						const idx = parseInt(btn.dataset.index);
@@ -3209,13 +3231,13 @@
 						callback(wuxieCards[idx]);
 					});
 				});
-			
-			 dialog.querySelector('#stopWuxie').addEventListener('click', () => {
+
+				dialog.querySelector('#stopWuxie').addEventListener('click', () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
 					callback(null); // 不再使用
 				});
-			
+
 				overlay.addEventListener('click', () => {
 					document.body.removeChild(overlay);
 					document.body.removeChild(dialog);
@@ -3307,7 +3329,7 @@
 								discardPile.push(hand.splice(handIndex, 1)[0]);
 								log(
 									`因决斗打出杀: ${selectedCard.name} ${selectedCard.suit}${getPointDisplay(selectedCard.point)}`
-									);
+								);
 							}
 
 							// 重新渲染对话框（继续决斗结算）
@@ -4135,75 +4157,75 @@
 				if (stageInfo) {
 					stageInfo.textContent = `当前阶段：${phase}阶段`;
 				}
-			
+
 				// 更新手牌显示
 				const handDiv = document.getElementById('hand');
 				handDiv.innerHTML = '<h3>手牌</h3>';
-			
+
 				// 遍历手牌
 				hand.forEach((card, i) => {
 					const div = document.createElement('div');
 					div.className = 'card';
-			
+
 					// 杀类卡牌禁用检查
 					if (['杀', '火杀', '雷杀'].includes(card.name)) {
 						if (!hasZhugeLianNu && usedKillCount >= 2) {
 							div.classList.add('disabled');
 						}
 					}
-			
-			
+
+
 					// 桃禁用检查
 					if (card.name === "桃" && peachCount <= 0) {
 						div.classList.add('disabled');
 					}
-			
+
 					// 酒禁用检查
 					if (card.name === "酒" && wineCount <= 0) {
 						div.classList.add('disabled');
 					}
-			
+
 					// 闪禁用处理
 					if (card.name === '闪') {
 						div.classList.add('disabled');
 						div.onclick = () => alert("出牌阶段无法使用闪！");
 					}
-			
+
 					// 无懈可击禁用处理
 					if (card.name === '无懈可击') {
 						div.classList.add('disabled');
 						div.onclick = () => alert("出牌阶段无法使用无懈可击");
 					}
-			
+
 					// 延时锦囊牌禁用检查
 					if (card.name === "兵粮寸断" && bingliangArea.length >= MAX_DELAY_CARDS) {
 						div.classList.add('disabled');
 						div.onclick = () => alert("兵粮寸断已达上限，无法使用！");
 					}
-			
+
 					if (card.name === "乐不思蜀" && lebuArea.length >= MAX_DELAY_CARDS) {
 						div.classList.add('disabled');
 						div.onclick = () => alert("乐不思蜀已达上限，无法使用！");
 					}
-			
+
 					if (card.name === "闪电" && shandianArea.length >= MAX_SHANDIAN) {
 						div.classList.add('disabled');
 						div.onclick = () => alert("闪电已达上限，无法使用！");
 					}
-			
-			
+
+
 					// 设置卡牌内容
 					div.innerHTML = `${card.name}<br>${card.suit}${getPointDisplay(card.point)}`;
-			
+
 					// 添加点击事件（禁用卡牌除外）
 					if (!div.classList.contains('disabled')) {
 						div.onclick = () => useCard(card, i);
 					}
-			
+
 					// 添加到手牌区域
 					handDiv.appendChild(div);
 				});
-			
+
 				// 更新按钮状态
 				document.getElementById('playBtn').disabled = phase !== '摸牌';
 				document.getElementById('endPlayBtn').disabled = phase !== '出牌';
@@ -4234,7 +4256,7 @@
 				log("已结束出牌阶段");
 			}
 
-// 添加整理手牌功能
+			// 添加整理手牌功能
 			document.getElementById('organizeHandBtn').addEventListener('click', function() {
 				const button = this;
 
@@ -4283,11 +4305,11 @@
 
 				// 装备牌优先级（数值在4-5之间）
 				const equipmentCards = [
-				        '青龙偃月刀', '丈八蛇矛', '贯石斧', '方天画戟', '麒麟弓',
-				        '雌雄双股剑', '寒冰剑', '青釭剑', '青虹剑',
-				        '朱雀羽扇', '八卦阵', '仁王盾', '白银狮子', '藤甲',
-				        '赤兔', '大宛', '爪黄飞电', '的卢', '绝影', '紫骍'
-				    ];
+					'青龙偃月刀', '丈八蛇矛', '贯石斧', '方天画戟', '麒麟弓',
+					'雌雄双股剑', '寒冰剑', '青釭剑', '青虹剑',
+					'朱雀羽扇', '八卦阵', '仁王盾', '白银狮子', '藤甲',
+					'赤兔', '大宛', '爪黄飞电', '的卢', '绝影', '紫骍'
+				];
 
 				// 对每张牌分配优先级和名称排序键
 				hand.forEach(card => {
@@ -4370,6 +4392,7 @@
 				// 记录日志
 				log("已整理手牌");
 			}
+
 			function discardCard(card) {
 				if (card.name === "诸葛连弩") {
 					hasZhugeLianNu = false;
