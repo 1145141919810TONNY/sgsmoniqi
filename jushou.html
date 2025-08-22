@@ -1820,101 +1820,109 @@
 
 			// 处理对他人使用火攻
 			function handleOtherHuogong(card, index) {
-				// 检查牌堆是否为空
-				if (deck.length === 0) {
-					alert("牌堆已空，无法使用火攻！");
-					log("火攻失败：牌堆已空");
-					return;
-				}
-
-				// 亮出牌堆顶的一张牌
-				const revealedCard = deck.shift();
-				log(`火攻亮出牌堆顶牌：${revealedCard.name} ${revealedCard.suit}${getPointDisplay(revealedCard.point)}`);
-
-				// 创建模态背景
-				const overlay = document.createElement('div');
-				overlay.className = 'modal-backdrop';
-
-				// 创建对话框
-				const dialog = document.createElement('div');
-				dialog.className = 'huogong-options';
-				dialog.style = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #ffecb3;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 10001;
-        min-width: 450px;
-        text-align: center;
-    `;
-
-				// 对话框内容
-				dialog.innerHTML = `
-        <h3 style="color:#d32f2f; margin-top:0;">对他人使用火攻</h3>
-        <div style="background:#ffd54f; padding: 10px; border-radius: 5px; margin: 10px 0;">
-            <p style="margin:0; font-weight:bold;">亮出的牌：</p>
-            <p style="margin:0; font-size: 24px;">
-                ${revealedCard.name} ${revealedCard.suit}${getPointDisplay(revealedCard.point)}
-            </p>
-        </div>
-        <p>请选择效果：</p>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
-            <button id="otherEnd" class="dialog-button" style="background:#4CAF50;">
-                结束结算：无事发生
-            </button>
-            <button id="otherDiscard" class="dialog-button" style="background:#f44336;">
-                弃置一张${revealedCard.suit}花色手牌：回合伤害+1
-            </button>
-        </div>
-    `;
-
-				// 添加元素到DOM
-				document.body.appendChild(overlay);
-				document.body.appendChild(dialog);
-
-				// 结束结算选项
-				dialog.querySelector('#otherEnd').addEventListener('click', () => {
-					document.body.removeChild(overlay);
-					document.body.removeChild(dialog);
-					// 从手牌中移除火攻
-					const usedCard = hand.splice(index, 1)[0];
-					discardPile.push(usedCard);
-					// 亮出的牌进入弃牌堆
-					discardPile.push(revealedCard);
-					log(`使用火攻（对他人）：无事发生`);
-
-					// 检查渐营技能
-					if (lastUsedCard &&
-						(usedCard.suit === lastUsedCard.suit ||
-							usedCard.point === lastUsedCard.point)) {
-						log('触发渐营，摸一张牌！');
-						drawCards(1);
-					}
-
-					// 更新最后使用的卡牌
-					lastUsedCard = usedCard;
-					updateUI();
-				});
-
-				// 弃置手牌选项
-				dialog.querySelector('#otherDiscard').addEventListener('click', () => {
-					document.body.removeChild(overlay);
-					document.body.removeChild(dialog);
-					// 从手牌中移除火攻
-					const usedCard = hand.splice(index, 1)[0];
-					discardPile.push(usedCard);
-					// 亮出的牌进入弃牌堆
-					discardPile.push(revealedCard);
-					log(`使用火攻（对他人）：需弃置一张${revealedCard.suit}花色手牌`);
-
-					// 显示弃牌选择对话框
-					showDiscardOptions(card, false, revealedCard.suit);
-				});
+			    // 检查牌堆是否为空
+			    if (deck.length === 0) {
+			        alert("牌堆已空，无法使用火攻！");
+			        log("火攻失败：牌堆已空");
+			        return;
+			    }
+			
+			    // 亮出牌堆顶的一张牌
+			    const revealedCard = deck.shift();
+			    log(`火攻亮出牌堆顶牌：${revealedCard.name} ${revealedCard.suit}${getPointDisplay(revealedCard.point)}`);
+			
+			    // 火攻卡牌从手牌移除并进入弃牌堆（无论后续是否弃牌）
+			    const usedCard = hand.splice(index, 1)[0];
+			    discardPile.push(usedCard);
+			
+			    // 创建模态背景
+			    const overlay = document.createElement('div');
+			    overlay.className = 'modal-backdrop';
+			
+			    // 创建对话框
+			    const dialog = document.createElement('div');
+			    dialog.className = 'huogong-options';
+			    dialog.style = `
+			        position: fixed;
+			        top: 50%;
+			        left: 50%;
+			        transform: translate(-50%, -50%);
+			        background: #ffecb3;
+			        padding: 20px;
+			        border-radius: 10px;
+			        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			        z-index: 10001;
+			        min-width: 450px;
+			        text-align: center;
+			    `;
+			
+			    dialog.innerHTML = `
+			        <h3 style="color:#d32f2f; margin-top:0;">对他人使用火攻</h3>
+			        <div style="background:#ffd54f; padding: 10px; border-radius: 5px; margin: 10px 0;">
+			            <p style="margin:0; font-weight:bold;">亮出的牌：</p>
+			            <p style="margin:0; font-size: 24px;">
+			                ${revealedCard.name} ${revealedCard.suit}${getPointDisplay(revealedCard.point)}
+			            </p>
+			        </div>
+			        <p>请选择效果：</p>
+			        <div style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
+			            <button id="otherEnd" class="dialog-button" style="background:#4CAF50;">
+			                结束结算：无事发生
+			            </button>
+			            <button id="otherDiscard" class="dialog-button" style="background:#f44336;">
+			                弃置一张${revealedCard.suit}花色手牌：回合伤害+1
+			            </button>
+			        </div>
+			    `;
+			
+			    // 添加元素到DOM
+			    document.body.appendChild(overlay);
+			    document.body.appendChild(dialog);
+			
+			    // 结束结算：无事发生
+			    dialog.querySelector('#otherEnd').addEventListener('click', () => {
+			        // 亮出的牌也进入弃牌堆
+			        discardPile.push(revealedCard);
+			
+			        log(`使用火攻（对他人）：无事发生，火攻已使用`);
+			
+			        // 关闭对话框
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			
+			        // 检查渐营技能
+			        if (lastUsedCard &&
+			            (usedCard.suit === lastUsedCard.suit ||
+			                usedCard.point === lastUsedCard.point)) {
+			            log('触发渐营，摸一张牌！');
+			            drawCards(1);
+			        }
+			
+			        lastUsedCard = usedCard;
+			        updateUI();
+			    });
+			
+			    // 尝试弃牌（可能取消）
+			    dialog.querySelector('#otherDiscard').addEventListener('click', () => {
+			        // 亮出的牌进入弃牌堆
+			        discardPile.push(revealedCard);
+			
+			        // 进入弃牌选择流程
+			        showDiscardOptions(usedCard, false, revealedCard.suit);
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			    });
+			
+			    // 点击背景关闭（视为取消弃牌，但火攻已使用）
+			    overlay.addEventListener('click', () => {
+			        discardPile.push(revealedCard);
+			        log(`取消弃牌，火攻已使用`);
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			        updateUI();
+			    });
 			}
+
 
 			// 显示弃牌选择对话框
 			function showDiscardOptions(huogongCard, isSelf, requiredSuit = null) {
@@ -2014,12 +2022,28 @@
 					cardsContainer.innerHTML = `<p>没有符合条件的可弃置手牌</p>`;
 				}
 
-				// 取消按钮
+				// 取消弃牌但仍使用火攻
 				dialog.querySelector('#cancelDiscard').addEventListener('click', () => {
-					document.body.removeChild(overlay);
-					document.body.removeChild(dialog);
-					log("取消了弃牌操作");
+				    document.body.removeChild(overlay);
+				    document.body.removeChild(dialog);
+				
+				    // 火攻卡牌已从手牌移除并进入弃牌堆（在更早阶段已完成）
+				    log("取消弃牌，火攻已使用但不造成伤害");
+				
+				    // 检查渐营技能（使用火攻牌）
+				    if (lastUsedCard &&
+				        (huogongCard.suit === lastUsedCard.suit ||
+				            huogongCard.point === lastUsedCard.point)) {
+				        log('触发渐营，摸一张牌！');
+				        drawCards(1);
+				    }
+				
+				    // 更新最后使用的卡牌（火攻牌）
+				    lastUsedCard = huogongCard;
+				
+				    updateUI();
 				});
+
 
 				// 添加元素到DOM
 				document.body.appendChild(overlay);
