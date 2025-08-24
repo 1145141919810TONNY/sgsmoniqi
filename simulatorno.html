@@ -81,7 +81,7 @@
 				<!-- 操作提示：查看牌堆后再高亮武器 -->
 				3.由于是纯随机序列，有一大堆杀闪扎堆属于正常现象（恭喜你刷到了沙摩柯的牌堆（bushi）），不想看到此类情况的，重新洗牌即可<br />
 				<!-- 解释随机现象及解决方法 -->
-				4.刷新按钮可在网页有不可逆的bug时将网页恢复到初始状态<br/>
+				4.刷新按钮可在网页有不可逆的bug时将网页恢复到初始状态<br />
 				<!-- 刷新按钮的功能说明 -->
 				5.这个模拟器没有武将技能，只有正常的摸牌等功能，用于日后做其他武将技能的模板模拟器。
 			</h3>
@@ -196,9 +196,13 @@
 			<span>0%</span>
 			<!-- 进度百分比显示 -->
 		</div>
+	
 		<div id="deck"></div>
 		<!-- 牌堆显示区域 -->
 		<div id="remaining"></div>
+		<div id="previousCardInfo" style="display: inline-block; margin-left: 10px; font-size: 14px; color: #555;">
+			上一张牌：空
+		</div>
 		<!-- 剩余牌堆显示区域 -->
 		<div id="hand"></div>
 		<!-- 玩家手牌显示区域 -->
@@ -253,6 +257,12 @@
 			let wineEffect = false; // 酒效果标记（下一张杀伤害+1）
 			let usedKillCount = 0; // 本回合已使用杀的次数
 
+			let qinglongActive = false; // 青龙偃月刀是否激活
+			let qinglongCards = []; // 存储青龙偃月刀使用的杀
+			let qinglongWineBonus = false; // 记录编号0的杀是否享受酒加成
+
+			let previousCard = null;
+
 
 			// 初始化牌堆函数
 			function initializeDeck() {
@@ -279,6 +289,10 @@
 				totalDamage = 0;
 				currentTurnDamage = 0;
 				wineEffect = false;
+
+				// 清空前一张牌信息
+				previousCard = null;
+				document.getElementById('previousCardInfo').textContent = '上一张牌：空';
 
 				// 使用外部定义的standardDeck（在card.js中）创建牌堆
 				standardDeck.forEach(card => {
@@ -1515,53 +1529,129 @@
 
 			// 使用卡牌
 			function useCard(card, index) {
-				// 只能在出牌阶段使用牌
-				if (phase !== '出牌') return;
-
-				// 延时锦囊不参与无懈可击
-				const isDelayTrick = ["兵粮寸断", "乐不思蜀", "闪电"].includes(card.name);
-				const isTrick = cardCategories.trick.includes(card.name);
-
-				// 延时锦囊牌单独处理
-				if (isDelayTrick) {
-					handleDelayCard(card, index);
-					return; // 重要：避免继续执行后续逻辑
-				}
-
-				// 特殊处理：火攻（已单独处理无懈可击）
-				if (card.name === "火攻") {
-					resolveWuxie((shouldProceed) => {
-						if (!shouldProceed) {
-							// 被无懈：直接弃掉
-			 			discardPile.push(hand.splice(index, 1)[0]);
-							log(`${card.name}被无懈可击抵消`);
-							updateUI();
-							return;
-						}
-						// 无懈流程结束，继续正常结算
-						handleHuogong(card, index);
-					});
-					return;
-				}
-
-				// 通用锦囊处理（排除火攻和延时锦囊）
-				if (isTrick && !isDelayTrick && card.name !== "火攻") {
-					resolveWuxie((shouldProceed) => {
-						if (!shouldProceed) {
-							// 被无懈：直接弃掉
-							discardPile.push(hand.splice(index, 1)[0]);
-							log(`${card.name}被无懈可击抵消`);
-							updateUI();
-							return;
-						}
-						// 无懈流程结束，继续正常结算
-						continueUseCard(card, index);
-					});
-				} else {
-					// 基本牌 / 装备牌 直接结算
-					continueUseCard(card, index);
-				}
+			    // 只能在出牌阶段使用牌
+			    if (phase !== '出牌') return;
+			
+			    // 延时锦囊不参与无懈可击
+			    const isDelayTrick = ["兵粮寸断", "乐不思蜀", "闪电"].includes(card.name);
+			    const isTrick = cardCategories.trick.includes(card.name);
+			
+			    // 延时锦囊牌单独处理
+			    if (isDelayTrick) {
+			        handleDelayCard(card, index);
+			        return;
+			    }
+				
+				// 更新上一张牌的信息
+				        if (card) {
+				            previousCard = card;
+				            document.getElementById('previousCardInfo').textContent = `上一张牌：${card.name} ${card.suit}${getPointDisplay(card.point)}`;
+				        } else {
+				            previousCard = null;
+				            document.getElementById('previousCardInfo').textContent = '上一张牌：空';
+				        }
+			
+			    // 通用杀伤害计算（无论是否青龙偃月刀）
+			    function handleKillDamage(killCard) {
+			        let damage = 0;
+			        switch (killCard.name) {
+			            case '杀':
+			            case '雷杀':
+			                damage = wineEffect ? 2 : 1;
+			                break;
+			            case '火杀':
+			                damage = wineEffect ? 3 : 2;
+			                break;
+			        }
+			        if (damage > 0) {
+			            totalDamage += damage;
+			            currentTurnDamage += damage;
+			            log(`造成${damage}点伤害（总伤害：${totalDamage}，当前回合伤害：${currentTurnDamage}）`);
+			        }
+			        wineEffect = false;
+			    }
+			
+			    // 青龙偃月刀特殊处理
+			    if (card.name === '杀' && currentWeapon === '青龙偃月刀') {
+			        startQinglongFlow(card, index);
+			        return;
+			    }
+			
+			    // 杀类卡牌处理
+			    if (['杀', '火杀', '雷杀'].includes(card.name)) {
+			        if (!hasZhugeLianNu && usedKillCount >= 2) {
+			            alert("杀次数已用尽！");
+			            return;
+			        }
+			
+			        usedKillCount++;
+			        log(`使用${card.name}，已使用杀次数：${usedKillCount}`);
+			
+			        const usedCard = hand.splice(index, 1)[0];
+			        discardPile.push(usedCard);
+			
+			        // 统一伤害计算
+			        handleKillDamage(usedCard);
+			
+			        // 渐营技能留存
+			        
+			
+			        lastUsedCard = usedCard;
+			        updateStatus();
+			        updateUI();
+			        return;
+			    }
+			
+			    // 火攻单独处理
+			    if (card.name === "火攻") {
+			        resolveWuxie((shouldProceed) => {
+			            if (!shouldProceed) {
+			                discardPile.push(hand.splice(index, 1)[0]);
+			                log(`${card.name}被无懈可击抵消`);
+			                updateUI();
+			                return;
+			            }
+			            handleHuogong(card, index);
+			        });
+			        return;
+			    }
+			
+			    // 通用锦囊 & 其他
+			    if (isTrick && !isDelayTrick && card.name !== "火攻") {
+			        resolveWuxie((shouldProceed) => {
+			            if (!shouldProceed) {
+			                discardPile.push(hand.splice(index, 1)[0]);
+			                log(`${card.name}被无懈可击抵消`);
+			                updateUI();
+			                return;
+			            }
+			            continueUseCard(card, index);
+			        });
+			    } else {
+			        continueUseCard(card, index);
+			    }
 			}
+			
+			function handleKillDamage(card) {
+				let damage = 0;
+				switch (card.name) {
+					case '杀':
+					case '雷杀':
+						damage = wineEffect ? 2 : 1;
+						break;
+					case '火杀':
+						damage = wineEffect ? 3 : 2;
+						break;
+				}
+				if (damage > 0) {
+					totalDamage += damage;
+					currentTurnDamage += damage;
+					log(`造成${damage}点伤害（总伤害：${totalDamage}，当前回合伤害：${currentTurnDamage}）`);
+				}
+				wineEffect = false;
+			}
+
+
 
 
 			function continueUseCard(card, index) {
@@ -1666,13 +1756,223 @@
 				}
 
 				// 渐营技能留存
-				
+
 				lastUsedCard = card;
 
 				// 移除手牌
 				discardPile.push(hand.splice(index, 1)[0]);
 				updateStatus();
 				updateUI();
+			}
+
+			function startQinglongFlow(initialCard, initialIndex) {
+				if (currentWeapon !== '青龙偃月刀') {
+					continueUseCard(initialCard, initialIndex);
+					return;
+				}
+
+				/* 1. 立即把这张杀从手牌里拿掉 */
+				const usedCard = hand.splice(initialIndex, 1)[0];
+				discardPile.push(usedCard);
+
+				/* 2. 记录为第一张杀 */
+				qinglongActive = true;
+				qinglongCards = [usedCard];
+				qinglongWineBonus = wineEffect;
+				wineEffect = false; // 酒效果已交给第一张杀
+
+				//渐营技能留存
+
+				lastUsedCard = usedCard;
+
+				/* 4. 打开弹窗 */
+				showQinglongDialog();
+			}
+
+			function showQinglongDialog(initialCard, initialIndex) {
+				const overlay = document.createElement('div');
+				overlay.className = 'modal-backdrop';
+				overlay.style.zIndex = '10000';
+
+				const dialog = document.createElement('div');
+				dialog.className = 'qinglong-dialog';
+				dialog.style = `
+			        position: fixed;
+			        top: 50%;
+			        left: 50%;
+			        transform: translate(-50%, -50%);
+			        background: #ffecb3;
+			        padding: 20px;
+			        border-radius: 10px;
+			        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			        z-index: 10001;
+			        min-width: 500px;
+			        max-height: 80vh;
+			        overflow-y: auto;
+			        text-align: center;
+			    `;
+
+				const lastCard = qinglongCards[qinglongCards.length - 1];
+
+				// 构建提示信息
+				let wineMessage = '';
+				if (qinglongWineBonus) {
+					wineMessage = '您已使用一张【酒】，本张杀将获得伤害+1效果';
+				}
+
+			 // 显示上一张牌信息（如果有）
+				let lastCardInfo = '';
+				if (qinglongCards.length > 0) {
+					const lastCard = qinglongCards[qinglongCards.length - 1];
+					lastCardInfo = `
+			            <div style="background: #fff3e0; padding: 10px; margin: 10px 0; border-radius: 5px;">
+			                <strong>最后使用的杀（第${qinglongCards.length}张）：</strong><br>
+			                ${lastCard.name} ${lastCard.suit}${getPointDisplay(lastCard.point)}
+			            </div>
+			        `;
+				}
+
+				// 获取当前可使用的杀
+				const availableKills = hand.filter(c => ['杀', '火杀', '雷杀'].includes(c.name));
+
+				dialog.innerHTML = `
+			        <h3 style="color:#d32f2f; margin-top:0;">青龙偃月刀效果</h3>
+			        <p style="color: #5d4037; font-weight: bold;">${wineMessage}</p>
+			        ${lastCardInfo}
+			        
+			        <div style="margin: 20px 0;">
+			            <h4>当前已使用杀：${qinglongCards.length}</h4>
+			            <div id="qinglongUsedCards" style="background: #fff8e1; padding: 10px; margin: 10px 0; border-radius: 5px;">
+			                ${qinglongCards.length > 0 ? 
+			                    `<div>最后一张杀: ${qinglongCards[qinglongCards.length-1].name} ${qinglongCards[qinglongCards.length-1].suit}${getPointDisplay(qinglongCards[qinglongCards.length-1].point)}</div>` 
+			                    : '<div>尚未使用杀</div>'
+			                }
+			            </div>
+			        </div>
+			        
+			        <div style="margin: 20px 0;">
+			            <h4>选择下一张杀：</h4>
+			            <div id="killOptions" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+			                ${availableKills.map((kill, idx) => `
+			                    <button class="kill-option" data-index="${idx}" 
+			                            style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">
+			                        ${kill.name}<br>
+			                        ${kill.suit}${getPointDisplay(kill.point)}
+			                    </button>
+			                `).join('')}
+			            </div>
+			        </div>
+			        
+			        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+			            <button id="endQinglong" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px;">
+			                结束出杀并结算
+			            </button>
+			        </div>
+			    `;
+
+				document.body.appendChild(overlay);
+				document.body.appendChild(dialog);
+
+				// 绑定杀牌选择事件
+				dialog.querySelectorAll('.kill-option').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const idx = parseInt(btn.dataset.index);
+						const selectedKill = availableKills[idx];
+
+						// 添加到已使用杀列表
+						qinglongCards.push(selectedKill);
+
+						// 从手牌移除
+						const handIndex = hand.findIndex(c => c.uid === selectedKill.uid);
+						if (handIndex !== -1) {
+							hand.splice(handIndex, 1);
+						}
+
+						// 渐营技能留存
+
+
+						// 更新最后使用的卡牌
+						lastUsedCard = selectedKill;
+
+						// 重新渲染对话框
+						closeQinglongDialog(overlay, dialog);
+						showQinglongDialog(initialCard, initialIndex);
+					});
+				});
+
+				// 绑定结束按钮事件
+				dialog.querySelector('#endQinglong').addEventListener('click', () => {
+					closeQinglongDialog(overlay, dialog);
+					finalizeQinglongEffect(initialCard, initialIndex);
+				});
+			}
+
+			function closeQinglongDialog(overlay, dialog) {
+				if (overlay && overlay.parentNode) {
+					document.body.removeChild(overlay);
+				}
+				if (dialog && dialog.parentNode) {
+					document.body.removeChild(dialog);
+				}
+			}
+
+			function finalizeQinglongEffect(initialCard, initialIndex) {
+				// 获取最后一张杀
+				const finalKill = qinglongCards[qinglongCards.length - 1];
+			
+				// 计算伤害（仅由最后一张杀决定）
+				let damage = 0;
+				switch (finalKill.name) {
+					case '杀':
+					case '雷杀':
+						damage = 1;
+						break;
+					case '火杀':
+						damage = 2;
+						break;
+				}
+			
+				// 只有编号0的杀可能享受酒加成
+				if (qinglongWineBonus) {
+					damage += 1;
+					log('使用酒加成，伤害+1');
+				}
+			
+				// 造成伤害
+				if (damage > 0) {
+					totalDamage += damage;
+					currentTurnDamage += damage;
+					log(`青龙偃月刀最终伤害：${damage}点（来自杀 #${qinglongCards.length - 1}）`);
+				}
+			
+				// 将序列中的杀移入弃牌堆
+				qinglongCards.forEach(card => {
+					discardPile.push(card);
+				});
+			
+				// 计入一次出杀次数
+				if (!hasZhugeLianNu) {
+					usedKillCount++;
+				}
+			
+				// 更新 lastUsedCard 和 previousCard
+				lastUsedCard = finalKill;
+				previousCard = finalKill;
+			
+				// 重置青龙偃月刀状态
+				qinglongActive = false;
+				qinglongCards = [];
+				qinglongWineBonus = false;
+			
+				// 更新界面
+				updateStatus();
+				updateUI();
+			
+			
+				previousCard = finalKill;
+				document.getElementById('previousCardInfo').textContent =
+					`上一张牌：${finalKill.name} ${finalKill.suit}${getPointDisplay(finalKill.point)}`;
+			
 			}
 
 			// 处理火攻效果
@@ -1790,7 +2090,7 @@
 					log(`使用火攻（对自己）：无事发生`);
 
 					// 渐营技能留存
-					
+
 					// 更新最后使用的卡牌
 					lastUsedCard = usedCard;
 					updateUI();
@@ -1960,7 +2260,8 @@
 						const discardedCard = hand.splice(i, 1)[0];
 						discardPile.push(discardedCard);
 						log(
-						`弃置手牌：${discardedCard.name} ${discardedCard.suit}${getPointDisplay(discardedCard.point)}`);
+							`弃置手牌：${discardedCard.name} ${discardedCard.suit}${getPointDisplay(discardedCard.point)}`
+							);
 
 						// 应用火攻效果
 						if (isSelf) {
@@ -1996,18 +2297,18 @@
 
 				// 取消弃牌但仍使用火攻
 				dialog.querySelector('#cancelDiscard').addEventListener('click', () => {
-				    document.body.removeChild(overlay);
-				    document.body.removeChild(dialog);
-				
-				    // 火攻卡牌已从手牌移除并进入弃牌堆（在更早阶段已完成）
-				    log("取消弃牌，火攻已使用但不造成伤害");
-				
-				    // 渐营技能留存
-				
-				    // 更新最后使用的卡牌（火攻牌）
-				    lastUsedCard = huogongCard;
-				
-				    updateUI();
+					document.body.removeChild(overlay);
+					document.body.removeChild(dialog);
+
+					// 火攻卡牌已从手牌移除并进入弃牌堆（在更早阶段已完成）
+					log("取消弃牌，火攻已使用但不造成伤害");
+
+					// 渐营技能留存
+
+					// 更新最后使用的卡牌（火攻牌）
+					lastUsedCard = huogongCard;
+
+				 updateUI();
 				});
 
 				// 添加元素到DOM
@@ -2067,7 +2368,7 @@
 							useCount++;
 
 							// 渐营技能留存
-							
+
 							lastUsedCard = usedCard;
 						}
 
@@ -2725,7 +3026,7 @@
 				log(`使用五谷丰登`);
 
 				//渐营技能留存
-				
+
 				// 更新最后使用的卡牌
 				lastUsedCard = wugufengdengCard;
 
@@ -2835,7 +3136,7 @@
 
 				// 功能2：使用检索
 				dialog.querySelector('#func2').addEventListener('click', () => {
-					
+
 					//渐营技能留存
 
 					// 更新最后使用的卡牌
@@ -3080,7 +3381,7 @@
 				discardPile.push(jiedaoCard);
 
 				//渐营技能留存
-				
+
 				// 更新最后使用的卡牌
 				lastUsedCard = jiedaoCard;
 
@@ -3183,39 +3484,48 @@
 			function endPlayPhase() {
 				// 设置游戏阶段为准备阶段
 				phase = '准备';
-
+			
 				// 重置最后使用的卡牌
 				lastUsedCard = null;
-
+			
 				// 重置当前回合伤害和酒效果
 				currentTurnDamage = 0;
 				wineEffect = false;
-
+			
 				// 重置本回合已使用杀次数
 				usedKillCount = 0;
-
+				
+				qinglongActive = false;
+				qinglongCards = [];
+				qinglongWineBonus = false;
+			
+			
+				// 清空前一张牌信息
+				previousCard = null;
+				document.getElementById('previousCardInfo').textContent = '上一张牌：空';
+			
 				// 更新按钮状态
 				document.getElementById('drawBtn').disabled = false; // 启用摸牌按钮
 				document.getElementById('endPlayBtn').disabled = true; // 禁用结束出牌按钮
 				document.getElementById('playBtn').disabled = true; // 禁用出牌按钮
-
+			
 				// 武器状态处理
 				if (currentWeapon !== "诸葛连弩") {
 					hasZhugeLianNu = false;
 				}
-
+			
 				// 重置酒使用次数
 				wineCount = 1;
-
+			
 				// 更新状态显示
 				updateStatus();
-
+			
 				// 清空延时锦囊区
 				clearDelayAreas();
-
+			
 				// 更新界面
 				updateUI();
-
+			
 				// 记录日志
 				log("已结束出牌阶段");
 			}
