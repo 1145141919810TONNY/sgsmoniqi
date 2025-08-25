@@ -1141,7 +1141,7 @@
 			<button id="testUniformBtn">洗牌均匀性测试</button>
 		</div>
 		<div class="header-placeholder"></div>
-		<h1>沮爹红利期模拟器V6.0单机版</h1>
+		<h1>沮爹红利期模拟器V6.1单机版</h1>
 		<h2>注：本模拟器已接入GitHub Pages静态网页托管功能，网页链接：<a href="https://1145141919810tonny.github.io/sgsmoniqi/"
 				target="_blank">https://1145141919810tonny.github.io/sgsmoniqi/</a><br />
 			GitHub下载zip直链：<a href="https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip"
@@ -1301,6 +1301,12 @@
 				1.同步联机版V7.1.0.60版本的所有内容
 			</div>
 		</div>
+		<div class="tooltip-container">
+			<button>V6.1更新内容</button>
+			<div class="tooltip">
+				1.同步联机版V7.2.0.61版本的所有内容
+			</div>
+		</div>
 		<p>说明：本代码的牌堆是真正的纯随机，专治各种嘴硬<br />
 			请先查看剩余牌堆，再点高亮ak。<br />
 			由于是纯随机序列，有一大堆杀闪扎堆属于正常现象（恭喜你刷到了沙摩柯的牌堆（bushi）），不想看到此类情况的，重新洗牌即可<br />
@@ -1384,6 +1390,12 @@
 		<div id="remaining"></div>
 		<div id="previousCardInfo" style="display: inline-block; margin-left: 10px; font-size: 14px; color: #555;">
 			上一张牌：空
+		</div>
+		<div style="text-align: center; margin: 20px 0;">
+			<button id="zhangbaBtn"
+				style="padding: 12px 24px; background-color: #2196F3; color: white; border: none; border-radius: 5px; font-size: 16px; display: none;">
+				丈八
+			</button>
 		</div>
 		<div id="hand"></div>
 		<!-- 新增的整理手牌按钮 -->
@@ -2637,23 +2649,49 @@
 			        return;
 			    }
 			
-			    // 通用杀伤害计算（无论是否青龙偃月刀）
+			    // 通用杀伤害计算
 			    function handleKillDamage(killCard) {
+			        // 基础伤害值
 			        let damage = 0;
+			    
+			        // 根据杀的类型决定基础伤害
 			        switch (killCard.name) {
 			            case '杀':
+			                damage = wineEffect ? 2 : 1;          // 普通杀
+			                break;
 			            case '雷杀':
-			                damage = wineEffect ? 2 : 1;
+			                damage = wineEffect ? 2 : 1;          // 雷杀
 			                break;
 			            case '火杀':
-			                damage = wineEffect ? 3 : 2;
+			                damage = wineEffect ? 3 : 2;          // 火杀
 			                break;
+			            default:
+			                damage = 0;
 			        }
+			    
+			        // 古锭刀效果：所有杀的基础伤害+1
+			        const baseDamageBonus = currentWeapon === '古锭刀' ? 1 : 0;
+			        damage += baseDamageBonus;
+			    
+			        // 朱雀羽扇效果：仅对普通杀（杀）伤害+1
+			        if (currentWeapon === '朱雀羽扇' && killCard.name === '杀') {
+			            damage += 1;
+			            log('朱雀羽扇：普通杀伤害+1');
+			        }
+			    
+			        // 结算伤害
 			        if (damage > 0) {
 			            totalDamage += damage;
 			            currentTurnDamage += damage;
 			            log(`造成${damage}点伤害（总伤害：${totalDamage}，当前回合伤害：${currentTurnDamage}）`);
+			    
+			            // 记录古锭刀效果
+			            if (baseDamageBonus > 0) {
+			                log(`古锭刀效果：基础伤害+1`);
+			            }
 			        }
+			    
+			        // 重置酒效果
 			        wineEffect = false;
 			    }
 			
@@ -2669,6 +2707,12 @@
 			            alert("杀次数已用尽！");
 			            return;
 			        }
+					
+					// 雌雄双股剑效果：出杀后摸一张牌
+					    if (currentWeapon === '雌雄双股剑') {
+					        log('触发雌雄双股剑效果，额外摸一张牌');
+					        drawCards(1);
+					    }
 			
 			        usedKillCount++;
 			        log(`使用${card.name}，已使用杀次数：${usedKillCount}`);
@@ -3447,22 +3491,202 @@
 				document.body.appendChild(dialog);
 			}
 
+			// 显示丈八蛇矛对话框
+			function showZhangbaDialog() {
+			    // 确保至少有两张手牌
+			    if (hand.length < 2) {
+			        alert("手牌不足两张，无法使用丈八蛇矛效果！");
+			        return;
+			    }
+			    
+			    // 创建模态背景
+			    const overlay = document.createElement('div');
+			    overlay.className = 'modal-backdrop';
+			    overlay.style.zIndex = '10000';
+			    
+			    // 创建对话框
+			    const dialog = document.createElement('div');
+			    dialog.className = 'zhangba-dialog';
+			    dialog.style.cssText = `
+			        position: fixed;
+			        top: 50%;
+			        left: 50%;
+			        transform: translate(-50%, -50%);
+			        background: #ffecb3;
+			        padding: 20px;
+			        border-radius: 10px;
+			        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			        z-index: 10001;
+			        min-width: 500px;
+			        max-height: 80vh;
+			        overflow-y: auto;
+			        text-align: center;
+			    `;
+			
+			    dialog.innerHTML = `
+			        <h3 style="color:#d32f2f; margin-top:0;">丈八蛇矛效果</h3>
+			        <p>请选择两张手牌当杀使用：</p>
+			        <div class="hand-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0;"></div>
+			        <div style="text-align: center; margin-top: 20px;">
+			            <button id="confirmZhangba" style="padding: 12px 24px; background: #4CAF50; color: white; margin-right: 10px;">确认使用</button>
+			            <button id="cancelZhangba" style="padding: 12px 24px; background: #f44336; color: white;">取消</button>
+			        </div>
+			    `;
+			    
+			    // 获取手牌容器
+			    const handContainer = dialog.querySelector('.hand-container');
+			    
+			    // 显示所有手牌
+			    hand.forEach((card, index) => {
+			        const cardDiv = document.createElement('div');
+			        cardDiv.className = 'card-selectable';
+			        cardDiv.style.cssText = `
+			            border: 1px solid #ccc;
+			            border-radius: 5px;
+			            padding: 10px;
+			            cursor: pointer;
+			            background: white;
+			            transition: all 0.2s;
+			        `;
+			        cardDiv.innerHTML = `
+			            <div>${card.name}</div>
+			            <div>${card.suit}${getPointDisplay(card.point)}</div>
+			        `;
+			        
+			        // 点击选择/取消选择
+			        cardDiv.addEventListener('click', () => {
+			            const cardIndex = selectedCards.indexOf(index);
+			            if (cardIndex === -1) {
+			                if (selectedCards.length < 2) {
+			                    selectedCards.push(index);
+			                    cardDiv.style.border = "3px solid red"; // 选中样式
+			                }
+			            } else {
+			                selectedCards.splice(cardIndex, 1);
+			                cardDiv.style.border = "1px solid #ccc"; // 恢复默认
+			            }
+			        });
+			        
+			        handContainer.appendChild(cardDiv);
+			    });
+			    
+			    // 添加元素到DOM
+			    document.body.appendChild(overlay);
+			    document.body.appendChild(dialog);
+			    
+			    // 确认按钮事件
+			    dialog.querySelector('#confirmZhangba').addEventListener('click', () => {
+			        if (selectedCards.length !== 2) {
+			            alert("请选择两张手牌！");
+			            return;
+			        }
+			        
+			        // 使用两张手牌当杀
+			        useZhangbaAsKill();
+			        
+			        // 关闭对话框
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			    });
+			    
+			    // 取消按钮事件
+			    dialog.querySelector('#cancelZhangba').addEventListener('click', () => {
+			        // 清空选择
+			        selectedCards = [];
+			        document.body.removeChild(overlay);
+			        document.body.removeChild(dialog);
+			    });
+			}
+			
+			// 使用两张手牌当杀
+			function useZhangbaAsKill() {
+			    // 检查杀次数限制
+			    if (!hasZhugeLianNu && usedKillCount >= 2) {
+			        alert("杀次数已用尽！");
+			        return;
+			    }
+			    
+			    // 排序选择的手牌索引（从大到小，避免移除错误）
+			    selectedCards.sort((a, b) => b - a);
+			    
+			    // 移除两张手牌
+			    const cardsToUse = [];
+			    selectedCards.forEach(index => {
+			        cardsToUse.push(hand.splice(index, 1)[0]);
+			    });
+			    
+			    // 添加到弃牌堆
+			    discardPile.push(...cardsToUse);
+			    
+			    // 记录日志
+			    log(`使用丈八蛇矛效果：将两张手牌当杀使用`);
+			    
+			    // 计入出杀次数
+			    usedKillCount++;
+			    
+			    // 伤害计算（基础伤害1，可受酒加成）
+			    const damage = wineEffect ? 2 : 1;
+			    totalDamage += damage;
+			    currentTurnDamage += damage;
+			    
+			    // 清空酒效果
+			    wineEffect = false;
+			    
+			    // 显示上一张使用的卡牌为空（因为是两张牌当杀）
+			    previousCard = null;
+			    document.getElementById('previousCardInfo').textContent = '上一张牌：空';
+			    
+			    // 清空选择
+			    selectedCards = [];
+			    
+			    // 更新状态
+			    updateStatus();
+			    updateUI();
+			    
+			    // 记录伤害日志
+			    log(`造成${damage}点伤害（总伤害：${totalDamage}，当前回合伤害：${currentTurnDamage}）`);
+			}
+			
+			// 更新状态显示
 			function updateStatus() {
 				const counter = document.getElementById('kill-counter');
 				const zhuge = document.getElementById('zhuge-status');
-
-				// 统一格式：剩余可用 / 已使用
+			
+				// 统一显示格式：剩余可用次数 / 已使用次数
 				const remainingText = hasZhugeLianNu ? '∞' : Math.max(0, 2 - usedKillCount);
 				counter.textContent = `杀可用次数：${remainingText}，本回合已使用杀的个数：${usedKillCount}`;
-
-				// 其它状态
+			
+				// 更新其它状态
 				document.getElementById('peach-counter').textContent = `桃可用次数：${peachCount}`;
 				document.getElementById('wine-counter').textContent = `酒可用次数：${wineCount}`;
 				document.getElementById('total-damage').textContent = `总伤害: ${totalDamage}`;
 				document.getElementById('turn-damage').textContent = `当前回合伤害: ${currentTurnDamage}`;
 				zhuge.textContent = currentWeapon ? `当前武器：${currentWeapon}` : "当前武器：无";
-
+			
+				document.getElementById('kill-counter').textContent =
+					`杀可用次数：${hasZhugeLianNu ? '∞' : 2 - usedKillCount}，本回合已使用杀的个数：${usedKillCount}`;
+			
+				// 更新延时锦囊
 				updateDelayArea();
+				
+				// 更新丈八蛇矛按钮状态
+				    updateWeaponButton();
+			}
+			
+			// 装备武器时更新按钮状态
+			function updateWeaponButton() {
+			    const btn = document.getElementById('zhangbaBtn');
+			    btn.style.display = (currentWeapon === '丈八蛇矛') ? 'block' : 'none';
+			    
+			    // 检查杀次数限制：当杀次数用尽时禁用按钮（除非装备诸葛连弩）
+			    if (currentWeapon === '丈八蛇矛') {
+			        btn.disabled = (!hasZhugeLianNu && usedKillCount >= 2);
+			        if (btn.disabled) {
+			            btn.style.opacity = "0.6";  // 禁用时变暗
+			        } else {
+			            btn.style.opacity = "1.0";  // 启用时恢复
+			        }
+			    }
 			}
 
 			function resolveWuxie(callback) {
@@ -4556,6 +4780,8 @@
 				usedKillCount = 0;
 				// 清空前一张牌信息
 				previousCard = null;
+				// 重置丈八蛇矛按钮状态
+				    updateWeaponButton();
 				document.getElementById('previousCardInfo').textContent = '上一张牌：空';
 
 				document.getElementById('drawBtn').disabled = false;
@@ -5074,6 +5300,11 @@
 			function initializeGame() {
 				initializeDeck();
 				initializeButtons();
+				// 绑定丈八蛇矛按钮事件
+				    document.getElementById('zhangbaBtn').addEventListener('click', showZhangbaDialog);
+				    
+				    // 初始化按钮状态
+				    updateWeaponButton();
 				document.addEventListener('keydown', handleKeyPress);
 				document.getElementById('testUniformBtn').style.display = isDevMode ? 'inline' : 'none';
 			}
