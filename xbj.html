@@ -315,6 +315,7 @@
         
         /* 区域滚动定位 */
         .zone-nav {
+			position: sticky;
             display: flex;
             justify-content: center;
             margin: 15px 0;
@@ -332,16 +333,31 @@
             cursor: pointer;
         }
         
-        @media (max-width: 768px) {
-            .zone-nav {
-                position: sticky;
-                top: 0;
-                background: white;
-                z-index: 100;
-                padding: 10px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-        }
+		.zone-nav {
+		    display: flex;
+		    justify-content: center;
+		    margin: 15px 0;
+		    flex-wrap: wrap;
+		    gap: 10px;
+		    position: sticky;
+		    top: 0;
+		    z-index: 100;
+		    background: white;
+		    padding: 10px;
+		    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+		}
+		
+		@media (max-width: 768px) {
+		    .zone-nav {
+		        position: static; 
+		        top: auto;
+		        background: transparent;
+		        z-index: auto;
+		        padding: 15px 0 0;
+		        box-shadow: none;
+		    }
+		}
+
     </style>
 </head>
 <body>
@@ -604,7 +620,6 @@
 				top: 0,
 				behavior: 'smooth' // 平滑滚动
 			});
-
 		});
         
         // 初始化所有区域
