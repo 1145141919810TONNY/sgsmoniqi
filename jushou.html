@@ -62,12 +62,8 @@
 			<div class="tooltip-container">
 				<!-- 导航按钮容器 -->
 				<div class="nav-buttons">
-					<button class="nav-button"><a href="index.html">返回主页</a></button>
-					<!-- 主页导航按钮 -->
-					<button class="nav-button"><a href="versionjs.html">跳转到更新日志</a></button>
-					<!-- 更新日志导航按钮 -->
-					<button class="nav-button"><a href="OSjushou.html">进入沮爹模拟器开源教学网页</a></button>
-					<!--教学网页导航按钮-->
+					<button class="nav-button"><a href="index.html">返回新版主页</a></button>
+					<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
 				</div>
 			</div>
 
@@ -259,16 +255,12 @@
 			let currentTurnDamage = 0; // 当前回合伤害计数器
 			let wineEffect = false; // 酒效果标记（下一张杀伤害+1）
 			let usedKillCount = 0; // 本回合已使用杀的次数
-
 			let qinglongActive = false; // 青龙偃月刀是否激活
 			let qinglongCards = []; // 存储青龙偃月刀使用的杀
 			let qinglongWineBonus = false; // 记录编号0的杀是否享受酒加成
 			let previousCard = null;
-
 			let zhangbaActive = false; // 丈八蛇矛是否激活
 			let selectedCards = []; // 为丈八蛇矛选择的手牌
-
-
 
 			// 初始化牌堆函数
 			function initializeDeck() {
@@ -1610,8 +1602,6 @@
 				    // 重置酒效果
 				    wineEffect = false;
 				}
-
-
 
 				// 青龙偃月刀特殊处理
 				if (card.name === '杀' && currentWeapon === '青龙偃月刀') {
@@ -4127,7 +4117,7 @@
 				// 装备牌优先级（数值在4-5之间）
 				const equipmentCards = [
 					'青龙偃月刀', '丈八蛇矛', '贯石斧', '方天画戟', '麒麟弓',
-					'雌雄双股剑', '寒冰剑', '青釭剑', '青虹剑',
+					'雌雄双股剑', '寒冰剑', '青釭剑', 
 					'朱雀羽扇', '八卦阵', '仁王盾', '白银狮子', '藤甲',
 					'赤兔', '大宛', '爪黄飞电', '的卢', '绝影', '紫骍'
 				];
