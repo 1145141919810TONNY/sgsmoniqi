@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>反馈 Bug · 项目问题收集指南</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="css/head.css">
+    <style>
+        /* 只在 head.css 没有的元素添加样式 */
+        .bug-container {
+            max-width: 820px;
+            margin: 2em auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 2em 2.5em 2.5em;
+        }
+
+        /* 提示框样式 - 与 head.css 中的 .security-alert 风格统一 */
+        .bug-instructions {
+            background: #eef7fa;
+            border-left: 4px solid #40a9ff;
+            padding: 1em 1.5em;
+            margin: 1.5em 0;
+            border-radius: 6px;
+        }
+
+        /* 细节元素样式 - head.css 中没有定义 */
+        details {
+            margin-top: 1.5em;
+            margin-bottom: 1.5em;
+            background: #f4f7fe;
+            border-radius: 7px;
+            padding: 1em 1.2em;
+        }
+        
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #0c47a1;
+            margin-bottom: 0.5em;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .bug-container {
+                padding: 1em 0.7em;
+            }
+        }
+    </style>
+</head>
+<body>
+	<section class="hero-section">
+		<h1 class="hero-title">BUG/问题反馈网页</h1>
+		<div class="nav-buttons">
+			<button class="nav-button"><a href="index.html">返回新版主页</a></button>
+			<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
+		</div>
+	</section>
+	
+    <div class="bug-container">
+        <h1>🐞🐞 Bug 反馈指南</h1>
+        <p>欢迎您为本项目提交 Bug 反馈！请严格按照下述流程和模板操作，以便我们快速定位和修复问题。</p>
+
+        <h2>一、反馈流程</h2>
+        <ol>
+            <li>
+                <strong>登录 GitHub 账号</strong>，访问本仓库的
+                <a href="https://github.com/1145141919810TONNY/sgsmoniqi/issues" target="_blank">Issues 页面</a>。
+            </li>
+            <li>
+                点击右上角 <strong>"New Issue"</strong> 按钮。
+            </li>
+            <li>
+                选择 <strong>"🐞🐞 Bug Report"</strong> 模板，完整填写所有问题相关信息。
+            </li>
+            <li>
+                <span class="highlight">强烈建议</span>：上传 <strong>截图、报错日志、复现代码</strong> 等附件，帮助开发者定位问题。
+            </li>
+            <li>
+                提交 Issue 后，可在下方留言补充信息或与开发者互动跟进。
+            </li>
+        </ol>
+        <div class="bug-instructions">
+            <strong>温馨提示：</strong>
+            <ul>
+                <li>请勿提交重复问题，先搜索是否已有类似 Issue</li>
+                <li>请勿在同一 Issue 混报多个无关问题</li>
+                <li>请保持沟通礼貌，感谢您的理解与配合！</li>
+            </ul>
+        </div>
+
+        <h2>二、标准 Bug Report 模板</h2>
+        <button class="btn-primary" onclick="copyTemplate()">复制模板</button>
+        <details open>
+            <summary>点击展开 / 收起 Markdown 原始模板</summary>
+            <pre class="monospace" id="bug-template">
+---
+name: 🐞🐞🐞 Bug Report
+about: 反馈项目中的 bug
+title: "[Bug] 简要描述问题"
+labels: bug
+assignees: ''
+
+---
+
+​**描述 Bug**​
+请简要说明你遇到的问题。
+
+​**复现步骤**​
+请描述如何复现该 Bug 的步骤（如有必要可附带截图或代码片段）：
+1. 
+2. 
+3. 
+
+​**期望行为**​
+你期望看到的结果是什么？
+
+​**实际行为**​
+实际发生了什么情况？
+
+​**环境信息（请尽量填写）​**​
+- 操作系统: [如 Windows 11, macOS 13, Ubuntu 22.04 等]
+- 浏览器/运行环境（如适用）: [如 Chrome 116, Node.js 18 等]
+- 项目版本: [如 v1.2.3, 或 commit id]
+
+​**补充信息**​
+如有截图、日志、报错信息或其它备注，请补充在这里。</pre>
+        </details>
+
+        <h2>三、常见问题与建议</h2>
+        <ul>
+            <li><b>如何上传图片/日志？</b><br>
+                在 GitHub Issue 编辑器中，直接拖拽图片或文本文件到输入框即可自动上传。
+            </li>
+            <li><b>如何知道我的 Issue 是否被处理？</b><br>
+                关注 Issue 回复或标签变化，开发者会在处理进度时留言或变更 Issue 状态。
+            </li>
+            <li><b>如果遇到紧急安全漏洞怎么办？</b><br>
+                请通过私信或指定安全邮箱 <a href="mailto:3099637681@qq.com">3099637681@qq.com</a> 直接联系项目维护者。
+            </li>
+        </ul>
+        <div class="i18n-annotation">
+            <b>温馨提示：</b>请善用 <code>复制模板</code> 按钮，粘贴到新 Issue 中并完整填写，便于开发者高效协助您！
+        </div>
+    </div>
+	
+	<button id="backToTopBtn">回到顶部</button>
+	
+	<footer class="site-footer">
+		<div class="author-info">
+			<p>
+				作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+					target="_blank">bilibili月が綺麗ですね_</a><br />
+				联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+				有什么新功能或建议欢迎骚扰（著名来意）<br />
+				<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+			</p>
+		</div>
+		<div class="code-update">
+			<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+				class="bili-btn" rel="noopener noreferrer">
+				[bilibili]获取更新动态
+			</a>
+			<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+				rel="noopener noreferrer">
+				[GitHub]获取后续代码更新
+			</a>
+			<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+				class="gitcode-btn" rel="noopener noreferrer">
+				[GitCode]获取后续代码更新(国内git)
+			</a>
+		</div>
+		<div class="license-notice">
+			<p>
+				Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+				Released under the
+				<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+					MIT License
+				</a>
+			</p>
+			<p class="i18n-annotation">
+				(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+			</p>
+		</div>
+	</footer>
+    <script>
+        function copyTemplate() {
+            const text = document.getElementById('bug-template').innerText;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Bug 模板已复制到剪贴板！');
+                });
+            } else {
+                // 兼容老浏览器
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('Bug 模板已复制到剪贴板！');
+            }
+        }
+		// 获取按钮
+		const backToTopBtn = document.getElementById('backToTopBtn');
+		
+		// 滚动事件监听，控制按钮显示隐藏
+		window.addEventListener('scroll', () => {
+			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+				backToTopBtn.style.display = 'block';
+			} else {
+				backToTopBtn.style.display = 'none';
+			}
+		});
+		
+		// 点击按钮回到顶部
+		backToTopBtn.addEventListener('click', () => {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 平滑滚动
+			});
+		});
+    </script>
+</body>
+</html>
