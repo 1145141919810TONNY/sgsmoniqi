@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>自定义牌堆编辑器</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+		<script src="js/card.js"></script>
+		<link rel="stylesheet" href="css/head.css">
+		<style>
+			.cards-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+				gap: 10px;
+				max-height: 200px;
+				overflow-y: auto;
+				padding: 10px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				position: relative;
+			}
+
+			.card-item {
+				padding: 8px;
+				text-align: center;
+				background: #ecf0f1;
+				border-radius: 4px;
+				cursor: pointer;
+				transition: all .2s;
+				position: relative;
+			}
+
+			.card-item:hover {
+				background: #d5dbdb;
+				transform: translateY(-2px);
+			}
+
+			.deck-grid {
+				display: grid;
+				grid-template-columns: repeat(10, 1fr);
+				gap: 8px;
+				margin-bottom: 15px;
+			}
+
+			.deck-slot {
+				height: 60px;
+				border: 2px dashed #bdc3c7;
+				border-radius: 4px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				font-size: 12px;
+				cursor: pointer;
+				transition: all .2s;
+				padding: 5px;
+				word-break: break-all;
+				overflow: hidden;
+			}
+
+			.deck-slot.filled {
+				border: 2px solid #3498db;
+				background: #e1f0fa;
+			}
+
+			.deck-slot:hover {
+				background: #f0f0f0;
+			}
+
+			.dropdown {
+				position: fixed;
+				z-index: 9999;
+				max-height: 180px;
+				overflow-y: auto;
+				background: #fff;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+			}
+
+			.dropdown-item {
+				padding: 6px 8px;
+				font-size: 13px;
+				cursor: pointer;
+				border-bottom: 1px solid #f0f0f0;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.dropdown-item:hover {
+				background: #e3f2fd;
+			}
+
+			.aes-box {
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				padding: 10px;
+				background: #fafafa;
+				font-family: monospace;
+				font-size: 13px;
+				word-break: break-all;
+				max-height: 120px;
+				overflow-y: auto;
+				position: relative;
+			}
+
+			.extra-btn-row {
+				margin-top: 8px;
+				display: flex;
+				gap: 8px;
+			}
+
+			.decode-area {
+				margin-top: 15px;
+			}
+
+			#aesInput {
+				width: 100%;
+				height: 80px;
+				font-family: monospace;
+				font-size: 13px;
+				resize: vertical;
+			}
+
+			#decodeResult {
+				margin-top: 8px;
+				font-size: 13px;
+				color: #2c3e50;
+			}
+
+			:root {
+				--theme: #8e0e00;
+				--theme-light: #a52a2a;
+				--radius: 6px;
+				--speed: .25s;
+			}
+
+			/* ===== 面板通用 ===== */
+			.dh-panel {
+				background: #fff;
+				border: 1px solid #ddd;
+				border-radius: var(--radius);
+				padding: 15px;
+				margin-bottom: 20px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+			}
+
+			.dh-panel h3 {
+				margin: 0 0 12px;
+				font-size: 18px;
+				color: var(--theme);
+				border-bottom: 2px solid #f1c40f;
+				padding-bottom: 6px;
+			}
+
+			/* ===== 按钮 ===== */
+			.dh-btn {
+				display: inline-block;
+				padding: 6px 14px;
+				margin: 4px;
+				border: 1px solid var(--theme);
+				color: var(--theme);
+				background: transparent;
+				border-radius: var(--radius);
+				cursor: pointer;
+				transition: all var(--speed);
+				font-size: 14px;
+			}
+
+			.dh-btn:hover {
+				background: var(--theme);
+				color: #fff;
+			}
+
+			.dh-btn.primary {
+				background: var(--theme);
+				color: #fff;
+			}
+
+			.dh-btn.primary:hover {
+				background: var(--theme-light);
+			}
+
+			/* ===== 卡牌池 ===== */
+			#cardsGrid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+				gap: 10px;
+				max-height: 200px;
+				overflow-y: auto;
+				padding: 10px;
+				border: 1px solid #ddd;
+				border-radius: var(--radius);
+				background: #fafafa;
+			}
+
+			.card-item {
+				padding: 8px;
+				text-align: center;
+				background: #ecf0f1;
+				border-radius: var(--radius);
+				cursor: pointer;
+				transition: all var(--speed);
+				position: relative;
+			}
+
+			.card-item:hover {
+				background: #d5dbdb;
+				transform: translateY(-2px);
+			}
+
+			.card-item.selected {
+				/* 选中态 */
+				background: var(--theme);
+				color: #fff;
+			}
+
+			/* ===== 牌堆槽位 ===== */
+			.deck-grid {
+				display: grid;
+				grid-template-columns: repeat(10, 1fr);
+				gap: 8px;
+			}
+
+			.deck-slot {
+				height: 60px;
+				border: 2px dashed #bdc3c7;
+				border-radius: var(--radius);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				font-size: 12px;
+				cursor: pointer;
+				transition: all var(--speed);
+				padding: 5px;
+				word-break: break-all;
+				overflow: hidden;
+			}
+
+			.deck-slot.filled {
+				border: 2px solid #3498db;
+				background: #e1f0fa;
+			}
+
+			.deck-slot:hover {
+				background: #f0f0f0;
+			}
+
+			/* ===== 下拉菜单 ===== */
+			.dropdown {
+				position: fixed;
+				z-index: 9999;
+				max-height: 180px;
+				overflow-y: auto;
+				background: #fff;
+				border: 1px solid #ccc;
+				border-radius: var(--radius);
+				box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+			}
+
+			.dropdown-item {
+				padding: 6px 8px;
+				font-size: 13px;
+				cursor: pointer;
+				border-bottom: 1px solid #f0f0f0;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.dropdown-item:hover {
+				background: #e3f2fd;
+			}
+
+			/* ===== 编码区 ===== */
+			.encoding-display {
+				margin-top: 10px;
+			}
+
+			.md5-display,
+			.aes-box {
+				font-family: monospace;
+				font-size: 13px;
+				word-break: break-all;
+				padding: 10px;
+				background: #f8f9fa;
+				border: 1px solid #ddd;
+				border-radius: var(--radius);
+				margin-bottom: 10px;
+				position: relative;
+			}
+
+			.aes-box button {
+				position: absolute;
+				right: 8px;
+				top: 8px;
+			}
+
+			/* ===== 日志 ===== */
+			#log {
+				max-height: 150px;
+				overflow-y: auto;
+				background: #f8f8f8;
+				border: 1px solid #666;
+				border-radius: var(--radius);
+				padding: 8px;
+				font-size: 13px;
+				line-height: 1.5;
+			}
+
+			#log div {
+				margin: 4px 0;
+				padding: 2px 0;
+				border-bottom: 1px dotted #ddd;
+				animation: slideDown .3s ease;
+			}
+
+			@keyframes slideDown {
+				from {
+					opacity: 0;
+					transform: translateY(-10px);
+				}
+
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			/* ===== 帮助模态框 ===== */
+			.modal {
+				position: fixed;
+				inset: 0;
+				background: rgba(0, 0, 0, .5);
+				display: none;
+				align-items: center;
+				justify-content: center;
+				z-index: 10000;
+			}
+
+			.modal-content {
+				background: #fff;
+				border-radius: var(--radius);
+				padding: 25px;
+				max-width: 500px;
+				width: 90%;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, .25);
+			}
+
+			.modal-content button {
+				margin-top: 15px;
+			}
+
+			/* ===== 响应式 ===== */
+			@media (max-width:768px) {
+				.deck-grid {
+					grid-template-columns: repeat(6, 1fr);
+				}
+			}
+
+			@media (max-width:480px) {
+				.deck-grid {
+					grid-template-columns: repeat(4, 1fr);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<p>操作台</p>
+			<div class="control-panel">
+				<button id="randomShuffleBtn">随机洗牌</button>
+				<button id="generateMd5AesBtn">生成编码</button>
+				<button id="exportLogBtn">输出安全日志</button>
+				<button id="clearDeckBtn">清空牌堆</button>
+				<button id="helpBtn">使用说明</button>
+			</div>
+		</div>
+
+		<div class="header-placeholder"></div>
+
+		<section class="hero-section">
+			<h1 class="hero-title">自定义牌堆编辑器</h1>
+			<h2 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h2>
+			<h3 class="hero-title">由于本页需要用到外部牌堆数据，因此该页面无法脱离主要文件单机运行</h3>
+			<h3 class="hero-title">由于本页面牌堆的特殊性（初始并非由系统一次性生成完整牌堆），如需生成附带校验信息的安全日志，请先点击“生成编码”以获取 MD5 与 AES 内容；否则日志将仅包含牌堆明细，文件体积约为 13 KB。若您仅需不含编码的日志（含编码文件约 28 KB），可直接导出，无需预先生成编码。</h3>
+			<h3 class="hero-title">为方便操作花色点数问题（以防忘记)，你可以先点击需要添加的牌，此时会有一个点数与花色的下拉菜单。你可以先不选择点数与花色，先吧网页下拉到你需要的位置后再进行选择。</h3>
+			<div class="nav-buttons">
+				<button class="nav-button"><a href="index.html">跳转到新版</a></button>
+				<button class="nav-button"><a href="indexjd.html">跳转到经典版</a></button>
+			</div>
+		</section>
+		<div class="container">
+
+			<div class="card-selection">
+				<h3>选择卡牌类型</h3>
+				<div class="card-categories">
+					<button class="category-btn active" data-category="all">全部</button>
+					<button class="category-btn" data-category="basic">基本牌</button>
+					<button class="category-btn" data-category="trick">普通锦囊</button>
+					<button class="category-btn" data-category="ystrick">延时锦囊</button>
+					<button class="category-btn" data-category="weapon">武器</button>
+					<button class="category-btn" data-category="armor">防具</button>
+					<button class="category-btn" data-category="horse">坐骑</button>
+				</div>
+				<div class="cards-grid" id="cardsGrid"></div>
+			</div>
+
+			<div class="deck-editor">
+				<h3>牌堆编辑器 (160张牌)</h3>
+				<div class="deck-grid" id="deckGrid"></div>
+				<div class="status-bar" id="statusBar">已放置: 0/160 张牌</div>
+			</div>
+
+			<div class="encoding-section">
+				<h3>编码生成</h3>
+				<div class="encoding-display">
+					<div class="md5-display"><strong>MD5:</strong> <span id="md5Value">尚未生成</span></div>
+					<div class="aes-box">
+						<strong>AES:</strong>
+						<div id="aesValue" style="margin-top:6px;word-break:break-all;"></div>
+						<button class="copy-aes-btn" onclick="copyAES()">复制</button>
+					</div>
+				</div>
+			</div>
+
+			<div style="margin-top:8px">
+				<button id="copyAesBtn" onclick="copyAES()">复制 AES</button>
+				<button id="decryptAesBtn" onclick="decryptAES()">解密本页面 AES</button>
+			</div>
+
+			<div class="encoding-display" style="margin-top:15px">
+				<strong>外部 AES 解码</strong>
+				<textarea id="aesInput" placeholder="粘贴含 :: 的完整 AES 编码"
+					style="width:100%;height:80px;font-family:monospace;font-size:13px"></textarea>
+				<div style="margin-top:8px">
+					<button onclick="decryptInputAES()">解码牌堆</button>
+				</div>
+				<div id="decodeResult" style="margin-top:8px;font-size:13px;color:#2c3e50"></div>
+			</div>
+
+			<div class="log-section">
+				<h3>操作日志</h3>
+				<div id="log"></div>
+			</div>
+		</div>
+
+		<div class="modal" id="helpModal">
+			<div class="modal-content">
+				<h3>使用说明</h3>
+				<p>1. 从上方卡牌列表中选择卡牌类型</p>
+				<p>2. 点击卡牌将其添加到牌堆中的空槽位</p>
+				<p>3. 点击牌堆中的卡牌可以移除它</p>
+				<p>4. 使用"随机洗牌"按钮填充剩余空槽位</p>
+				<p>5. 当160张牌全部放置完毕后，可以生成MD5和AES编码</p>
+				<p>6. 使用"输出安全日志"按钮可以导出牌堆信息</p>
+				<button onclick="document.getElementById('helpModal').style.display='none'">关闭</button>
+			</div>
+		</div>
+
+		<button id="backToTopBtn">回到顶部</button>
+		<button id="scrollToBottomBtn" class="show">滚到底部</button>
+
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取后续代码更新(国内git)
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+		<script>
+			/* ====== 全局变量 ====== */
+			let customDeck = []; // 当前牌堆
+			let selectedCard = null; // 当前选中的卡牌（含花色/点数）
+			let allCards = []; // 所有卡牌实例
+			let cardCategories = {}; // 分类映射
+
+			/* ====== 初始化 ====== */
+			function init() {
+				cardCategories = window.cardCategories;
+				buildAllCards();
+				initDeckSlots();
+				initCardSelector();
+				bindEvents();
+				log('自定义牌堆编辑器已初始化');
+			}
+
+			/* ====== 构建全部卡牌实例 ====== */
+			function buildAllCards() {
+				allCards = [];
+				window.standardDeck.forEach(def => {
+					def.suits.forEach(suitStr => {
+						const match = suitStr.match(/^([♠♥♣♦]️?)([JQKA]|\d+)$/);
+						if (!match) return;
+						const suit = match[1];
+						let point = match[2];
+						switch (point) {
+							case 'J':
+								point = 11;
+								break;
+							case 'Q':
+								point = 12;
+								break;
+							case 'K':
+								point = 13;
+								break;
+							case 'A':
+								point = 1;
+								break;
+							default:
+								point = parseInt(point, 10);
+						}
+						for (let i = 0; i < def.count; i++) {
+							allCards.push({
+								name: def.name,
+								suit,
+								point,
+								uid: CryptoJS.lib.WordArray.random(16).toString()
+							});
+						}
+					});
+				});
+			}
+
+			/* ====== 初始化160槽位 ====== */
+			function initDeckSlots() {
+				const grid = document.getElementById('deckGrid');
+				grid.innerHTML = '';
+				for (let i = 0; i < 160; i++) {
+					const slot = document.createElement('div');
+					slot.className = 'deck-slot';
+					slot.dataset.index = i;
+					slot.textContent = `槽位 ${i+1}`;
+					slot.addEventListener('click', handleSlotClick);
+					grid.appendChild(slot);
+					customDeck[i] = null;
+				}
+				updateStatusBar();
+			}
+
+			/* ====== 初始化卡牌选择区域 ====== */
+			function initCardSelector() {
+				document.querySelectorAll('.category-btn').forEach(btn => {
+					btn.addEventListener('click', function() {
+						document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+						this.classList.add('active');
+						renderCardGrid(this.dataset.category);
+					});
+				});
+				renderCardGrid('all');
+			}
+
+			/* ====== 渲染卡牌选择网格 ====== */
+			function renderCardGrid(category) {
+				const grid = document.getElementById('cardsGrid');
+				grid.innerHTML = '';
+				const names = [...new Set(allCards.map(c => c.name))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+				const showNames = category === 'all' ? names : names.filter(n => cardCategories[category]?.includes(n));
+
+				showNames.forEach(name => {
+					const total = allCards.filter(c => c.name === name).length;
+					const used = customDeck.filter(c => c && c.name === name).length;
+					const left = total - used;
+					if (left <= 0) return;
+
+					const item = document.createElement('div');
+					item.className = 'card-item';
+					item.textContent = name;
+					item.dataset.name = name;
+
+					if (total === 1) {
+						item.addEventListener('click', () => selectCardFull(name, null, null));
+					} else {
+						item.addEventListener('click', (e) => {
+							e.stopPropagation();
+							showSuitPointDropdown(item, name, left);
+						});
+					}
+					grid.appendChild(item);
+				});
+			}
+
+			/* ====== 显示花色点数下拉菜单 ====== */
+			function showSuitPointDropdown(cardItem, cardName, leftCount) {
+				document.querySelectorAll('.dropdown').forEach(d => d.remove());
+
+				const drop = document.createElement('div');
+				drop.className = 'dropdown';
+
+				// 获取卡牌项的位置
+				const rect = cardItem.getBoundingClientRect();
+				drop.style.top = `${rect.bottom + 5}px`;
+				drop.style.left = `${rect.left}px`;
+				drop.style.width = `${rect.width}px`;
+				drop.style.zIndex = '1000';
+
+				// 添加下拉菜单内容
+				const allOpts = [...new Set(allCards.filter(c => c.name === cardName).map(c => `${c.suit}|${c.point}`))]
+					.map(str => {
+						const [s, p] = str.split('|');
+						const total = allCards.filter(c => c.name === cardName && c.suit === s && c.point == p).length;
+						const used = customDeck.filter(c => c && c.name === cardName && c.suit === s && c.point == p).length;
+						return {
+							suit: s,
+							point: p,
+							left: total - used
+						};
+					})
+					.filter(o => o.left > 0);
+
+				if (allOpts.length === 0) return;
+
+				allOpts.forEach(opt => {
+					const row = document.createElement('div');
+					row.className = 'dropdown-item';
+					row.innerHTML = `<span>${opt.suit}${getPointDisplay(opt.point)}</span><span>${opt.left}</span>`;
+					row.addEventListener('click', (e) => {
+						e.stopPropagation();
+						selectCardFull(cardName, opt.suit, opt.point);
+						drop.remove();
+					});
+					drop.appendChild(row);
+				});
+
+				// 添加到body而不是cardItem
+				document.body.appendChild(drop);
+
+				// 点击其他地方关闭下拉菜单
+				setTimeout(() => {
+					const closeHandler = (e) => {
+						if (!drop.contains(e.target) && e.target !== cardItem) {
+							drop.remove();
+							document.removeEventListener('click', closeHandler);
+						}
+					};
+					document.addEventListener('click', closeHandler);
+				}, 0);
+			}
+
+			/* ====== 选中具体花色点数 ====== */
+			function selectCardFull(name, suit, point) {
+				selectedCard = {
+					name,
+					suit,
+					point
+				};
+				log(`已选择卡牌: ${name} ${suit||''}${point?getPointDisplay(point):''}`);
+				document.querySelectorAll('.card-item').forEach(it => {
+					it.style.background = it.dataset.name === name ? '#3498db' : '#ecf0f1';
+					it.style.color = it.dataset.name === name ? 'white' : 'black';
+				});
+			}
+
+			/* ====== 槽位点击：放置 / 移除并回池 ====== */
+			function handleSlotClick(e) {
+				const slot = e.currentTarget;
+				const idx = parseInt(slot.dataset.index, 10);
+				if (selectedCard) {
+					const {
+						name,
+						suit,
+						point
+					} = selectedCard;
+					let card;
+					if (suit && point) {
+						const pool = allCards.filter(c => c.name === name && c.suit === suit && c.point == point);
+						const used = customDeck.filter(c => c && c.name === name && c.suit === suit && c.point == point).length;
+						const left = pool.length - used;
+						if (left <= 0) {
+							log('该花色点数已无剩余');
+							return;
+						}
+						card = {
+							...pool[0],
+							uid: CryptoJS.lib.WordArray.random(16).toString()
+						};
+					} else {
+						const pool = allCards.filter(c => c.name === name);
+						const used = customDeck.filter(c => c && c.name === name).length;
+						const left = pool.length - used;
+						if (left <= 0) {
+							log('该牌已无剩余');
+							return;
+						}
+						card = {
+							...pool[0],
+							uid: CryptoJS.lib.WordArray.random(16).toString()
+						};
+					}
+					customDeck[idx] = card;
+					slot.textContent = `${card.name}\n${card.suit}${getPointDisplay(card.point)}`;
+					slot.classList.add('filled');
+					log(`已放置 ${card.name} ${card.suit}${getPointDisplay(card.point)} 到槽位 ${idx+1}`);
+					updateStatusBar();
+					renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+				} else if (customDeck[idx]) {
+					const card = customDeck[idx];
+					customDeck[idx] = null;
+					slot.textContent = `槽位 ${idx+1}`;
+					slot.classList.remove('filled');
+					log(`已移除槽位 ${idx+1} 的 ${card.name} ${card.suit}${getPointDisplay(card.point)}`);
+					updateStatusBar();
+					renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+				}
+			}
+
+			/* ====== 随机洗牌剩余 ====== */
+			function randomShuffle() {
+			    const emptyIdx = [];
+			    customDeck.forEach((c, i) => { if (!c) emptyIdx.push(i) });
+			    if (!emptyIdx.length) { log('无空槽位'); return; }
+			
+			    const usedUID = new Set(customDeck.filter(Boolean).map(c => c.uid));
+			    let pool = allCards.filter(c => !usedUID.has(c.uid))
+			                       .map(c => ({...c}));
+			
+			    if (!pool.length) { log('无可洗牌'); return; }
+			
+			    let cnt = 0;
+			    emptyIdx.forEach(i => {
+			        const pickIdx = Math.floor(Math.random() * pool.length);
+			        const pick    = pool.splice(pickIdx, 1)[0];
+			        pick.uid = CryptoJS.lib.WordArray.random(16).toString();
+			        customDeck[i] = pick;
+			
+			        const slot = document.querySelector(`.deck-slot[data-index="${i}"]`);
+			        slot.textContent = `${pick.name}\n${pick.suit}${getPointDisplay(pick.point)}`;
+			        slot.classList.add('filled');
+			        cnt++;
+			    });
+			
+			    log(`随机洗牌完成，填充 ${cnt} 张`);
+			    updateStatusBar();
+			    renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+			}
+
+
+			/* ====== 生成编码 ====== */
+			function generateMd5Aes() {
+				const filled = customDeck.filter(c => c).length;
+				if (filled < 160) {
+					log('牌堆未满');
+					return;
+				}
+				const deckStr = customDeck.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`).join('@@');
+				const first = CryptoJS.MD5(deckStr).toString();
+				const ts = Date.now().toString(16).padStart(16, '0');
+				const md5 = CryptoJS.MD5(first + ts).toString();
+				document.getElementById('md5Value').textContent = md5;
+
+				const data = customDeck.map(c => ({
+					n: c.name,
+					s: c.suit,
+					p: c.point,
+					u: c.uid
+				}));
+				const key = CryptoJS.lib.WordArray.random(128 / 8);
+				const iv = CryptoJS.lib.WordArray.random(128 / 8);
+				const enc = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+					iv
+				}).toString();
+				const aes = [key.toString(CryptoJS.enc.Base64), iv.toString(CryptoJS.enc.Base64), enc].join('::');
+				document.getElementById('aesValue').textContent = aes;
+				log('编码生成成功（含密钥）');
+			}
+
+
+			/* ====== 复制AES ====== */
+			function copyAES() {
+				const aes = document.getElementById('aesValue').textContent;
+				if (!aes || aes === '生成失败') return;
+				navigator.clipboard.writeText(aes).then(() => log('AES已复制'));
+			}
+
+			function decryptAES() {
+				const full = document.getElementById('aesValue').textContent;
+				if (!full || !full.includes('::')) {
+					log('无有效 AES 内容');
+					return;
+				}
+				try {
+					const [keyB64, ivB64, data] = full.split('::');
+					const key = CryptoJS.enc.Base64.parse(keyB64);
+					const iv = CryptoJS.enc.Base64.parse(ivB64);
+					const dec = CryptoJS.AES.decrypt(data, key, {
+						iv
+					}).toString(CryptoJS.enc.Utf8);
+					if (!dec) throw new Error('解密失败');
+					const deck = JSON.parse(dec).map(c => ({
+						name: c.n,
+						suit: c.s,
+						p: c.point,
+						uid: c.u
+					}));
+					log(`解密成功！共 ${deck.length} 张牌`);
+					console.table(deck);
+				} catch (e) {
+					log('AES 解密失败：' + e.message);
+				}
+			}
+
+			function decryptInputAES() {
+				const full = document.getElementById('aesInput').value.trim();
+				const res = document.getElementById('decodeResult');
+				if (!full.includes('::')) {
+					res.textContent = '格式错误（需包含 ::）';
+					return;
+				}
+				try {
+					const [keyB64, ivB64, data] = full.split('::');
+					const key = CryptoJS.enc.Base64.parse(keyB64);
+					const iv = CryptoJS.enc.Base64.parse(ivB64);
+					const dec = CryptoJS.AES.decrypt(data, key, {
+						iv
+					}).toString(CryptoJS.enc.Utf8);
+					if (!dec) throw new Error('解密失败');
+					const arr = JSON.parse(dec);
+					if (!Array.isArray(arr) || arr.length !== 160) throw new Error('非160张牌');
+					// 直接回填
+					customDeck = arr.map(c => ({
+						name: c.n,
+						suit: c.s,
+						point: c.p,
+						uid: c.u
+					}));
+					// 立即刷新卡牌区
+					document.querySelectorAll('.deck-slot').forEach((s, i) => {
+						const c = customDeck[i];
+						s.textContent = c ? `${c.name}\n${c.suit}${getPointDisplay(c.point)}` : `槽位 ${i+1}`;
+						s.classList.toggle('filled', !!c);
+					});
+					updateStatusBar();
+					renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+					res.textContent = '解码成功！牌堆已更新';
+					log('外部 AES 解码成功并回填牌堆');
+				} catch (e) {
+					res.textContent = '解码失败：' + e.message;
+					log('AES 解码失败：' + e.message);
+				}
+			}
+
+
+			/* ====== 导出日志 ====== */
+			function exportSecurityLog() {
+				if (customDeck.filter(c => c).length < 160) {
+					log('牌堆未满');
+					return;
+				}
+				const ts = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+				const details = customDeck.map((c, i) =>
+					`[${i+1}] ${c.name} - 花色:${c.suit} 点数:${getPointDisplay(c.point)} UID:${c.uid}`).join('\n');
+				const logTxt =
+					`自定义牌堆安全日志\n生成时间: ${ts}\nMD5: ${document.getElementById('md5Value').textContent}\nAES: ${document.getElementById('aesValue').textContent}\n\n${details}`;
+				const blob = new Blob([logTxt], {
+					type: 'text/plain;charset=utf-8'
+				});
+				const a = document.createElement('a');
+				a.href = URL.createObjectURL(blob);
+				a.download = `CustomDeckLog_${Date.now()}.txt`;
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+				log('安全日志已导出');
+			}
+
+			/* ====== 清空 ====== */
+			function clearDeck() {
+				if (!confirm('确定清空牌堆？')) return;
+				customDeck.fill(null);
+				document.querySelectorAll('.deck-slot').forEach(s => {
+					s.textContent = `槽位 ${+s.dataset.index+1}`;
+					s.classList.remove('filled');
+				});
+				updateStatusBar();
+				renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+				log('牌堆已清空');
+			}
+
+			/* ====== 工具 ====== */
+			function getPointDisplay(p) {
+				if (p === 11) return 'J';
+				if (p === 12) return 'Q';
+				if (p === 13) return 'K';
+				if (p === 1) return 'A';
+				return p;
+			}
+
+			function updateStatusBar() {
+				document.getElementById('statusBar').textContent = `已放置: ${customDeck.filter(c=>c).length}/160 张牌`;
+			}
+
+			function log(msg) {
+				const logEl = document.getElementById('log');
+				const div = document.createElement('div');
+				div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+				logEl.appendChild(div);
+				logEl.scrollTop = logEl.scrollHeight;
+			}
+
+			// 更新顶部操作栏占位符高度
+			function updateHeaderPlaceholder() {
+				// 获取顶部操作栏和占位元素
+				const header = document.querySelector('.header');
+				const placeholder = document.querySelector('.header-placeholder');
+
+				// 确保元素存在
+				if (header && placeholder) {
+					// 计算高度（操作栏高度 + 5px缓冲）
+					const height = header.offsetHeight + 5;
+
+					// 设置占位元素高度
+					placeholder.style.height = `${height}px`;
+				}
+			}
+
+			// 页面加载和窗口大小变化时更新占位符
+			window.addEventListener('DOMContentLoaded', updateHeaderPlaceholder);
+			window.addEventListener('resize', updateHeaderPlaceholder);
+
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
+
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+				if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+					backToTopBtn.style.display = 'block';
+				} else {
+					backToTopBtn.style.display = 'none';
+				}
+			});
+
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth' // 平滑滚动
+				});
+			});
+
+			// 获取滚到底部按钮
+			const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+
+			// 判断是否接近页面底部（距离底部200px以内）
+			function isNearBottom() {
+				const scrollPosition = window.scrollY + window.innerHeight;
+				const distanceFromBottom = document.body.scrollHeight - scrollPosition;
+				return distanceFromBottom <= 200;
+			}
+
+			// 更新按钮显示状态（直接切换display属性）
+			function updateButtonVisibility() {
+				if (isNearBottom()) {
+					scrollToBottomBtn.style.display = 'none'; // 底部200px内隐藏
+				} else {
+					scrollToBottomBtn.style.display = 'block'; // 其余情况显示
+				}
+			}
+
+			// 滚动事件监听
+			window.addEventListener('scroll', updateButtonVisibility);
+
+			// 点击按钮滚动到底部
+			scrollToBottomBtn.addEventListener('click', () => {
+				window.scrollTo({
+					top: document.body.scrollHeight,
+					behavior: 'smooth' // 平滑滚动
+				});
+			});
+
+			// 页面加载后初始化按钮状态
+			window.addEventListener('load', updateButtonVisibility);
+
+			function isWindowsOS() {
+				return navigator.userAgent.indexOf('Win') > -1;
+			}
+
+			function generateSecurityLog() {
+				const ts = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+				const details = customDeck.map((c, i) =>
+					`[${i + 1}] ${c.name} - 花色:${c.suit} 点数:${getPointDisplay(c.point)} UID:${c.uid}`
+				).join('\n');
+				return `自定义牌堆安全日志
+			生成时间: ${ts}
+			==================== MD5 & AES ====================
+			MD5标识符: ${document.getElementById('md5Value').textContent}
+			AES编码: ${document.getElementById('aesValue').textContent}
+			=================== 牌堆详细信息 ===================
+			总牌数: 160
+			当前牌堆顺序:
+			${details}
+			==================== 系统信息 ======================
+			用户系统: ${navigator.userAgent}
+			`;
+			}
+
+			async function showSecurityAlert() {
+				return new Promise(resolve => {
+					const backdrop = document.createElement('div');
+					backdrop.style.cssText = `
+			      position:fixed;inset:0;background:rgba(0,0,0,.6);
+			      display:flex;align-items:center;justify-content:center;z-index:9999`;
+					backdrop.innerHTML = `
+			      <div style="background:#fff;padding:25px;border-radius:12px;max-width:480px;line-height:1.6">
+			        <strong>安全提示</strong>
+			        <p>由于保障用户信息安全，该功能仅限 Windows 系统用户使用。该功能会在您的浏览器中生成一个包含本次牌堆的 MD5、AES 编码及牌堆详细信息的 txt 文件。</p>
+			        <p>请问是否继续创建？</p>
+			        <div style="display:flex;gap:10px;margin-top:15px">
+			          <button class="confirm" style="flex:1;padding:8px">是，继续创建</button>
+			          <button class="cancel" style="flex:1;padding:8px">否，取消操作</button>
+			        </div>
+			      </div>`;
+					document.body.appendChild(backdrop);
+					backdrop.querySelector('.confirm').onclick = () => {
+						document.body.removeChild(backdrop);
+						resolve(true);
+					};
+					backdrop.querySelector('.cancel').onclick = () => {
+						document.body.removeChild(backdrop);
+						resolve(false);
+					};
+				});
+			}
+
+			async function exportSecurityLogForWindows() {
+				if (!isWindowsOS()) {
+					alert('当前功能仅限 Windows 系统用户使用');
+					return;
+				}
+				if (customDeck.filter(Boolean).length < 160) {
+					alert('牌堆未满，无法生成日志');
+					return;
+				}
+				const userConfirm = await showSecurityAlert();
+				if (!userConfirm) {
+					log('用户取消了日志生成');
+					return;
+				}
+				try {
+					const content = generateSecurityLog();
+					const blob = new Blob([content], {
+						type: 'text/plain;charset=utf-8'
+					});
+					const a = document.createElement('a');
+					a.href = URL.createObjectURL(blob);
+					a.download = `CustomDeckLog_${Date.now()}.txt`;
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
+					log('安全日志文件已生成');
+				} catch (e) {
+					console.error(e);
+					log('安全日志生成失败');
+				}
+			}
+
+			/* ====== 事件绑定 ====== */
+			function bindEvents() {
+				document.getElementById('randomShuffleBtn').addEventListener('click', randomShuffle);
+				document.getElementById('generateMd5AesBtn').addEventListener('click', generateMd5Aes);
+				document.getElementById('clearDeckBtn').addEventListener('click', clearDeck);
+				document.getElementById('copyAesBtn').addEventListener('click', copyAES);
+				document.getElementById('decryptAesBtn').addEventListener('click', decryptAES);
+				document.getElementById('exportLogBtn').addEventListener('click', exportSecurityLogForWindows);
+				document.getElementById('helpBtn').addEventListener('click', () => {
+					document.getElementById('helpModal').style.display = 'flex'
+				});
+				document.getElementById('helpModal').addEventListener('click', function(e) {
+					if (e.target === this) this.style.display = 'none'
+				});
+			}
+
+			/* ====== 入口 ====== */
+			document.addEventListener('DOMContentLoaded', init);
+		</script>
+	</body>
+</html>
