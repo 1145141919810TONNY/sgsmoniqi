@@ -761,6 +761,9 @@ button::after {
 	}
 
 	.header {
+		width: 90%;
+		left: 5%;
+		right: 5%;
 		padding: 6px 0;
 		font-size: 14px;
 	}
@@ -852,6 +855,14 @@ button::after {
 		max-height: 200px;
 		overflow-y: auto;
 	}
+	
+	.header {
+			width: 95%;
+			left: 2.5%;
+			right: 2.5%;
+			padding: 6px 0;
+			font-size: 14px;
+		}
 }
 
 /* 新增的更新日志页面样式 */
