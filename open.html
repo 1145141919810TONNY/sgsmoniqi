@@ -292,6 +292,7 @@
 		</div>
 		 <h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 		 <h3 class="hero-title">该页面可以脱离head.css独立运行</h3>
+		 <h3 class="hero-title">为了规避一些风险，本页面为github独占</h3>
 	</section>
     <div class="container">
 		<div style="
@@ -344,6 +345,8 @@
                     <button class="btn btn-primary" id="draw-10">抽10次</button>
                     <button class="btn btn-primary" id="draw-50">抽50次</button>	
                 </div>
+				
+				<p>回车键和空格键可以快捷50抽，可长按</p>
 
                 <div class="mode-selector">
                     <h3>抽奖模式（模式2/3/4是系统截胡的形式，模拟其他人抽奖）</h3>
@@ -389,7 +392,6 @@
 				
             </div>
 			
-			
 			<!-- 史诗弹窗 -->
 			<div class="modal" id="epic-popup">
 			  <div class="modal-content">
@@ -400,9 +402,6 @@
 			    </div>
 			  </div>
 			</div>
-			
-			
-
 
             <div class="results-panel">
                 <h3>抽奖结果统计</h3>
@@ -702,12 +701,11 @@
 
         // 添加系统日志
         function addSystemLog(message) {
-            const logContainer = document.getElementById('system-log');
-            const logEntry = document.createElement('div');
-            logEntry.className = 'log-entry';
-            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logContainer.appendChild(logEntry);
-            logContainer.scrollTop = logContainer.scrollHeight;
+          const logContainer = document.getElementById('system-log');
+          const logEntry = document.createElement('div');
+          logEntry.className = 'log-entry';
+          logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+          logContainer.prepend(logEntry);
         }
 
         // 计算当前有效的权重表（考虑史诗奖励保底）
@@ -838,27 +836,19 @@
 
 		
 		function userDrawOnce(count) {
-		  // 正常抽奖
-		  const results = batchDraw(count, true);
+		  state.userSingleStats = initializeStats();
 		
-		  // 更新累计次数 & 花费
+		  const results = batchDraw(count, true);
 		  state.userDrawTotal += count;
 		  state.userCost += calcCost(count);
-		  updateUserStat();   // 刷新页面显示
-		
-		  // 顶级史诗弹窗
+		  updateUserStat();
 		  for (let n in results) checkEpicPopup(n, true);
-		
-		  // 首次启动自动倒计时
 		  if (state.currentMode > 1 && !state.autoStarted) {
 		    state.autoStarted = true;
 		    startCountdown(5);
 		  }
 		}
 
-
-		
-		
 		function checkEpicPopup(itemName, isUser) {
 		  const topEpic = ['史诗宝珠*66', '当期权一史诗武将*1'];
 		  if (!topEpic.includes(itemName) || !state.epicPopup) return;
@@ -917,8 +907,13 @@
 		
 		/* ========== 初始化时调用 ========== */
 		document.addEventListener('DOMContentLoaded', renderRateTable);
-
-
+		
+		document.addEventListener('keydown', e => {
+		  if (e.code === 'Enter' || e.code === 'Space') {
+		    e.preventDefault();
+		    userDrawOnce(50);
+		  }
+		});
 		
 		// 弹窗确定按钮
 		document.getElementById('epic-ok').onclick = () => {
