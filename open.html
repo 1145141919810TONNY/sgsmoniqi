@@ -280,6 +280,137 @@
 		  color: var(--epic-color);
 		  margin-bottom: 10px;
 		}
+		
+		.code-explanation {
+		    margin: 40px auto;
+		    max-width: 1200px;
+		    background: #2c3e50;
+		    border-radius: 10px;
+		    overflow: hidden;
+		    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+		}
+		
+		.explanation-header {
+		    background: #34495e;
+		    padding: 15px 20px;
+		    cursor: pointer;
+		    display: flex;
+		    justify-content: space-between;
+		    align-items: center;
+		}
+		
+		.explanation-header h3 {
+		    color: #ecf0f1;
+		    margin: 0;
+		    font-size: 1.3rem;
+		}
+		
+		.toggle-icon {
+		    color: #ecf0f1;
+		    font-size: 1.5rem;
+		    transition: transform 0.3s ease;
+		}
+		
+		.explanation-content {
+		    padding: 0;
+		    max-height: 0;
+		    overflow: hidden;
+		    transition: max-height 0.5s ease, padding 0.3s ease;
+		}
+		
+		.explanation-content.expanded {
+		    padding: 20px;
+		    max-height: none;
+		    overflow: visible;
+		}
+		
+		.code-section {
+		    margin-bottom: 25px;
+		    background: #1e272e;
+		    border-radius: 8px;
+		    overflow: hidden;
+		}
+		
+		.code-title {
+		    background: #34495e;
+		    padding: 10px 15px;
+		    color: #ecf0f1;
+		    font-weight: bold;
+		    border-left: 4px solid #3498db;
+		}
+		
+		.code-desc {
+		    padding: 15px;
+		    color: #bdc3c7;
+		    line-height: 1.6;
+		    font-size: 0.95rem;
+		}
+		
+		.code-block {
+		    background: #1a1a1a;
+		    border-left: 4px solid #e74c3c;
+		    padding: 15px;
+		    margin: 10px 0;
+		    overflow-x: auto;
+		    font-family: 'Consolas', 'Courier New', monospace;
+		    font-size: 0.9rem;
+		    line-height: 1.4;
+		    color: #f8f9fa;
+		    max-height: none;
+		    overflow: visible; 
+		    white-space: pre-wrap;
+		}
+		
+		.code-line {
+		    margin: 5px 0;
+		    white-space: pre-wrap;
+		    word-break: break-all; 
+		}
+		
+		.code-comment {
+		    color: #6c757d;
+		    font-style: italic;
+		}
+		
+		.code-keyword {
+		    color: #e74c3c;
+		}
+		
+		.code-function {
+		    color: #3498db;
+		}
+		
+		.code-number {
+		    color: #2ecc71;
+		}
+		
+		.code-string {
+		    color: #f39c12;
+		}
+		
+		/* 响应式设计 */
+		@media (max-width: 768px) {
+		    .code-explanation {
+		        margin: 20px 10px;
+		    }
+		    
+		    .explanation-header {
+		        padding: 12px 15px;
+		    }
+		    
+		    .explanation-header h3 {
+		        font-size: 1.1rem;
+		    }
+		    
+		    .explanation-content.expanded {
+		        padding: 15px;
+		    }
+		    
+		    .code-block {
+		        padding: 10px;
+		        font-size: 0.85rem;
+		    }
+		}
 
     </style>
 </head>
@@ -441,6 +572,162 @@
             </div>
         </div>
     </div>
+	
+	<div class="code-explanation">
+	    <div class="explanation-header" id="toggle-explanation">
+	        <h3>开盒子模拟器代码说明</h3>
+	        <span class="toggle-icon">▼</span>
+	    </div>
+	    <div class="explanation-content" id="explanation-content">
+	        <div class="code-section">
+	            <div class="code-title">奖池数据结构 (allItems)</div>
+	            <div class="code-desc">
+	                定义了所有可抽取物品的配置，包含名称、权重和分类信息。
+	                权重决定了物品的抽取概率，分类用于区分普通和史诗物品。
+	            </div>
+	            <div class="code-block">
+	<span class="code-keyword">const</span> <span class="code-variable">allItems</span> = [
+	    <span class="code-comment">// 普通物品</span>
+	    { <span class="code-property">name</span>: <span class="code-string">"史诗体验卡*1"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"欢乐豆*50"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"菜篮子*2"</span>, <span class="code-property">weight</span>: <span class="code-number">1355</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"换将卡*2"</span>, <span class="code-property">weight</span>: <span class="code-number">5000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"手气卡*2"</span>, <span class="code-property">weight</span>: <span class="code-number">5000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"点将卡*2"</span>, <span class="code-property">weight</span>: <span class="code-number">3000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"进阶丹*2"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"雁翎甲*1"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"招募令*1"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"史诗宝珠碎片*1"</span>, <span class="code-property">weight</span>: <span class="code-number">200</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"菜篮子*99"</span>, <span class="code-property">weight</span>: <span class="code-number">200</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"当期精品武将*1"</span>, <span class="code-property">weight</span>: <span class="code-number">100</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    
+	    <span class="code-comment">// 史诗物品</span>
+	    { <span class="code-property">name</span>: <span class="code-string">"史诗宝珠*1"</span>, <span class="code-property">weight</span>: <span class="code-number">100</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"将魂*1000"</span>, <span class="code-property">weight</span>: <span class="code-number">15</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"当期传说皮肤动态包*1"</span>, <span class="code-property">weight</span>: <span class="code-number">15</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"当期权十史诗武将*1"</span>, <span class="code-property">weight</span>: <span class="code-number">10</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"当期权三史诗武将*1"</span>, <span class="code-property">weight</span>: <span class="code-number">3</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    { <span class="极稀有">name</span>: <span class="code-string">"史诗宝珠*66"</span>, <span class="code-property">weight</span>: <span class="code-number">1</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"当期权一史诗武将*1"</span>, <span class="code-property">weight</span>: <极稀有>1</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> }
+	];
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">单次抽奖逻辑 (singleDraw)</div>
+	            <div class="code-desc">
+	                这是抽奖系统的核心函数，根据权重随机选择物品，并处理史诗物品的保底机制。
+	            </div>
+	            <div class="code-block">
+	<span class="code-comment">/**
+	 * 执行单次抽奖操作的核心函数
+	 * 基于权重随机算法选择奖励物品，并处理周期重置和史诗物品保底机制
+	 * @returns {string} 抽中的物品名称
+	 */</span>
+	<span class="code-keyword">function</span> <span class="code-function">singleDraw</span>() {
+	    <span class="code-comment">// 周期检查：每20000抽为一个完整周期，达到后重置奖池</span>
+	    <span class="code-keyword">if</span> (state.<span class="code-property">totalDraws</span> >= <span class="code-number">20000</span>) {
+	        <span class="code-comment">// 重置抽奖周期和史诗物品剩余数量</span>
+	        state.<span class="code-property">totalDraws</span> = <span class="code-number">0</span>;
+	        state.<span class="code-property">epicRewardsRemaining</span> = {...epicRewardsQuota};
+	        updateEpicRewardsTable(); <span class="code-comment">// 更新UI显示</span>
+	    }
+	    
+	    <span class="code-comment">// 增加总抽奖次数计数</span>
+	    state.<span class="code-property">totalDraws</span>++;
+	    
+	    <span class="code-comment">// 获取当前有效的权重配置（考虑史诗物品保底限制）</span>
+	    <span class="code-keyword">const</span> { weights, totalWeight } = getCurrentWeights();
+	    
+	    <span class="code-comment">// 生成随机数决定抽奖结果（基于总权重的随机分布）</span>
+	    <span class="code-keyword">const</span> random = Math.<span class="code-function">random</span>() * totalWeight;
+	    
+	    <span class="code-comment">// 遍历权重表，确定最终抽中的物品</span>
+	    <span class="code-keyword">let</span> currentWeight = <span class="code-number">0</span>;
+	    <span class="code-keyword">let</span> selectedItem = <span class="code-keyword">null</span>;
+	    
+	    <span class="code-keyword">for</span> (<span class="code-keyword">const</span> [name, weight] <span class="code-keyword">of</span> Object.<span class="code-function">entries</span>(weights)) {
+	        currentWeight += weight;
+	        <span class="code-comment">// 当随机数落在当前物品的权重区间内时，选中该物品</span>
+	        <span class="code-keyword">if</span> (random <= currentWeight) {
+	            selectedItem = allItems.<span class="code-function">find</span>(item => item.<span class="code-property">name</span> === name);
+	            <span class="code-keyword">break</span>;
+	        }
+	    }
+	    
+	    <span class="code-comment">// 史诗物品保底处理：如果抽中史诗物品且该物品还有剩余数量</span>
+	    <span class="code-keyword">if</span> (selectedItem.<span class="code-property">category</span> === <span class="code-string">"史诗"</span> && state.<span class="code-property">epicRewardsRemaining</span>[selectedItem.<span class="code-property">name</span>] > <span class="code-number">0</span>) {
+	        <span class="code-comment">// 减少该史诗物品的剩余数量</span>
+	        state.<span class="code-property">epicRewardsRemaining</span>[selectedItem.<span class="code-property">name</span>]--;
+	        <span class="code-comment">// 更新UI显示</span>
+	        <span class="code-function">updateEpicRewardsTable</span>();
+	    }
+	    
+	    <span class="code-comment">// 更新进度条显示</span>
+	    <span class="code-function">updateProgressBar</span>();
+	    
+	    <span class="code-comment">// 返回抽中的物品名称</span>
+	    <span class="code-keyword">return</span> selectedItem.<span class="code-property">name</span>;
+	}
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">系统对抗关键函数 (autoDrawOnce)</div>
+	            <div class="code-desc">
+	                这是系统自动抽奖的核心函数，模拟其他玩家与用户竞争奖励。
+	            </div>
+	            <div class="code-block">
+	<span class="code-comment">/**
+	 * 系统自动抽奖函数 - 模拟其他玩家与用户竞争稀有奖励
+	 * 根据当前选择的模式确定抽奖次数，执行批量抽奖并记录结果
+	 */</span>
+	<span class="code-keyword">function</span> <span class="code-function">autoDrawOnce</span>() {
+	    <span class="code-comment">// 根据当前模式确定单次系统抽奖的次数</span>
+	    <span class="code-comment">// 模式映射：1=手动, 2=50抽/5s, 3=500抽/5s, 4=5000抽/5s</span>
+	    <span class="code-keyword">const</span> count = [<span class="code-keyword">null</span>, <span class="code-keyword">null</span>, <span class="code-number">50</span>, <span class="code-number">500</span>, <span class="code-number">5000</span>][state.<span class="code-property">currentMode</span>];
+	    
+	    <span class="code-comment">// 重置系统单次统计，准备记录本次抽奖结果</span>
+	    state.<span class="code-property">systemSingleStats</span> = <span class="code-function">initializeStats</span>();
+	    
+	    <span class="极稀有">// 执行批量抽奖（系统抽奖，isUserDraw=false）</span>
+	    <span class="code-keyword">const</span> res = <span class="code-function">batchDraw</span>(count, <span class="code-keyword">false</span>);
+	    
+	    <span class="code-comment">// 检查本次抽奖结果，判断是否触发截胡提示</span>
+	    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> n <span class="code-keyword">in</span> res) {
+	        <span class="code-function">checkEpicPopup</span>(n, <span class="code-keyword">false</span>); <span class="code-comment">// 第二个参数false表示这是系统抽奖</span>
+	    }
+	    
+	    <span class="code-comment">// 从抽奖结果中筛选出史诗物品</span>
+	    <span class="code-keyword">const</span> epic = Object.<span class="code-function">entries</span>(res)
+	        .<span class="code-function">filter</span>(([n]) => allItems.<span class="code-function">find</span>(it => it.<span class="code-property">name</span> === n)?.<span class="code-property">category</span> === <span class="code-string">'史诗'</span>)
+	        .<span class="code-function">map</span>(([n, c]) => <span class="code-string">`${n}×${c}`</span>); <span class="code-comment">// 格式化显示：物品名称×数量</span>
+	    
+	    <span class="code-comment">// 记录系统抽奖日志</span>
+	    <span class="code-keyword">if</span> (epic.<span class="code-property">length</span>) {
+	        <span class="code-comment">// 如果抽中了史诗物品，记录详细信息</span>
+	        <span class="code-function">addSystemLog</span>(<span class="code-string">`本次抽取获得史诗奖励: ${epic.join(', ')}`</span>);
+	    } <span class="code-keyword">else</span> {
+	        <span class="code-comment">// 如果未抽中史诗物品，记录普通日志</span>
+	        <span class="code-function">addSystemLog</span>(<span class="code-string">'本次抽取未获得史诗奖励'</span>);
+	    }
+	}
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">系统对抗设计特点</div>
+	            <div class="code-desc">
+	                <strong>竞争机制</strong>：系统模拟其他玩家与用户竞争稀有奖励，增加真实感。<br>
+	                <strong>截胡提示</strong>：当系统抽到顶级史诗时，会显示"你被截胡了"的提示。<br>
+	                <strong>多模式选择</strong>：提供不同强度的系统对抗模式。<br>
+	                <strong>实时日志</strong>：系统抽奖结果会实时显示在日志中。<br><br>
+	                
+	                这套系统通过模拟真实抽奖环境中的竞争关系，为用户提供了更加紧张刺激的抽奖体验。
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
     <!-- 模式切换确认弹窗 -->
     <div class="modal" id="confirm-modal">
@@ -453,6 +740,45 @@
             </div>
         </div>
     </div>
+	
+	<style id="mobile-bot-btn-style">
+	@media (min-width: 781px) {
+	  #mobile-bot-bar { display: none !important; }
+	}
+	#mobile-bot-bar {
+	  position: fixed;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  height: 56px;
+	  background: rgba(30,30,30,.95);
+	  display: flex;
+	  z-index: 999;
+	  border-top: 1px solid #444;
+	}
+	#mobile-bot-bar button {
+	  flex: 1;
+	  border: none;
+	  font-size: 16px;
+	  font-weight: bold;
+	  color: #fff;
+	  cursor: pointer;
+	  transition: opacity .2s;
+	}
+	#mobile-bot-bar button:active { opacity: .7; }
+	#btn-mob-50   { background: var(--primary-color); }
+	#btn-mob-auto {
+	  background: var(--secondary-color);
+	}
+	#btn-mob-auto.active {
+	  background: #e67e22;
+	}
+	</style>
+	
+	<div id="mobile-bot-bar">
+	  <button id="btn-mob-50">50 抽</button>
+	  <button id="btn-mob-auto">连续 50 抽</button>
+	</div>
 	
 	<footer class="site-footer">
 		<div class="author-info">
@@ -620,8 +946,38 @@
 		  document.getElementById('user-total-draws').textContent = state.userDrawTotal;
 		  document.getElementById('user-total-cost').textContent = state.userCost.toFixed(2);
 		}
-
-
+		
+		
+		/* ========= 移动端底部按钮逻辑 ========= */
+		(() => {
+		  /* 与桌面版共用同一套 state，不重复定义 */
+		  const $ = sel => document.querySelector(sel);
+		  const btn50   = $('#btn-mob-50');
+		  const btnAuto = $('#btn-mob-auto');
+		
+		  let running = false;
+		  let timer   = null;
+		
+		  /* 50 抽 */
+		  btn50.addEventListener('click', () => userDrawOnce(50));
+		
+		  /* 连续 50 抽开关 */
+		  btnAuto.addEventListener('click', () => {
+		    running = !running;
+		    btnAuto.classList.toggle('active', running);
+		    btnAuto.textContent = running ? '停止连抽' : '连续 50 抽';
+		
+		    if (running) {
+		      /* 每秒 10 次 => 100 ms 一次 */
+		      timer = setInterval(() => userDrawOnce(50), 100);
+		    } else {
+		      clearInterval(timer);
+		    }
+		  });
+		
+		  /* 页面卸载时清定时器，防止内存泄漏 */
+		  window.addEventListener('beforeunload', () => clearInterval(timer));
+		})();
 
 		function autoDrawOnce() {
 		  const count = [null, null, 50, 500, 5000][state.currentMode];
@@ -904,6 +1260,18 @@
 		    tbody.appendChild(tr);
 		  });
 		}
+		
+		// 代码说明部分的交互功能
+		document.addEventListener('DOMContentLoaded', function() {
+		    const toggleBtn = document.getElementById('toggle-explanation');
+		    const content = document.getElementById('explanation-content');
+		    const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+		    
+		    toggleBtn.addEventListener('click', function() {
+		        content.classList.toggle('expanded');
+		        toggleIcon.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+		    });
+		});
 		
 		/* ========== 初始化时调用 ========== */
 		document.addEventListener('DOMContentLoaded', renderRateTable);
