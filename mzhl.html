@@ -501,6 +501,132 @@
 			    font-size: 0.7rem;
 			  }
 			}
+			
+			.code-explanation {
+			            margin: 40px auto;
+			            max-width: 1200px;
+			            background: #2c3e50;
+			            border-radius: 10px;
+			            overflow: hidden;
+			            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+			        }
+			        
+			        .explanation-header {
+			            background: #34495e;
+			            padding: 15px 20px;
+			            cursor: pointer;
+			            display: flex;
+			            justify-content: space-between;
+			            align-items: center;
+			        }
+			        
+			        .explanation-header h3 {
+			            color: #ecf0f1;
+			            margin: 0;
+			            font-size: 1.3rem;
+			        }
+			        
+			        .toggle-icon {
+			            color: #ecf0f1;
+			            font-size: 1.5rem;
+			            transition: transform 0.3s ease;
+			        }
+			        
+			        .explanation-content {
+			            padding: 0;
+			            max-height: 0;
+			            overflow: hidden;
+			            transition: max-height 0.5s ease, padding 0.3s ease;
+			        }
+			        
+			        .explanation-content.expanded {
+			            padding: 20px;
+			            max-height: none;
+			            overflow: visible;
+			        }
+			        
+			        .code-section {
+			            margin-bottom: 25px;
+			            background: #1e272e;
+			            border-radius: 8px;
+			            overflow: hidden;
+			        }
+			        
+			        .code-title {
+			            background: #34495e;
+			            padding: 10px 15px;
+			            color: #ecf0f1;
+			            font-weight: bold;
+			            border-left: 4px solid #3498db;
+			        }
+			        
+			        .code-desc {
+			            padding: 15px;
+			            color: #bdc3c7;
+			            line-height: 1.6;
+			            font-size: 0.95rem;
+			        }
+			        
+			        .code-block {
+			            background: #1a1a1a;
+			            border-left: 4px solid #e74c3c;
+			            padding: 15px;
+			            margin: 10px 0;
+			            overflow-x: auto;
+			            font-family: 'Consolas', 'Courier New', monospace;
+			            font-size: 0.9rem;
+			            line-height: 1.4;
+			            color: #f8f9fa;
+						overflow: auto;
+			        }
+			        
+			        .code-line {
+			            margin: 5px 0;
+			        }
+			        
+			        .code-comment {
+			            color: #6c757d;
+			            font-style: italic;
+			        }
+			        
+			        .code-keyword {
+			            color: #e74c3c;
+			        }
+			        
+			        .code-function {
+			            color: #3498db;
+			        }
+			        
+			        .code-number {
+			            color: #2ecc71;
+			        }
+			        
+			        .code-string {
+			            color: #f39c12;
+			        }
+			        
+			        @media (max-width: 768px) {
+			            .code-explanation {
+			                margin: 20px 10px;
+			            }
+			            
+			            .explanation-header {
+			                padding: 12px 15px;
+			            }
+			            
+			            .explanation-header h3 {
+			                font-size: 1.1rem;
+			            }
+			            
+			            .explanation-content.expanded {
+			                padding: 15px;
+			            }
+			            
+			            .code-block {
+			                padding: 10px;
+			                font-size: 0.85rem;
+			            }
+			        }
 		</style>
 	</head>
 	<body>
@@ -585,6 +711,149 @@
 				</div>
 			</div>
 		</div>
+		
+		<div class="code-explanation">
+		        <div class="explanation-header" id="toggle-explanation">
+		            <h3>梦之回廊模拟器代码说明</h3>
+		            <span class="toggle-icon">▼</span>
+		        </div>
+		        <div class="explanation-content" id="explanation-content">
+		            <div class="code-section">
+		                <div class="code-title">概率配置表 (fragmentProbabilities)</div>
+		                <div class="code-desc">
+		                    该对象定义了碎片抽奖系统的核心概率规则。键表示当前已拥有的碎片数量，值表示获得下一片新碎片的概率（百分比）。
+		                    这是基于官方公示数据构建的逐片递减概率模型。
+		                </div>
+		                <div class="code-block">
+		                    <div class="code-line"><span class="code-keyword">const</span> <span class="code-function">fragmentProbabilities</span> = {</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-number">1</span>: <span class="code-number">100</span>, <span class="code-comment">// 拥有0片时，抽第1片概率100%</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-number">2</span>: <span class="code-number">96</span>, <span class="code-comment">// 拥有1片时，抽第2片概率96%</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-number">3</span>: <span class="code-number">92</span>, <span class="code-comment">// 拥有2片时，抽第3片概率92%</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// ... 中间部分省略</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-number">25</span>: <span class="code-number">0.29</span> <span class="code-comment">// 拥有24片时，抽第25片概率0.29%</span></div>
+		                    <div class="code-line">};</div>
+		                </div>
+		            </div>
+		            
+		            <div class="code-section">
+		                <div class="code-title">累积概率函数 (cumulativeProbability)</div>
+		                <div class="code-desc">
+		                    该函数计算在第n抽时已经获得第25片碎片的累积概率。采用分段函数设计，模拟真实抽奖系统的渐进式保底机制：
+		                    <ul>
+		                        <li>阶段1 (25-199抽)：线性缓慢增长，模拟早期低概率</li>
+		                        <li>阶段2 (200-250抽)：指数增长，进入软保底区间</li>
+		                        <li>阶段3 (251-300抽)：强保底阶段，快速收敛到100%</li>
+		                        <li>硬保底 (301抽及以上)：必定获得全部碎片</li>
+		                    </ul>
+		                </div>
+		                <div class="code-block">
+		                    <div class="code-line"><span class="code-keyword">function</span> <span class="code-function">cumulativeProbability</span>(n) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">if</span> (n &lt; <span class="code-number">25</span>) <span class="code-keyword">return</span> <span class="code-number">0</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">if</span> (n &lt;= <span class="code-number">199</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 阶段1：线性缓慢增长</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-number">0.00005</span> * (n - <span class="code-number">24</span>);</div>
+		                    <div class="code-line">&nbsp;&nbsp;} <span class="code-keyword">else</span> <span class="code-keyword">if</span> (n &lt;= <span class="code-number">250</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 阶段2：指数增长，通过反解系数确保F(250)=0.985</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> k = -Math.log(<span class="code-number">1</span> - (<span class="code-number">0.985</span> - <span class="code-number">0.00875</span>) / <span class="code-number">0.97625</span>) / <span class="code-number">51</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-number">0.00875</span> + <span class="code-number">0.97625</span> * (<span class="code-number">1</span> - Math.exp(-k * (n - <span class="code-number">199</span>)));</div>
+		                    <div class="code-line">&nbsp;&nbsp;} <span class="code-keyword">else</span> <span class="code-keyword">if</span> (n &lt;= <span class="code-number">300</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 阶段3：强保底，剩余1.5%概率用陡峭指数快速收敛</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> λ = -Math.log(<span class="code-number">1</span> - (<span class="code-number">1</span> - <span class="code-number">0.985</span>) / <span class="code-number">0.015</span>) / <span class="code-number">50</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-number">0.985</span> + <span class="code-number">0.015</span> * (<span class="code-number">1</span> - Math.exp(-λ * (n - <span class="code-number">250</span>)));</div>
+		                    <div class="code-line">&nbsp;&nbsp;}</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-number">1</span>; <span class="code-comment">// 硬保底</span></div>
+		                    <div class="code-line">}</div>
+		                </div>
+		            </div>
+		            
+		            <div class="code-section">
+		                <div class="code-title">单次抽奖核心函数 (performSingleDraw)</div>
+		                <div class="code-desc">
+		                    这是抽奖系统的核心执行函数，整合了基础概率、保底机制和特殊规则。函数执行流程：
+		                    <ol>
+		                        <li>更新抽奖计数器</li>
+		                        <li>检查是否已集齐所有碎片</li>
+		                        <li>确定目标碎片编号（顺序获得机制）</li>
+		                        <li>根据目标碎片应用不同的概率规则</li>
+		                        <li>执行概率判定并更新状态</li>
+		                        <li>处理特殊事件（如获得终极碎片）</li>
+		                    </ol>
+		                </div>
+		                <div class="code-block">
+		                    <div class="code-line"><span class="code-keyword">function</span> <span class="code-function">performSingleDraw</span>() {</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 更新抽奖计数器</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;state.drawCount++;</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 检查是否已集齐所有碎片</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">if</span> (state.ownedFragments.length &gt;= <span class="code-number">25</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;addLog(<span class="code-string">`第${state.drawCount}抽：已集齐所有碎片，无需再抽`</span>);</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;}</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 确定目标碎片编号（顺序获得机制）</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">const</span> target = nextMissing();</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 分阶段概率计算</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">let</span> baseProbability;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">if</span> (target &gt;= <span class="code-number">23</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 最后三片：应用Soft Pity机制</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;baseProbability = lateFragmentP(state.drawCount);</div>
+		                    <div class="code-line">&nbsp;&nbsp;} <span class="code-keyword">else</span> {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 前22片：使用官方概率表</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;baseProbability = fragmentProbabilities[target] / <span class="code-number">100</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;}</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 300抽硬保底兜底机制</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">if</span> (state.drawCount &gt;= <span class="code-number">300</span> && state.ownedFragments.length &lt; <span class="code-number">25</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;baseProbability = <span class="code-number">1</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;}</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 概率判定</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">const</span> got = Math.random() &lt; baseProbability;</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-keyword">if</span> (got) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 成功获得新碎片</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;state.ownedFragments.push(target);</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (target === <span class="code-number">25</span>) {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 获得终极碎片的特殊处理</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addLog(<span class="code-string">`第${state.drawCount}抽：获得终极碎片 #25！`</span>);</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;updateFragmentsGrid();</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;updateStats();</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 显示恭喜弹窗</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setTimeout(() => {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;epicPopup.style.display = <span class="code-string">'flex'</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}, <span class="code-number">500</span>);</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span>;</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;addLog(<span class="code-string">`第${state.drawCount}抽：获得碎片 #${target}`</span>);</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;updateFragmentsGrid();</div>
+		                    <div class="code-line">&nbsp;&nbsp;} <span class="code-keyword">else</span> {</div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 未获得新碎片</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;addLog(<span class="code-string">`第${state.drawCount}抽：未获得新碎片`</span>);</div>
+		                    <div class="code-line">&nbsp;&nbsp;}</div>
+		                    <div class="code-line">&nbsp;&nbsp;</div>
+		                    <div class="code-line">&nbsp;&nbsp;<span class="code-comment">// 更新界面显示</span></div>
+		                    <div class="code-line">&nbsp;&nbsp;updateStats();</div>
+		                    <div class="code-line">}</div>
+		                </div>
+		            </div>
+		            
+		            <div class="code-section">
+		                <div class="code-title">系统设计特点</div>
+		                <div class="code-desc">
+		                    <strong>概率系统</strong>：结合官方概率数据和渐进式保底机制，模拟真实抽奖体验。<br>
+		                    <strong>抽奖逻辑</strong>：采用顺序获得机制确保碎片按编号顺序获得，无跳号现象。<br>
+		                    <strong>保底机制</strong>：包含Soft Pity机制（后期概率线性提升）和硬保底兜底（300抽强制获得）。<br>
+		                    <strong>特殊处理</strong>：25号碎片检测和批量抽奖优化（集齐后自动停止）。<br><br>
+		                    
+		                    这套系统通过数学建模和概率计算，准确地模拟了真实抽奖系统的行为，为学习交流提供了可靠的技术演示。
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+
 
 		<!-- 恭喜弹窗 -->
 		<div class="modal" id="epic-popup">
@@ -915,6 +1184,17 @@
 					}
 				});
 			}
+			
+			document.addEventListener('DOMContentLoaded', function() {
+			            const toggleBtn = document.getElementById('toggle-explanation');
+			            const content = document.getElementById('explanation-content');
+			            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+			            
+			            toggleBtn.addEventListener('click', function() {
+			                content.classList.toggle('expanded');
+			                toggleIcon.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+			            });
+			        });
 
 			// 页面加载完成后初始化
 			document.addEventListener('DOMContentLoaded', init);
