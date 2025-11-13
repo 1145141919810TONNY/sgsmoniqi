@@ -209,6 +209,141 @@
         .cost-item {
             margin: 5px 0;
         }
+		
+		.code-explanation {
+		    margin: 40px auto;
+		    max-width: 1200px;
+		    background: #2c3e50;
+		    border-radius: 10px;
+		    overflow: hidden;
+		    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+		}
+		
+		.explanation-header {
+		    background: #34495e;
+		    padding: 15px 20px;
+		    cursor: pointer;
+		    display: flex;
+		    justify-content: space-between;
+		    align-items: center;
+		}
+		
+		.explanation-header h3 {
+		    color: #ecf0f1;
+		    margin: 0;
+		    font-size: 1.3rem;
+		}
+		
+		.toggle-icon {
+		    color: #ecf0f1;
+		    font-size: 1.5rem;
+		    transition: transform 0.3s ease;
+		}
+		
+		.explanation-content {
+		    padding: 0;
+		    max-height: 0;
+		    overflow: hidden;
+		    transition: max-height 0.5s ease, padding 0.3s ease;
+		}
+		
+		.explanation-content.expanded {
+		    padding: 20px;
+		    max-height: none;
+		    overflow: visible;
+		}
+		
+		.code-section {
+		    margin-bottom: 25px;
+		    background: #1e272e;
+		    border-radius: 8px;
+		    overflow: hidden;
+		}
+		
+		.code-title {
+		    background: #34495e;
+		    padding: 10px 15px;
+		    color: #ecf0f1;
+		    font-weight: bold;
+		    border-left: 4px solid #3498db;
+		}
+		
+		.code-desc {
+		    padding: 15px;
+		    color: #bdc3c7;
+		    line-height: 1.6;
+		    font-size: 0.95rem;
+		}
+		
+		.code-block {
+		    background: #1a1a1a;
+		    border-left: 4px solid #e74c3c;
+		    padding: 15px;
+		    margin: 10px 0;
+		    overflow-x: auto;
+		    font-family: 'Consolas', 'Courier New', monospace;
+		    font-size: 0.9rem;
+		    line-height: 1.4;
+		    color: #f8f9fa;
+		    max-height: none;
+		    overflow: visible;
+		    white-space: pre-wrap;
+		}
+		
+		/* 语法高亮样式 */
+		.code-keyword {
+		    color: #e74c3c; /* 红色 - 关键字 */
+		    font-weight: bold;
+		}
+		
+		.code-comment {
+		    color: #6c757d; /* 灰色 - 注释 */
+		    font-style: italic;
+		}
+		
+		.code-string {
+		    color: #2ecc71; /* 绿色 - 字符串 */
+		}
+		
+		.code-number {
+		    color: #3498db; /* 蓝色 - 数字 */
+		}
+		
+		.code-function {
+		    color: #9b59b6; /* 紫色 - 函数名 */
+		}
+		
+		.code-variable {
+		    color: #f39c12; /* 橙色 - 变量名 */
+		}
+		
+		.code-property {
+		    color: #1abc9c; /* 青绿色 - 属性名 */
+		}
+		
+		/* 响应式设计 */
+		@media (max-width: 768px) {
+		    .code-explanation {
+		        margin: 20px 10px;
+		    }
+		    
+		    .explanation-header {
+		        padding: 12px 15px;
+		    }
+		    
+		    .explanation-header h3 {
+		        font-size: 1.1rem;
+		    }
+		    
+		    .explanation-content.expanded {
+		        padding: 15px;
+		    }
+		    
+		    .code-block {
+		        padding: 10px;
+		        font-size: 0.85rem;
+		    }
+		}
     </style>
 </head>
 <body>
@@ -315,6 +450,226 @@
             </div>
         </div>
     </div>
+	
+	<style id="mobile-bot-btn-style">
+	@media (min-width: 781px) {
+	  #mobile-bot-bar { display: none !important; }
+	}
+	#mobile-bot-bar {
+	  position: fixed;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  height: 56px;
+	  background: rgba(30,30,30,.95);
+	  display: flex;
+	  z-index: 999;
+	  border-top: 1px solid #444;
+	}
+	#mobile-bot-bar button {
+	  flex: 1;
+	  border: none;
+	  font-size: 16px;
+	  font-weight: bold;
+	  color: #fff;
+	  cursor: pointer;
+	  transition: opacity .2s;
+	}
+	#mobile-bot-bar button:active { opacity: .7; }
+	#btn-mob-50   { background: var(--primary-color); }
+	#btn-mob-auto {
+	  background: var(--secondary-color);
+	}
+	#btn-mob-auto.active {
+	  background: #e67e22;
+	}
+	</style>
+	
+	<div id="mobile-bot-bar">
+	  <button id="btn-mob-50">50 抽</button>
+	  <button id="btn-mob-auto">连续 50 抽</button>
+	</div>
+
+	
+	<div class="code-explanation">
+	    <div class="explanation-header" id="toggle-explanation">
+	        <h3>开袋子模拟器代码说明</h3>
+	        <span class="toggle-icon">▼</span>
+	    </div>
+	    <div class="explanation-content" id="explanation-content">
+	        <div class="code-section">
+	            <div class="code-title">奖池数据结构 (allItems)</div>
+	            <div class="code-desc">
+	                定义了所有可抽取物品的配置，包含名称、权重和分类信息。
+	                权重决定了物品的抽取概率，分类用于区分普通、稀有和传说物品。
+	            </div>
+	            <div class="code-block">
+	<span class="code-keyword">const</span> <span class="code-variable">allItems</span> = [
+	    <span class="code-comment">// 普通物品：权重较高，出现概率大</span>
+	    { <span class="code-property">name</span>: <span class="code-string">"菜篮子*2"</span>, <span class="code-property">weight</span>: <span class="code-number">1525</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"欢乐豆*10"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"史诗体验卡*1"</span>, <span class="code-property">weight</span>: <span class="code-number">1000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"手气卡*1"</span>, <span class="code-property">weight</span>: <span class="code-number">3000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"换将卡*1"</span>, <span class="code-property">weight</span>: <span class="code-number">3000</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"进阶丹*1"</span>, <span class="code-property">weight</span>: <span class="code-number">300</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"雁翎甲*1"</span>, <span class="code-property">weight</span>: <span class="code-number">100</span>, <span class="code-property">category</span>: <span class="code-string">"普通"</span> },
+	    
+	    <span class="code-comment">// 稀有物品：权重较低，出现概率小</span>
+	    { <span class="code-property">name</span>: <span class="code-string">"雁翎*1000"</span>, <span class="code-property">weight</span>: <span class="code-number">50</span>, <span class="code-property">category</span>: <span class="code-string">"稀有"</span> },
+	    { <span class="code-property">name</span>: <span class="code-string">"当期精品武将*1"</span>, <span class="code-property">weight</span>: <span class="code-number">20</span>, <span class="code-property">category</span>: <span class="code-string">"稀有"</span> },
+	    
+	    <span class="code-comment">// 史诗物品：权重极低，稀有度高</span>
+	    { <span class="code-property">name</span>: <span class="code-string">"当期传说皮肤动态包*1"</span>, <span class="code-property">weight</span>: <span class="code-number">4</span>, <span class="code-property">category</span>: <span class="code-string">"史诗"</span> },
+	    
+	    <span class="code-comment">// 传说物品：权重最低，最稀有</span>
+	    { <span class="code-property">name</span>: <span class="code-string">"当期史诗武将*1"</span>, <span class="code-property">weight</span>: <span class="code-number">1</span>, <span class="code-property">category</span>: <span class="code-string">"传说"</span> }
+	];
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">单次抽奖逻辑 (singleDraw)</div>
+	            <div class="code-desc">
+	                这是抽奖系统的核心函数，基于权重随机算法选择奖励物品。
+	            </div>
+	            <div class="code-block">
+	<span class="code-comment">/**
+	 * 执行单次抽奖操作的核心函数
+	 * 基于权重随机算法选择奖励物品
+	 * @returns {string} 抽中的物品名称
+	 */</span>
+	<span class="code-keyword">function</span> <span class="code-function">singleDraw</span>() {
+	    <span class="code-comment">// 计算所有物品的总权重</span>
+	    <span class="code-keyword">const</span> totalWeight = allItems.<span class="code-function">reduce</span>((sum, item) => sum + item.weight, <span class="code-number">0</span>);
+	    
+	    <span class="code-comment">// 生成随机数决定抽奖结果（基于总权重的随机分布）</span>
+	    <span class="code-keyword">const</span> random = Math.<span class="code-function">random</span>() * totalWeight;
+	    
+	    <span class="code-comment">// 遍历权重表，确定最终抽中的物品</span>
+	    <span class="code-keyword">let</span> currentWeight = <span class="code-number">0</span>;
+	    <span class="code-keyword">let</span> selectedItem = <span class="code-keyword">null</span>;
+	    
+	    <span class="code-keyword">for</span> (<span class="code-keyword">const</span> item <span class="code-keyword">of</span> allItems) {
+	        currentWeight += item.weight;
+	        <span class="code-comment">// 当随机数落在当前物品的权重区间内时，选中该物品</span>
+	        <span class="code-keyword">if</span> (random <= currentWeight) {
+	            selectedItem = item;
+	            <span class="code-keyword">break</span>;
+	        }
+	    }
+	    
+	    <span class="code-comment">// 返回抽中的物品名称</span>
+	    <span class="code-keyword">return</span> selectedItem.name;
+	}
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">批量抽奖逻辑 (batchDraw)</div>
+	            <div class="code-desc">
+	                处理批量抽奖操作，更新统计信息和花费计算。
+	            </div>
+	            <div class="code-block">
+	<span class="code-comment">/**
+	 * 批量抽奖函数 - 处理多次抽奖操作
+	 * @param {number} count - 抽奖次数
+	 * @returns {Object} 抽奖结果统计对象
+	 */</span>
+	<span class="code-keyword">function</span> <span class="code-function">batchDraw</span>(count) {
+	    <span class="code-comment">// 初始化结果对象</span>
+	    <span class="code-keyword">const</span> results = {};
+	    
+	    <span class="code-comment">// 执行指定次数的抽奖</span>
+	    <span class="code-keyword">for</span> (<span class="code-keyword">let</span> i = <span class="code-number">0</span>; i < count; i++) {
+	        <span class="code-comment">// 执行单次抽奖</span>
+	        <span class="code-keyword">const</span> itemName = <span class="code-function">singleDraw</span>();
+	        
+	        <span class="code-comment">// 更新结果统计</span>
+	        results[itemName] = (results[itemName] || <span class="code-number">0</span>) + <span class="code-number">1</span>;
+	        
+	        <span class="code-comment">// 更新用户统计信息</span>
+	        state.userSingleStats[itemName] = (state.userSingleStats[itemName] || <span class="code-number">0</span>) + <span class="code-number">1</span>;
+	        state.userTotalStats[itemName] = (state.userTotalStats[itemName] || <span class="code-number">0</span>) + <span class="code-number">1</span>;
+	    }
+	    
+	    <span class="code-comment">// 更新花费统计</span>
+	    state.totalDraws += count;
+	    state.silverCost += count * <span class="code-number">100</span>; <span class="code-comment">// 每次抽奖消耗100银币</span>
+	    state.pearlCost += count * <span class="code-number">0.01</span>; <span class="code-comment">// 每次抽奖消耗0.01颗史诗宝珠</span>
+	    
+	    <span class="code-comment">// 更新UI显示</span>
+	    <span class="code-function">updateCostDisplay</span>();
+	    <span class="code-function">updateAllStatsTables</span>();
+	    
+	    <span class="code-comment">// 返回抽奖结果</span>
+	    <span class="code-keyword">return</span> results;
+	}
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">用户抽奖函数 (userDrawOnce)</div>
+	            <div class="code-desc">
+	                处理用户抽奖操作，包括统计重置和史诗物品检测。
+	            </div>
+	            <div class="code-block">
+	<span class="code-comment">/**
+	 * 用户抽奖函数 - 处理用户抽奖操作及相关逻辑
+	 * @param {number} count - 抽奖次数
+	 */</span>
+	<span class="code-keyword">function</span> <span class="code-function">userDrawOnce</span>(count) {
+	    <span class="code-comment">// 重置用户单次统计，准备记录本次抽奖结果</span>
+	    state.userSingleStats = <span class="code-function">initializeStats</span>();
+	    
+	    <span class="code-comment">// 执行批量抽奖</span>
+	    <span class="code-keyword">const</span> results = <span class="code-function">batchDraw</span>(count);
+	    
+	    <span class="code-comment">// 检查是否抽到当期史诗武将并触发弹窗</span>
+	    <span class="code-keyword">if</span> (results[<span class="code-string">"当期史诗武将*1"</span>] && state.epicPopup) {
+	        <span class="code-function">showEpicPopup</span>(<span class="code-string">"当期史诗武将*1"</span>);
+	    }
+	}
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">史诗弹窗函数 (showEpicPopup)</div>
+	            <div class="code-desc">
+	                显示抽到史诗物品的恭喜弹窗。
+	            </div>
+	            <div class="code-block">
+	<span class="code-comment">/**
+	 * 史诗弹窗函数 - 显示抽到史诗物品的恭喜弹窗
+	 * @param {string} itemName - 抽中的物品名称
+	 */</span>
+	<span class="code-keyword">function</span> <span class="code-function">showEpicPopup</span>(itemName) {
+	    <span class="code-comment">// 获取弹窗UI元素</span>
+	    <span class="code-keyword">const</span> titleEl = document.<span class="code-function">getElementById</span>(<span class="code-string">'epic-title'</span>);
+	    <span class="code-keyword">const</span> contEl = document.<span class="code-function">getElementById</span>(<span class="code-string">'epic-content'</span>);
+	    
+	    <span class="code-comment">// 设置弹窗内容</span>
+	    titleEl.textContent = <span class="code-string">'恭喜获得！'</span>;
+	    contEl.textContent = <span class="code-string">`你获得了：${itemName}！`</span>;
+	    
+	    <span class="code-comment">// 显示弹窗</span>
+	    document.<span class="code-function">getElementById</span>(<span class="code-string">'epic-popup'</span>).style.display = <span class="code-string">'flex'</span>;
+	}
+	            </div>
+	        </div>
+	        
+	        <div class="code-section">
+	            <div class="code-title">核心设计特点</div>
+	            <div class="code-desc">
+	                <strong>权重系统</strong>：基于权重的随机算法，确保高权重物品出现概率更高。<br>
+	                <strong>分类系统</strong>：物品分为普通、稀有和传说三个等级，提供清晰的稀有度区分。<br>
+	                <strong>成本计算</strong>：每次抽奖消耗固定数量的银币和史诗宝珠。<br>
+	                <strong>弹窗提示</strong>：抽到传说物品时显示恭喜弹窗，增强用户体验。<br><br>
+	                
+	                这套系统通过简单的权重算法和清晰的物品分类，为用户提供了直观的抽奖体验。
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
     <footer class="site-footer">
     	<div class="author-info">
@@ -533,6 +888,41 @@
 		    tbody.appendChild(tr);
 		  });
 		}
+		
+		document.addEventListener('DOMContentLoaded', function() {
+		    const toggleBtn = document.getElementById('toggle-explanation');
+		    const content = document.getElementById('explanation-content');
+		    const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+		    
+		    toggleBtn.addEventListener('click', function() {
+		        content.classList.toggle('expanded');
+		        toggleIcon.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+		    });
+		});
+		
+		(() => {
+		  const btn50   = document.getElementById('btn-mob-50');
+		  const btnAuto = document.getElementById('btn-mob-auto');
+		
+		  let running = false;
+		  let timer   = null;
+		
+		  btn50.addEventListener('click', () => userDrawOnce(50));
+		
+		  btnAuto.addEventListener('click', () => {
+		    running = !running;
+		    btnAuto.classList.toggle('active', running);
+		    btnAuto.textContent = running ? '停止连抽' : '连续 50 抽';
+		
+		    if (running) {
+		      timer = setInterval(() => userDrawOnce(50), 100); // 每秒10次
+		    } else {
+		      clearInterval(timer);
+		    }
+		  });
+		
+		  window.addEventListener('beforeunload', () => clearInterval(timer));
+		})();
 		
 		/* ========== 初始化时调用 ========== */
 		document.addEventListener('DOMContentLoaded', function() {
