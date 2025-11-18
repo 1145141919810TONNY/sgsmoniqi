@@ -411,6 +411,66 @@
 		        font-size: 0.85rem;
 		    }
 		}
+		.system-stat {
+		    margin-top: 15px;
+		    text-align: center;
+		    padding: 10px;
+		    background: rgba(52, 73, 94, 0.1);
+		    border-radius: 5px;
+		    border-left: 4px solid #3498db;
+		}
+		
+		.system-stat div {
+		    font-weight: bold;
+		    color: #3498db;
+		}
+		
+		#mobile-bot-bar {
+		  position: fixed;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		  height: 56px;
+		  background: rgba(30,30,30,.95);
+		  display: flex;
+		  z-index: 999;
+		  border-top: 1px solid #444;
+		}
+		
+		#mobile-bot-bar button {
+		  flex: 1;
+		  border: none;
+		  font-size: 16px;
+		  font-weight: bold;
+		  color: #fff;
+		  cursor: pointer;
+		  transition: opacity .2s;
+		}
+		
+		#mobile-bot-bar button:active { 
+		  opacity: .7; 
+		}
+		
+		#mobile-bot-bar button:disabled {
+		  cursor: not-allowed;
+		  opacity: 0.5;
+		}
+		
+		#btn-mob-50 { 
+		  background: var(--primary-color); 
+		}
+		
+		#btn-mob-auto { 
+		  background: var(--secondary-color); 
+		}
+		
+		#btn-mob-auto.active { 
+		  background: #e67e22; 
+		}
+		
+		#btn-mob-pause { 
+		  background: #e67e22; 
+		}
 
     </style>
 </head>
@@ -477,7 +537,7 @@
                     <button class="btn btn-primary" id="draw-50">抽50次</button>	
                 </div>
 				
-				<p>回车键和空格键可以快捷50抽，可长按</p>
+				<p>回车键可以快捷50抽，可长按</p>
 
                 <div class="mode-selector">
                     <h3>抽奖模式（模式2/3/4是系统截胡的形式，模拟其他人抽奖）</h3>
@@ -487,15 +547,21 @@
                         <button class="mode-btn" data-mode="3">模式3: 每5秒500抽</button>
                         <button class="mode-btn" data-mode="4">模式4: 每5秒5000抽</button>
                     </div>
+					<div class="pause-control" style="margin: 15px 0; text-align: center;">
+					  <button class="btn btn-secondary" id="pause-btn" style="display: none;">
+					    暂停
+					  </button>
+					</div>
                 </div>
 				
 				<div id="countdown" style="display:none;">下次抽取倒计时：<span id="cd-num">5</span> 秒</div>
-				<!-- 用户累计 -->
 				<div class="user-stat" style="margin-top:15px;text-align:center;">
 				  <div>累计已抽：<span id="user-total-draws">0</span> 次</div>
 				  <div>累计花费：¥ <span id="user-total-cost">0.00</span></div>
 				</div>
-				<!-- 史诗弹窗开关 -->
+				<div class="system-stat" style="margin-top:15px;text-align:center;">
+				  <div>系统累计已抽：<span id="system-total-draws">0</span> 次</div>
+				</div>
 				<div class="popup-toggle" style="margin-top:10px;">
 				  <label>
 				    <input type="checkbox" id="popup-switch" checked> 抽到顶级史诗时弹窗
@@ -767,17 +833,15 @@
 	}
 	#mobile-bot-bar button:active { opacity: .7; }
 	#btn-mob-50   { background: var(--primary-color); }
-	#btn-mob-auto {
-	  background: var(--secondary-color);
-	}
-	#btn-mob-auto.active {
-	  background: #e67e22;
-	}
+	#btn-mob-auto { background: var(--secondary-color); }
+	#btn-mob-auto.active { background: #e67e22; }
+	#btn-mob-pause { background: #e67e22; display: none; }
 	</style>
 	
 	<div id="mobile-bot-bar">
 	  <button id="btn-mob-50">50 抽</button>
 	  <button id="btn-mob-auto">连续 50 抽</button>
+	  <button id="btn-mob-pause">暂停</button> 
 	</div>
 	
 	<footer class="site-footer">
@@ -875,6 +939,10 @@
 			epicPopup: true,
 			userDrawTotal: 0,   // 用户总抽数
 			userCost: 0,         // 用户总花费（元）
+			isPaused: false,       // 是否暂停
+			remainingSeconds: 5,   // 暂停时剩余秒数
+			systemTotalDraws: 0,
+			currentMode: 1,
             
             // 概率分摊目标
             probabilityRedistribution: {
@@ -901,10 +969,12 @@
             state.systemTotalStats = initializeStats();
             state.epicRewardsRemaining = {...epicRewardsQuota};
             state.totalDraws = 0;
+			state.systemTotalDraws = 0;
 			
 			state.userDrawTotal = 0;
 			state.userCost = 0;
 			updateUserStat();
+			updateSystemTotalDraws();
             
             updateEpicRewardsTable();
             updateProgressBar();
@@ -915,26 +985,108 @@
         }
 		
 		function startCountdown(sec = 5) {
-		  let left = sec;
-		  const $box = document.getElementById('countdown');
-		  const $num = document.getElementById('cd-num');
-		  $box.style.display = 'inline-block';
-		  $num.textContent = left;
-		
-		  state.countdownTimer = setInterval(() => {
-		    left--;
+		    const startSec = state.isPaused ? state.remainingSeconds : sec;
+		    state.isPaused = false;
+		    
+		    let left = startSec;
+		    const $box = document.getElementById('countdown');
+		    const $num = document.getElementById('cd-num');
+		    const $pauseBtn = document.getElementById('pause-btn');
+		    
+		    $box.style.display = 'inline-block';
 		    $num.textContent = left;
-		    if (left <= 0) {
-		      clearInterval(state.countdownTimer);
-		      autoDrawOnce();        // 系统抽
-		      startCountdown(5);     // 马上重新开始下一轮
-		    }
-		  }, 1000);
+		    $pauseBtn.style.display = 'inline-block';
+		    $pauseBtn.textContent = '暂停（空格）';
+		    
+		    updateMobilePauseButton();
+		    
+		    if (state.countdownTimer) clearInterval(state.countdownTimer);
+		    
+		    state.countdownTimer = setInterval(() => {
+		        left--;
+		        $num.textContent = left;
+		        
+		        if (left <= 0) {
+		            clearInterval(state.countdownTimer);
+		            autoDrawOnce();    
+		            startCountdown(5);   
+		        }
+		    }, 1000);
 		}
+		
+		function updateSystemTotalDraws() {
+		    document.getElementById('system-total-draws').textContent = state.systemTotalDraws;
+		}
+		
+		function togglePause() {
+		    const $pauseBtn = document.getElementById('pause-btn');
+		    const $cdNum = document.getElementById('cd-num');
+		    
+		    if (state.isPaused) {
+		        state.isPaused = false;
+		        $pauseBtn.textContent = '暂停（空格）';
+		        startCountdown(state.remainingSeconds); 
+		    } else {
+		        state.isPaused = true;
+		        state.remainingSeconds = parseInt($cdNum.textContent);
+		        clearInterval(state.countdownTimer);
+		        $pauseBtn.textContent = '继续（空格）';
+		    }
+		    
+		    updateMobilePauseButton();
+		}
+		
+		function updateMobilePauseButton() {
+		    const btnPause = document.getElementById('btn-mob-pause');
+		    if (btnPause) {
+		        if (state.isPaused) {
+		            btnPause.textContent = '继续';
+		        } else {
+		            btnPause.textContent = '暂停';
+		        }
+		    }
+		}
+		
+		document.querySelectorAll('.mode-btn').forEach(btn => {
+		  btn.addEventListener('click', function() {
+		    const newMode = parseInt(this.getAttribute('data-mode'));
+		    if (newMode !== state.currentMode) {
+		      // 显示确认弹窗
+		      document.getElementById('confirm-modal').style.display = 'flex';
+		      
+		      // 确认切换模式
+		      document.getElementById('confirm-yes').onclick = function() {
+		        document.getElementById('confirm-modal').style.display = 'none';
+		        
+		        // 清除现有计时器并重置暂停状态
+		        clearInterval(state.countdownTimer);
+		        state.isPaused = false;
+		        state.remainingSeconds = 5;
+		        document.getElementById('pause-btn').style.display = 'none';
+		        
+		        // 更新模式并启动
+		        state.currentMode = newMode;
+		        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+		        btn.classList.add('active');
+		        
+		        // 启动新模式
+		        if (newMode > 1) {
+		          startCountdown();
+		        } else {
+		          document.getElementById('countdown').style.display = 'none';
+		        }
+		      };
+		    }
+		  });
+		});
+		
+		document.getElementById('pause-btn').addEventListener('click', togglePause);
 
 		function stopCountdown() {
-		  clearInterval(state.countdownTimer);
-		  document.getElementById('countdown').style.display = 'none';
+		    clearInterval(state.countdownTimer);
+		    document.getElementById('countdown').style.display = 'none';
+		    state.isPaused = false;
+		    updateMobilePauseButton();
 		}
 		
 		// 根据次数返回应花金额（元）
@@ -950,48 +1102,115 @@
 		
 		/* ========= 移动端底部按钮逻辑 ========= */
 		(() => {
-		  /* 与桌面版共用同一套 state，不重复定义 */
 		  const $ = sel => document.querySelector(sel);
-		  const btn50   = $('#btn-mob-50');
+		  const btn50 = $('#btn-mob-50');
 		  const btnAuto = $('#btn-mob-auto');
+		  const btnPause = $('#btn-mob-pause');
 		
 		  let running = false;
-		  let timer   = null;
+		  let timer = null;
+		  let isPaused = false;
 		
-		  /* 50 抽 */
+		  function initMobileButtons() {
+		    btnPause.style.display = 'block';
+		    btnPause.disabled = true;
+		    btnPause.style.opacity = '0.5'; 
+		    btnPause.textContent = '暂停';
+		  }
+		
+		  // 开始连续抽奖
+		  function startContinuousDraw() {
+		    running = true;
+		    isPaused = false;
+		    
+		    btnAuto.style.display = 'none';
+		    btnPause.disabled = false;
+		    btnPause.style.opacity = '1';
+		    btnPause.textContent = '暂停';
+		    
+		    timer = setInterval(() => userDrawOnce(50), 100);
+		  }
+		
+		  function stopContinuousDraw() {
+		    if (running) {
+		      clearInterval(timer);
+		      running = false;
+		      isPaused = false;
+		      
+		      btnAuto.style.display = 'block';
+		      btnAuto.textContent = '连续 50 抽';
+		      btnAuto.classList.remove('active');
+		      
+		      btnPause.disabled = true;
+		      btnPause.style.opacity = '0.5';
+		      btnPause.textContent = '暂停';
+		    }
+		  }
+		
+		  function pauseContinuousDraw() {
+		    if (running && !isPaused) {
+		      clearInterval(timer);
+		      isPaused = true;
+		      btnPause.textContent = '继续';
+		    }
+		  }
+		
+		  // 继续连续抽奖
+		  function resumeContinuousDraw() {
+		    if (running && isPaused) {
+		      isPaused = false;
+		      btnPause.textContent = '暂停';
+		      timer = setInterval(() => userDrawOnce(50), 100);
+		    }
+		  }
+		
 		  btn50.addEventListener('click', () => userDrawOnce(50));
 		
-		  /* 连续 50 抽开关 */
 		  btnAuto.addEventListener('click', () => {
-		    running = !running;
-		    btnAuto.classList.toggle('active', running);
-		    btnAuto.textContent = running ? '停止连抽' : '连续 50 抽';
-		
 		    if (running) {
-		      /* 每秒 10 次 => 100 ms 一次 */
-		      timer = setInterval(() => userDrawOnce(50), 100);
+		      stopContinuousDraw();
 		    } else {
-		      clearInterval(timer);
+		      startContinuousDraw();
 		    }
 		  });
 		
-		  /* 页面卸载时清定时器，防止内存泄漏 */
-		  window.addEventListener('beforeunload', () => clearInterval(timer));
+		  btnPause.addEventListener('click', () => {
+		      if (state.currentMode > 1) {
+		          togglePause();
+		      }
+		      
+		      if (!running) return; 
+		      
+		      if (isPaused) {
+		          resumeContinuousDraw();
+		      } else {
+		          pauseContinuousDraw();
+		      }
+		  });
+		
+		  initMobileButtons();
+		
+		  window.addEventListener('beforeunload', () => {
+		    if (running) clearInterval(timer);
+		  });
 		})();
 
 		function autoDrawOnce() {
-		  const count = [null, null, 50, 500, 5000][state.currentMode];
-		  state.systemSingleStats = initializeStats();
-		  const res = batchDraw(count, false);   // 系统抽
-		
-		  /* 截胡弹窗判断 */
-		  for (let n in res) checkEpicPopup(n, false);
-		
-		  const epic = Object.entries(res)
-		    .filter(([n]) => allItems.find(it => it.name === n)?.category === '史诗')
-		    .map(([n, c]) => `${n}×${c}`);
-		  addSystemLog(epic.length ? `本次抽取获得史诗奖励: ${epic.join(', ')}`
-		                           : '本次抽取未获得史诗奖励');
+		    const count = [null, null, 50, 500, 5000][state.currentMode];
+		    state.systemSingleStats = initializeStats();
+		    const res = batchDraw(count, false); 
+		    
+		    state.systemTotalDraws += count;
+		    updateSystemTotalDraws();
+		    
+		    /* 截胡弹窗判断 */
+		    for (let n in res) checkEpicPopup(n, false);
+		    
+		    const epic = Object.entries(res)
+		        .filter(([n]) => allItems.find(it => it.name === n)?.category === '史诗')
+		        .map(([n, c]) => `${n}×${c}`);
+		    addSystemLog(epic.length ? `本次抽取获得史诗奖励: ${epic.join(', ')}`
+		                            : '本次抽取未获得史诗奖励');
 		}
 
 
@@ -1190,7 +1409,6 @@
           };
         }
 
-		
 		function userDrawOnce(count) {
 		  state.userSingleStats = initializeStats();
 		
@@ -1199,7 +1417,12 @@
 		  state.userCost += calcCost(count);
 		  updateUserStat();
 		  for (let n in results) checkEpicPopup(n, true);
-		  if (state.currentMode > 1 && !state.autoStarted) {
+		  
+		  if (state.isPaused && state.currentMode > 1) {
+		    state.isPaused = false;
+		    document.getElementById('pause-btn').textContent = '暂停';
+		    startCountdown(state.remainingSeconds);
+		  } else if (state.currentMode > 1 && !state.autoStarted) {
 		    state.autoStarted = true;
 		    startCountdown(5);
 		  }
@@ -1277,9 +1500,14 @@
 		document.addEventListener('DOMContentLoaded', renderRateTable);
 		
 		document.addEventListener('keydown', e => {
-		  if (e.code === 'Enter' || e.code === 'Space') {
+		  if (e.code === 'Enter') {
 		    e.preventDefault();
 		    userDrawOnce(50);
+		  } else if (e.code === 'Space') {
+		    e.preventDefault();
+		    if (state.currentMode > 1) {
+		      togglePause();
+		    }
 		  }
 		});
 		
