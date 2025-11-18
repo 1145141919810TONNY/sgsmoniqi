@@ -627,6 +627,7 @@
 			                font-size: 0.85rem;
 			            }
 			        }
+					
 		</style>
 	</head>
 	<body>
@@ -663,6 +664,7 @@
 						<div>你已抽取了：<span id="draw-count">0</span> 次</div>
 						<div>你已花费了：<span id="cost">0</span> 元（每抽=3元）</div>
 						<div>当前拥有碎片：<span id="owned-count">0</span>/25</div>
+						<div>未来10抽获得终极碎片的概率：<span id="future-10-prob">0%</span></div>
 					</div>
 
 					<div class="draw-buttons">
@@ -951,7 +953,6 @@
 				return 1; // 硬保底
 			}
 
-
 			// 单次概率 p(n) = F(n) - F(n-1)
 			function singleProbability(n) {
 				if (n < 25) return 0;
@@ -998,12 +999,145 @@
 					}
 				}
 			}
+			
+			function calculateFuture10Probability() {
+			    const currentDraws = state.drawCount;
+			    const ownedCount = state.ownedFragments.length;
+			    
+			    if (state.ownedFragments.includes(25)) {
+			        return 0;
+			    }
+			    
+			    if (ownedCount < 24) {
+			        let probability = 0;
+			        
+			        for (let i = 1; i <= 10; i++) {
+			            const drawNumber = currentDraws + i;
+			            
+			            const nextFragment = ownedCount + 1;
+			            let fragmentProb;
+			            
+			            if (nextFragment >= 23) {
+			                fragmentProb = lateFragmentP(drawNumber);
+			            } else {
+			                fragmentProb = fragmentProbabilities[nextFragment] / 100;
+			            }
+			            
+			            probability = 1 - (1 - probability) * (1 - fragmentProb);
+			            
+			            if (nextFragment >= 24) {
+			                let ultimateProb = 0;
+			                for (let j = i + 1; j <= 10; j++) {
+			                    const ultimateDrawNumber = currentDraws + j;
+			                    let ultimateFragmentProb;
+			                    
+			                    if (ultimateDrawNumber >= 300) {
+			                        ultimateFragmentProb = 1;
+			                    } else {
+			                        ultimateFragmentProb = lateFragmentP(ultimateDrawNumber);
+			                    }
+			                    
+			                    ultimateProb = 1 - (1 - ultimateProb) * (1 - ultimateFragmentProb);
+			                }
+			                
+			                return probability * ultimateProb;
+			            }
+			        }
+			        
+			        return 0;
+			    } 
+			    else if (ownedCount === 24) {
+			        let probability = 0;
+			        
+			        for (let i = 1; i <= 10; i++) {
+			            const drawNumber = currentDraws + i;
+			            let singleDrawProb;
+			            
+			            if (drawNumber >= 300) {
+			                singleDrawProb = 1;
+			            } else {
+			                singleDrawProb = lateFragmentP(drawNumber);
+			            }
+			            
+			            probability = 1 - (1 - probability) * (1 - singleDrawProb);
+			        }
+			        
+			        return probability;
+			    }
+			    
+			    return 0;
+			}
+			
+			function calculateFuture10ProbabilityAdvanced() {
+			    const currentDraws = state.drawCount;
+			    const ownedCount = state.ownedFragments.length;
+			    
+			    if (state.ownedFragments.includes(25)) {
+			        return 0;
+			    }
+			    
+			    let totalProbability = 0;
+			    
+			    function calculatePathProbability(drawsRemaining, currentFragment, probabilitySoFar) {
+			        if (drawsRemaining === 0) {
+			            return currentFragment >= 25 ? probabilitySoFar : 0;
+			        }
+			        
+			        if (currentFragment >= 25) {
+			            return probabilitySoFar;
+			        }
+			        
+			        let pathProb = 0;
+			        const nextDrawNumber = currentDraws + (10 - drawsRemaining) + 1;
+			        
+			        let successProb;
+			        if (currentFragment >= 23) {
+			            successProb = lateFragmentP(nextDrawNumber);
+			        } else {
+			            successProb = fragmentProbabilities[currentFragment + 1] / 100;
+			        }
+			        
+			        if (nextDrawNumber >= 300) {
+			            successProb = 1;
+			        }
+			        
+			        pathProb += calculatePathProbability(
+			            drawsRemaining - 1, 
+			            currentFragment + 1, 
+			            probabilitySoFar * successProb
+			        );
+			        
+			        pathProb += calculatePathProbability(
+			            drawsRemaining - 1, 
+			            currentFragment, 
+			            probabilitySoFar * (1 - successProb)
+			        );
+			        
+			        return pathProb;
+			    }
+			    
+			    totalProbability = calculatePathProbability(10, ownedCount, 1);
+			    return totalProbability;
+			}
+
 
 			// 更新统计信息
 			function updateStats() {
 				drawCountEl.textContent = state.drawCount;
 				costEl.textContent = state.drawCount * 3;
 				ownedCountEl.textContent = state.ownedFragments.length;
+				
+				const futureProb = calculateFuture10ProbabilityAdvanced();
+				    const futureProbEl = document.getElementById('future-10-prob');
+				    if (futureProbEl) {
+				        if (futureProb === 0) {
+				            futureProbEl.textContent = '0%';
+				        } else if (futureProb < 0.0001) {
+				            futureProbEl.textContent = '< 0.01%';
+				        } else {
+				            futureProbEl.textContent = (futureProb * 100).toFixed(2) + '%';
+				        }
+				    }
 			}
 
 			// 添加日志
