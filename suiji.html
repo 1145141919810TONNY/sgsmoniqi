@@ -1,541 +1,676 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>随机效果生成器</title>
-	<link rel="stylesheet" href="css/head.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-    
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            color: #333;
-            padding: 20px;
-        }
-    
-        .mobile-nav-toggle {
-            display: none;
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            background: #d32f2f;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            z-index: 1000;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            cursor: pointer;
-        }
-    
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 80px;
-            right: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 999;
-            width: 200px;
-            padding: 10px 0;
-        }
-    
-        .mobile-nav a {
-            display: block;
-            padding: 12px 20px;
-            color: #333;
-            text-decoration: none;
-            font-weight: bold;
-            border-bottom: 1px solid #eee;
-        }
-    
-        .mobile-nav a:last-child { border-bottom: none; }
-        .mobile-nav a:hover { background: #f5f5f5; }
-    
-        .zone-nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            width: 100%;
-            max-width: 800px;
-    
-            /* 大屏置顶 */
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: white;
-            padding: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.1);
-        }
-    
-        .zone-nav-btn {
-            padding: 12px 20px;
-            background: linear-gradient(to right, #4CAF50, #2E7D32);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all .3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,.1);
-            min-width: 150px;
-            text-align: center;
-        }
-    
-        .zone-nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0,0,0,.15);
-            background: linear-gradient(to right, #43A047, #1B5E20);
-        }
-    
-        @media (max-width: 768px) {
-            .mobile-nav-toggle { display: block; }
-    
-            .zone-nav {
-                position: static;
-                top: auto;
-                background: transparent;
-                z-index: auto;
-                padding: 15px 0 0;
-                box-shadow: none;
-                flex-direction: column;
-                align-items: center;
-            }
-    
-            .zone-nav-btn {
-                width: 100%;
-                max-width: 250px;
-                padding: 10px 15px;
-                min-width: 120px;
-                font-size: 0.9rem;
-            }
-    
-            .tooltip-container .nav-buttons { display: none; }
-        }
-    
-        /* 超小屏微调 */
-        @media (max-width: 480px) {
-            .mobile-nav-toggle {
-                top: 10px;
-                right: 10px;
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
-            }
-            .mobile-nav {
-                top: 65px;
-                right: 10px;
-                width: 180px;
-            }
-        }
-    
-        .random-generator-container,
-        .effect-generator-container {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            width: 90%;
-            margin: 30px auto;
-            background: white;
-        }
-        .random-generator-container { max-width: 400px; }
-        .effect-generator-container { max-width: 500px; }
-    
-        .random-generator-container h1 { color: #2c3e50; }
-        .effect-generator-container h1 { color: #e74c3c; }
-    
-        .random-result {
-            font-size: 5rem;
-            font-weight: bold;
-            color: #3498db;
-            margin: 1.5rem 0;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    
-        .effect-result {
-            font-size: 1.3rem;
-            font-weight: 500;
-            color: #2c3e50;
-            line-height: 1.6;
-            margin: 1.5rem 0;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            border-left: 4px solid #e74c3c;
-        }
-    
-        .random-btn,
-        .effect-btn {
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all .3s ease;
-            margin-top: 1rem;
-            width: 100%;
-        }
-        .random-btn {
-            background-color: #3498db;
-            color: white;
-        }
-        .effect-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .random-btn:hover:not(:disabled) { background-color: #2980b9; transform: translateY(-2px); }
-        .effect-btn:hover:not(:disabled) { background-color: #c0392b; transform: translateY(-2px); }
-        .random-btn:disabled,
-        .effect-btn:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-    
-        .cooling-info,
-        .effect-cooling-info {
-            margin-top: 1rem;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-    
-        .probability-info,
-        .effect-probability-info {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-            color: #7f8c8d;
-        }
-    
-        .history-section {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
-        .history-title {
-            font-size: 1.1rem;
-            color: #7f8c8d;
-            margin-bottom: 0.8rem;
-        }
-        .history-list {
-            list-style: none;
-            max-height: 120px;
-            overflow-y: auto;
-            text-align: left;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        .history-list li {
-            padding: 0.5rem;
-            border-bottom: 1px dashed #ddd;
-            font-size: 0.95rem;
-            color: #555;
-        }
-        .history-list li:last-child { border-bottom: none; }
-    </style>
-
-</head>
-<body>
-	
-	<section class="hero-section">
-	    <h1 class="hero-title">三国杀面杀随机标记</h1>
-	    <div class="tooltip-container">
-	        <div class="nav-buttons">
-				<button class="nav-button"><a href="index.html">返回新版主页</a></button>
-				<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
-	        </div>
-	    </div>
-	    <h3 class="hero-title">
-	        说明：<br />
-	        本标记网页可脱离联机版单独运行，脱离联机版运行时只会令页顶和页尾的css失效，不影响使用。
-	    </h3>
-	</section>
-    <!-- 移动端导航按钮 -->
-    <button class="mobile-nav-toggle">☰</button>
-    <div class="mobile-nav">
-        <a href="index.html">返回新版主页</a>
-		<a href="indexjd.html">返回经典版主页</a>
-        <a href="#zone-0">狼袭</a>
-        <a href="#zone-1">凶镬</a>
-        <a href="#zone-2">测试区域</a>
-    </div>
-
- 
-    <div class="zone-nav">
-        <button class="zone-nav-btn" data-target="zone-0">李傕</button>
-        <button class="zone-nav-btn" data-target="zone-1">徐荣</button>
-        <button class="zone-nav-btn" data-target="zone-2">测试区域</button>
-    </div>
-    
-    <!-- 随机数字生成器 -->
-    <div class="random-generator-container" id="zone-0">
-        <h1>李傕【狼袭】随机数字生成器</h1>
-        <div class="random-result" id="numberResult">?</div>
-        <button class="random-btn" id="numberGenerateBtn">生成随机数</button>
-        <div class="cooling-info" id="numberCoolingInfo"></div>
-        <div class="probability-info">每个数字(0,1,2)出现的概率均为33.33%</div>
-    </div>
-    
-    <!-- 随机效果生成器 -->
-    <div class="effect-generator-container" id="zone-1">
-        <h1>徐荣【凶镬】随机效果生成器</h1>
-        <div class="effect-result" id="effectResult">点击下方按钮生成随机效果</div>
-        <button class="effect-btn" id="effectGenerateBtn">生成随机效果</button>
-        <div class="effect-cooling-info" id="effectCoolingInfo"></div>
-        <div class="effect-probability-info">每个效果出现的概率均为33.33%</div>
-        
-        <div class="history-section">
-            <div class="history-title">生成历史</div>
-            <ul class="history-list" id="historyList"></ul>
-        </div>
-    </div>
-    
-    <!-- 测试区域 -->
-    <div class="random-generator-container" id="zone-2">
-        <h1>测试区域</h1>
-        <div class="random-result">?</div>
-        <div class="probability-info">这是测试区域的内容</div>
-    </div>
-	
-	<button id="backToTopBtn">回到顶部</button>
-	
-	<footer class="site-footer">
-	    <div class="author-info">
-	        <p>
-	            作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
-	                target="_blank">bilibili月が綺麗ですね_</a><br />
-	            联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
-	            有什么新功能或建议欢迎骚扰（著名来意）<br />
-	            <a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
-	        </p>
-	    </div>
-	    <div class="code-update">
-	        <a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
-	            class="bili-btn" rel="noopener noreferrer">
-	            [bilibili]获取更新动态
-	        </a>
-	        <a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
-	            rel="noopener noreferrer">
-	            [GitHub]获取后续代码更新
-	        </a>
-	        <a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
-	            class="gitcode-btn" rel="noopener noreferrer">
-	            [GitCode]获取后续代码更新(国内git)
-	        </a>
-	    </div>
-	    <div class="license-notice">
-	        <p>
-	            Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
-	            Released under the
-	            <a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
-	                MIT License
-	            </a>
-	        </p>
-	        <p class="i18n-annotation">
-	            (法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
-	        </p>
-	    </div>
-	</footer>
-
-    <script>
-		// 获取按钮
-		const backToTopBtn = document.getElementById('backToTopBtn');
-		
-		// 滚动事件监听，控制按钮显示隐藏
-		window.addEventListener('scroll', () => {
-			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
-				backToTopBtn.style.display = 'block';
-			} else {
-				backToTopBtn.style.display = 'none';
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>随机效果生成器</title>
+		<link rel="stylesheet" href="css/head.css">
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 			}
-		});
-		
-		// 点击按钮回到顶部
-		backToTopBtn.addEventListener('click', () => {
-			window.scrollTo({
-				top: 0,
-				behavior: 'smooth' // 平滑滚动
+
+			body {
+				background-color: #f8f9fa;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				min-height: 100vh;
+				color: #333;
+				padding: 20px;
+			}
+
+			.mobile-nav-toggle {
+				display: none;
+				position: fixed;
+				top: 15px;
+				right: 15px;
+				background: #d32f2f;
+				color: white;
+				border: none;
+				border-radius: 50%;
+				width: 50px;
+				height: 50px;
+				font-size: 24px;
+				z-index: 1000;
+				box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+				cursor: pointer;
+			}
+
+			.mobile-nav {
+				display: none;
+				position: fixed;
+				top: 80px;
+				right: 15px;
+				background: white;
+				border-radius: 10px;
+				box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+				z-index: 999;
+				width: 200px;
+				padding: 10px 0;
+			}
+
+			.mobile-nav a {
+				display: block;
+				padding: 12px 20px;
+				color: #333;
+				text-decoration: none;
+				font-weight: bold;
+				border-bottom: 1px solid #eee;
+			}
+
+			.mobile-nav a:last-child {
+				border-bottom: none;
+			}
+
+			.mobile-nav a:hover {
+				background: #f5f5f5;
+			}
+
+			.zone-nav {
+				display: flex;
+				justify-content: center;
+				gap: 15px;
+				margin: 20px 0;
+				flex-wrap: wrap;
+				width: 100%;
+				max-width: 800px;
+
+				/* 大屏置顶 */
+				position: sticky;
+				top: 0;
+				z-index: 100;
+				background: white;
+				padding: 10px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+			}
+
+			.zone-nav-btn {
+				padding: 12px 20px;
+				background: linear-gradient(to right, #4CAF50, #2E7D32);
+				color: white;
+				border: none;
+				border-radius: 6px;
+				font-weight: bold;
+				cursor: pointer;
+				transition: all .3s ease;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+				min-width: 150px;
+				text-align: center;
+			}
+
+			.zone-nav-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 8px rgba(0, 0, 0, .15);
+				background: linear-gradient(to right, #43A047, #1B5E20);
+			}
+
+			@media (max-width: 768px) {
+				.mobile-nav-toggle {
+					display: block;
+				}
+
+				.zone-nav {
+					position: static;
+					top: auto;
+					background: transparent;
+					z-index: auto;
+					padding: 15px 0 0;
+					box-shadow: none;
+					flex-direction: column;
+					align-items: center;
+				}
+
+				.zone-nav-btn {
+					width: 100%;
+					max-width: 250px;
+					padding: 10px 15px;
+					min-width: 120px;
+					font-size: 0.9rem;
+				}
+
+				.tooltip-container .nav-buttons {
+					display: none;
+				}
+			}
+
+			/* 超小屏微调 */
+			@media (max-width: 480px) {
+				.mobile-nav-toggle {
+					top: 10px;
+					right: 10px;
+					width: 45px;
+					height: 45px;
+					font-size: 20px;
+				}
+
+				.mobile-nav {
+					top: 65px;
+					right: 10px;
+					width: 180px;
+				}
+			}
+
+			.random-generator-container,
+			.effect-generator-container {
+				text-align: center;
+				padding: 2rem;
+				border-radius: 12px;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+				width: 90%;
+				margin: 30px auto;
+				background: white;
+			}
+
+			.random-generator-container {
+				max-width: 400px;
+			}
+
+			.effect-generator-container {
+				max-width: 500px;
+			}
+
+			.random-generator-container h1 {
+				color: #2c3e50;
+			}
+
+			.effect-generator-container h1 {
+				color: #e74c3c;
+			}
+
+			.random-result {
+				font-size: 5rem;
+				font-weight: bold;
+				color: #3498db;
+				margin: 1.5rem 0;
+				height: 90px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.effect-result {
+				font-size: 1.3rem;
+				font-weight: 500;
+				color: #2c3e50;
+				line-height: 1.6;
+				margin: 1.5rem 0;
+				min-height: 120px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 20px;
+				background: #f9f9f9;
+				border-radius: 10px;
+				border-left: 4px solid #e74c3c;
+			}
+
+			.random-btn,
+			.effect-btn {
+				border: none;
+				padding: 15px 30px;
+				font-size: 1.2rem;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: all .3s ease;
+				margin-top: 1rem;
+				width: 100%;
+			}
+
+			.random-btn {
+				background-color: #3498db;
+				color: white;
+			}
+
+			.effect-btn {
+				background-color: #e74c3c;
+				color: white;
+			}
+
+			.random-btn:hover:not(:disabled) {
+				background-color: #2980b9;
+				transform: translateY(-2px);
+			}
+
+			.effect-btn:hover:not(:disabled) {
+				background-color: #c0392b;
+				transform: translateY(-2px);
+			}
+
+			.random-btn:disabled,
+			.effect-btn:disabled {
+				background-color: #95a5a6;
+				cursor: not-allowed;
+			}
+
+			.cooling-info,
+			.effect-cooling-info {
+				margin-top: 1rem;
+				color: #7f8c8d;
+				font-size: 0.9rem;
+			}
+
+			.probability-info,
+			.effect-probability-info {
+				margin-top: 2rem;
+				padding-top: 1rem;
+				border-top: 1px solid #eee;
+				color: #7f8c8d;
+			}
+
+			.history-section {
+				margin-top: 1.5rem;
+				padding-top: 1rem;
+				border-top: 1px solid #eee;
+			}
+
+			.history-title {
+				font-size: 1.1rem;
+				color: #7f8c8d;
+				margin-bottom: 0.8rem;
+			}
+
+			.history-list {
+				list-style: none;
+				max-height: 120px;
+				overflow-y: auto;
+				text-align: left;
+				padding: 10px;
+				background: #f8f9fa;
+				border-radius: 8px;
+			}
+
+			.history-list li {
+				padding: 0.5rem;
+				border-bottom: 1px dashed #ddd;
+				font-size: 0.95rem;
+				color: #555;
+			}
+
+			.history-list li:last-child {
+				border-bottom: none;
+			}
+
+			.counter-display {
+				font-size: 48px;
+				font-weight: bold;
+				margin: 20px 0;
+				color: #2c3e50;
+				height: 60px;
+				display: flex;
+		 	align-items: center;
+				justify-content: center;
+			}
+
+			.output-display {
+				font-size: 24px;
+				margin: 20px 0;
+				min-height: 40px;
+				color: #e74c3c;
+				font-weight: bold;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 10px;
+				background: #f9f9f9;
+				border-radius: 10px;
+				border-left: 4px solid #e74c3c;
+			}
+
+			.button-container {
+				margin: 30px 0;
+				display: flex;
+				justify-content: center;
+				gap: 15px;
+			}
+
+			.increment-btn {
+				background-color: #e74c3c;
+				color: #f1c40f;
+				border: none;
+				padding: 12px 24px;
+				font-size: 18px;
+				border-radius: 5px;
+				cursor: pointer;
+				font-weight: bold;
+				transition: all 0.3s;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+		 }
+
+			.increment-btn:hover {
+				background-color: #c0392b;
+				transform: translateY(-2px);
+				box-shadow: 0 6px 8px rgba(0, 0, 0, .15);
+			}
+
+			.reset-btn {
+				background-color: #34495e;
+				color: white;
+				border: none;
+				padding: 10px 20px;
+				font-size: 16px;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: all 0.3s;
+			}
+
+			.reset-btn:hover {
+				background-color: #2c3e50;
+				transform: translateY(-2px);
+			}
+		</style>
+
+	</head>
+	<body>
+
+		<section class="hero-section">
+			<h1 class="hero-title">三国杀面杀随机标记</h1>
+			<div class="tooltip-container">
+				<div class="nav-buttons">
+					<button class="nav-button"><a href="index.html">返回新版主页</a></button>
+					<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
+				</div>
+			</div>
+			<h3 class="hero-title">
+				说明：<br />
+				本标记网页可脱离联机版单独运行，脱离联机版运行时只会令页顶和页尾的css失效，不影响使用。
+			</h3>
+		</section>
+		<!-- 移动端导航按钮 -->
+		<button class="mobile-nav-toggle">☰</button>
+		<div class="mobile-nav">
+			<a href="index.html">返回新版主页</a>
+			<a href="indexjd.html">返回经典版主页</a>
+			<a href="#zone-0">狼袭</a>
+			<a href="#zone-1">凶镬</a>
+			<a href="#zone-2">骆统</a>
+		</div>
+
+
+		<div class="zone-nav">
+			<button class="zone-nav-btn" data-target="zone-0">李傕</button>
+			<button class="zone-nav-btn" data-target="zone-1">徐荣</button>
+			<button class="zone-nav-btn" data-target="zone-2">骆统</button>
+		</div>
+
+		<!-- 随机数字生成器 -->
+		<div class="random-generator-container" id="zone-0">
+			<h1>李傕“狼袭”随机数字生成器</h1>
+			<div class="random-result" id="numberResult">?</div>
+			<button class="random-btn" id="numberGenerateBtn">生成随机数</button>
+			<div class="cooling-info" id="numberCoolingInfo"></div>
+			<div class="probability-info">每个数字(0,1,2)出现的概率均为33.33%</div>
+		</div>
+
+		<!-- 随机效果生成器 -->
+		<div class="effect-generator-container" id="zone-1">
+			<h1>徐荣“凶镬”随机效果生成器</h1>
+			<div class="effect-result" id="effectResult">点击下方按钮生成随机效果</div>
+			<button class="effect-btn" id="effectGenerateBtn">生成随机效果</button>
+			<div class="effect-cooling-info" id="effectCoolingInfo"></div>
+			<div class="effect-probability-info">每个效果出现的概率均为33.33%</div>
+
+			<div class="history-section">
+				<div class="history-title">生成历史</div>
+				<ul class="history-list" id="historyList"></ul>
+			</div>
+		</div>
+
+		<div class="random-generator-container" id="zone-2">
+			<h1>骆统“勤政”随机数生成器</h1>
+			<div class="counter-display" id="counter">0</div>
+			<div class="output-display" id="output"></div>
+			<div class="button-container">
+				<button class="increment-btn" id="incrementBtn">增加数字</button>
+				<button class="reset-btn" id="resetBtn">清零</button>
+			</div>
+
+			<div class="history-section">
+				<div class="history-title">输出历史</div>
+				<ul class="history-list" id="historyList2"></ul>
+			</div>
+		</div>
+
+		<button id="backToTopBtn">回到顶部</button>
+
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取后续代码更新(国内git)
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy; <span id="copyright-year">2025</span> bilibili 月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+
+		<script>
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
+
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+				if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+					backToTopBtn.style.display = 'block';
+				} else {
+					backToTopBtn.style.display = 'none';
+				}
 			});
-		});
-        // 移动端导航功能
-        function setupMobileNav() {
-            const mobileToggle = document.querySelector('.mobile-nav-toggle');
-            const mobileNav = document.querySelector('.mobile-nav');
-            
-            mobileToggle.addEventListener('click', function() {
-                const isVisible = mobileNav.style.display === 'block';
-                mobileNav.style.display = isVisible ? 'none' : 'block';
-            });
-            
-            // 点击导航项后关闭菜单
-            mobileNav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileNav.style.display = 'none';
-                });
-            });
-            
-            // 点击外部区域关闭菜单
-            document.addEventListener('click', function(event) {
-                if (!mobileNav.contains(event.target) && event.target !== mobileToggle) {
-                    mobileNav.style.display = 'none';
-                }
-            });
-        }
-        
-        // 区域导航功能
-        function setupZoneNav() {
-            const zoneNavBtns = document.querySelectorAll('.zone-nav-btn');
-            
-            zoneNavBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    const targetElement = document.getElementById(targetId);
-                    
-                    if (targetElement) {
-                        // 平滑滚动到目标区域
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                        
-                        // 添加视觉反馈
-                        this.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            this.style.transform = '';
-                        }, 200);
-                    }
-                });
-            });
-        }
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 随机数字生成器逻辑
-            const numberGenerateBtn = document.getElementById('numberGenerateBtn');
-            const numberResult = document.getElementById('numberResult');
-            const numberCoolingInfo = document.getElementById('numberCoolingInfo');
-            
-            numberGenerateBtn.addEventListener('click', function() {
-                // 生成0-2的随机整数
-                const randomNum = Math.floor(Math.random() * 3);
-                numberResult.textContent = randomNum;
-                
-                // 禁用按钮
-                numberGenerateBtn.disabled = true;
-                
-                // 设置冷却时间（3秒）
-                let countdown = 3;
-                numberCoolingInfo.textContent = `冷却中... ${countdown}秒`;
-                
-                const countdownInterval = setInterval(function() {
-                    countdown--;
-                    
-                    if (countdown > 0) {
-                        numberCoolingInfo.textContent = `冷却中... ${countdown}秒`;
-                    } else {
-                        clearInterval(countdownInterval);
-                        numberCoolingInfo.textContent = '';
-                        numberGenerateBtn.disabled = false;
-                    }
-                }, 1000);
-            });
-            
-            // 随机效果生成器逻辑
-            const effectGenerateBtn = document.getElementById('effectGenerateBtn');
-            const effectResult = document.getElementById('effectResult');
-            const effectCoolingInfo = document.getElementById('effectCoolingInfo');
-            const historyList = document.getElementById('historyList');
-            
-            // 定义三个效果选项
-            const effects = [
-                "火焰伤害，不可对你出杀",
-                "失去体力，手牌上限-1",
-                "随机获得其每个区域内一张牌"
-            ];
-            
-            // 记录生成历史
-            let history = [];
-            
-            effectGenerateBtn.addEventListener('click', function() {
-                // 生成0-2的随机整数
-                const randomIndex = Math.floor(Math.random() * 3);
-                const effect = effects[randomIndex];
-                
-                // 显示结果
-                effectResult.textContent = effect;
-                
-                // 添加到历史记录
-                const now = new Date();
-                const timeString = now.toLocaleTimeString();
-                history.unshift(`[${timeString}] ${effect}`);
-                
-                // 只保留最近5条历史记录
-                if (history.length > 5) {
-                    history.pop();
-                }
-                
-                // 更新历史列表
-                updateHistoryList();
-                
-                // 禁用按钮
-                effectGenerateBtn.disabled = true;
-                
-                // 设置冷却时间（3秒）
-                let countdown = 3;
-                effectCoolingInfo.textContent = `冷却中... ${countdown}秒`;
-                
-                const countdownInterval = setInterval(function() {
-                    countdown--;
-                    
-                    if (countdown > 0) {
-                        effectCoolingInfo.textContent = `冷却中... ${countdown}秒`;
-                    } else {
-                        clearInterval(countdownInterval);
-                        effectCoolingInfo.textContent = '';
-                        effectGenerateBtn.disabled = false;
-                    }
-                }, 1000);
-            });
-            
-            function updateHistoryList() {
-                // 清空历史列表
-                historyList.innerHTML = '';
-                
-                // 添加历史记录
-                history.forEach(item => {
-                    const li = document.createElement('li');
-                    li.textContent = item;
-                    historyList.appendChild(li);
-                });
-            }
-            
-            // 初始化导航功能
-            setupMobileNav();
-            setupZoneNav();
-        });
-    </script>
-</body>
+
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth' // 平滑滚动
+				});
+			});
+			// 移动端导航功能
+			function setupMobileNav() {
+				const mobileToggle = document.querySelector('.mobile-nav-toggle');
+				const mobileNav = document.querySelector('.mobile-nav');
+
+				mobileToggle.addEventListener('click', function() {
+					const isVisible = mobileNav.style.display === 'block';
+					mobileNav.style.display = isVisible ? 'none' : 'block';
+				});
+
+				// 点击导航项后关闭菜单
+				mobileNav.querySelectorAll('a').forEach(link => {
+					link.addEventListener('click', () => {
+						mobileNav.style.display = 'none';
+					});
+				});
+
+				// 点击外部区域关闭菜单
+				document.addEventListener('click', function(event) {
+					if (!mobileNav.contains(event.target) && event.target !== mobileToggle) {
+						mobileNav.style.display = 'none';
+					}
+				});
+			}
+
+			// 区域导航功能
+			function setupZoneNav() {
+				const zoneNavBtns = document.querySelectorAll('.zone-nav-btn');
+
+				zoneNavBtns.forEach(btn => {
+					btn.addEventListener('click', function() {
+						const targetId = this.getAttribute('data-target');
+						const targetElement = document.getElementById(targetId);
+
+						if (targetElement) {
+							// 平滑滚动到目标区域
+							targetElement.scrollIntoView({
+								behavior: 'smooth',
+								block: 'start'
+							});
+
+							// 添加视觉反馈
+							this.style.transform = 'scale(0.95)';
+							setTimeout(() => {
+								this.style.transform = '';
+							}, 200);
+						}
+					});
+				});
+			}
+
+			// 页面加载完成后初始化
+			document.addEventListener('DOMContentLoaded', function() {
+				// 李傕“狼袭”随机数
+				const numberGenerateBtn = document.getElementById('numberGenerateBtn');
+				const numberResult = document.getElementById('numberResult');
+				const numberCoolingInfo = document.getElementById('numberCoolingInfo');
+
+				numberGenerateBtn.addEventListener('click', function() {
+					const randomNum = Math.floor(Math.random() * 3);
+					numberResult.textContent = randomNum;
+					numberGenerateBtn.disabled = true;
+
+					let countdown = 3;
+					numberCoolingInfo.textContent = `冷却中... ${countdown}秒`;
+					const timer = setInterval(() => {
+						countdown--;
+						if (countdown > 0) {
+							numberCoolingInfo.textContent = `冷却中... ${countdown}秒`;
+						} else {
+							clearInterval(timer);
+							numberCoolingInfo.textContent = '';
+							numberGenerateBtn.disabled = false;
+						}
+					}, 1000);
+				});
+
+				//徐荣“凶镬”随机效果
+				const effectGenerateBtn = document.getElementById('effectGenerateBtn');
+				const effectResult = document.getElementById('effectResult');
+				const effectCoolingInfo = document.getElementById('effectCoolingInfo');
+				const historyListEL = document.getElementById('historyList');
+				const effects = [
+					"火焰伤害，不可对你出杀",
+					"失去体力，手牌上限-1",
+					"随机获得其每个区域内一张牌"
+				];
+				let history = [];
+
+				effectGenerateBtn.addEventListener('click', function() {
+					const effect = effects[Math.floor(Math.random() * 3)];
+					effectResult.textContent = effect;
+
+					history.unshift(`[${new Date().toLocaleTimeString()}] ${effect}`);
+					if (history.length > 5) history.pop();
+					historyListEL.innerHTML = '';
+					history.forEach(item => {
+						const li = document.createElement('li');
+						li.textContent = item;
+						historyListEL.appendChild(li);
+					});
+
+					effectGenerateBtn.disabled = true;
+					let countdown = 3;
+					effectCoolingInfo.textContent = `冷却中... ${countdown}秒`;
+					const timer = setInterval(() => {
+						countdown--;
+						if (countdown > 0) {
+							effectCoolingInfo.textContent = `冷却中... ${countdown}秒`;
+						} else {
+							clearInterval(timer);
+							effectCoolingInfo.textContent = '';
+							effectGenerateBtn.disabled = false;
+						}
+					}, 1000);
+				});
+
+				// 骆统“勤政”计数器
+				const counterEl = document.getElementById('counter');
+				const outputEl = document.getElementById('output');
+				const incrementBtn = document.getElementById('incrementBtn');
+				const resetBtn = document.getElementById('resetBtn');
+				const historyList2 = document.getElementById('historyList2');
+
+				const cardMap = {
+					1: '【杀】',
+					2: '【闪】',
+					3: '【桃】',
+					4: '【酒】',
+					5: '【无中生有】',
+					6: '【决斗】'
+				};
+				let count = 0;
+				let outputHistory = [];
+
+				function updateHistoryDisplay() {
+					historyList2.innerHTML = '';
+					outputHistory.slice().reverse().forEach(item => {
+						const li = document.createElement('li');
+						li.textContent = `数字: ${item.count}, 输出: ${item.output}, 时间: ${item.timestamp}`;
+						historyList2.appendChild(li);
+					});
+				}
+
+				incrementBtn.addEventListener('click', () => {
+					count++;
+					counterEl.textContent = count;
+					const outs = [];
+					if (count % 3 === 0) outs.push(Math.random() < 0.4 ? 1 : 2);
+					if (count % 5 === 0) outs.push(Math.random() < 0.4 ? 3 : 4);
+					if (count % 8 === 0) outs.push(Math.random() < 0.4 ? 5 : 6);
+
+					if (outs.length) {
+						const outStr = outs.map(n => cardMap[n]).join('+');
+						outputEl.textContent = outStr;
+						outputHistory.push({
+							count,
+							output: outStr,
+							timestamp: new Date().toLocaleTimeString()
+						});
+						updateHistoryDisplay();
+					} else {
+						outputEl.textContent = '';
+					}
+				});
+
+				resetBtn.addEventListener('click', () => {
+					count = 0;
+					counterEl.textContent = 0;
+					outputEl.textContent = '';
+					outputHistory = [];
+					updateHistoryDisplay();
+				});
+
+				setupMobileNav();
+				setupZoneNav();
+			});
+		</script>
+	</body>
 </html>
