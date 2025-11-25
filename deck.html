@@ -483,7 +483,7 @@
 				</a>
 				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
 					class="gitcode-btn" rel="noopener noreferrer">
-					[GitCode]获取后续代码更新(国内git)
+					[GitCode]获取V7.8.3.62镜像文件
 				</a>
 			</div>
 			<div class="license-notice">
@@ -684,55 +684,61 @@
 
 			/* ====== 槽位点击：放置 / 移除并回池 ====== */
 			function handleSlotClick(e) {
-				const slot = e.currentTarget;
-				const idx = parseInt(slot.dataset.index, 10);
-				if (selectedCard) {
-					const {
-						name,
-						suit,
-						point
-					} = selectedCard;
-					let card;
-					if (suit && point) {
-						const pool = allCards.filter(c => c.name === name && c.suit === suit && c.point == point);
-						const used = customDeck.filter(c => c && c.name === name && c.suit === suit && c.point == point).length;
-						const left = pool.length - used;
-						if (left <= 0) {
-							log('该花色点数已无剩余');
-							return;
-						}
-						card = {
-							...pool[0],
-							uid: CryptoJS.lib.WordArray.random(16).toString()
-						};
-					} else {
-						const pool = allCards.filter(c => c.name === name);
-						const used = customDeck.filter(c => c && c.name === name).length;
-						const left = pool.length - used;
-						if (left <= 0) {
-							log('该牌已无剩余');
-							return;
-						}
-						card = {
-							...pool[0],
-							uid: CryptoJS.lib.WordArray.random(16).toString()
-						};
-					}
-					customDeck[idx] = card;
-					slot.textContent = `${card.name}\n${card.suit}${getPointDisplay(card.point)}`;
-					slot.classList.add('filled');
-					log(`已放置 ${card.name} ${card.suit}${getPointDisplay(card.point)} 到槽位 ${idx+1}`);
-					updateStatusBar();
-					renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
-				} else if (customDeck[idx]) {
-					const card = customDeck[idx];
-					customDeck[idx] = null;
-					slot.textContent = `槽位 ${idx+1}`;
-					slot.classList.remove('filled');
-					log(`已移除槽位 ${idx+1} 的 ${card.name} ${card.suit}${getPointDisplay(card.point)}`);
-					updateStatusBar();
-					renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
-				}
+			    const slot = e.currentTarget;
+			    const idx = parseInt(slot.dataset.index, 10);
+			    
+			    if (selectedCard) {
+			        const { name, suit, point } = selectedCard;
+			        let card;
+			        
+			        if (suit && point) {
+			            // 查找唯一可用的牌（未被使用的相同花色点数牌）
+			            const availableCards = allCards.filter(c => 
+			                c.name === name && 
+			                c.suit === suit && 
+			                c.point == point &&
+			                !customDeck.some(deckCard => deckCard && deckCard.uid === c.uid)
+			            );
+			            
+			            if (availableCards.length === 0) {
+			                log('该花色点数已无剩余');
+			                return;
+			            }
+			            
+			            // 使用第一张可用的牌（保持原始UID）
+			            card = {...availableCards[0]};
+			        } else {
+			            // 查找任意可用的同名牌
+			            const availableCards = allCards.filter(c => 
+			                c.name === name &&
+			                !customDeck.some(deckCard => deckCard && deckCard.uid === c.uid)
+			            );
+			            
+			            if (availableCards.length === 0) {
+			                log('该牌已无剩余');
+			                return;
+			            }
+			            
+			            // 使用第一张可用的牌（保持原始UID）
+			            card = {...availableCards[0]};
+			        }
+			        
+			        customDeck[idx] = card;
+			        slot.textContent = `${card.name}\n${card.suit}${getPointDisplay(card.point)}`;
+			        slot.classList.add('filled');
+			        log(`已放置 ${card.name} ${card.suit}${getPointDisplay(card.point)} 到槽位 ${idx+1}`);
+			        updateStatusBar();
+			        renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+			        
+			    } else if (customDeck[idx]) {
+			        const card = customDeck[idx];
+			        customDeck[idx] = null;
+			        slot.textContent = `槽位 ${idx+1}`;
+			        slot.classList.remove('filled');
+			        log(`已移除槽位 ${idx+1} 的 ${card.name} ${card.suit}${getPointDisplay(card.point)}`);
+			        updateStatusBar();
+			        renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+			    }
 			}
 
 			/* ====== 随机洗牌剩余 ====== */
@@ -741,21 +747,32 @@
 			    customDeck.forEach((c, i) => { if (!c) emptyIdx.push(i) });
 			    if (!emptyIdx.length) { log('无空槽位'); return; }
 			
-			    const usedUID = new Set(customDeck.filter(Boolean).map(c => c.uid));
-			    let pool = allCards.filter(c => !usedUID.has(c.uid))
-			                       .map(c => ({...c}));
-			
+			    // 获取所有未使用的牌（基于UID去重）
+			    const usedUIDs = new Set();
+			    customDeck.forEach(card => {
+			        if (card) usedUIDs.add(card.uid);
+			    });
+			    
+			    let pool = allCards.filter(c => !usedUIDs.has(c.uid));
+			    
 			    if (!pool.length) { log('无可洗牌'); return; }
 			
+			    // 随机打乱可用牌池
+			    for (let i = pool.length - 1; i > 0; i--) {
+			        const j = Math.floor(Math.random() * (i + 1));
+			        [pool[i], pool[j]] = [pool[j], pool[i]];
+			    }
+			
+			    // 填充空槽位
 			    let cnt = 0;
 			    emptyIdx.forEach(i => {
-			        const pickIdx = Math.floor(Math.random() * pool.length);
-			        const pick    = pool.splice(pickIdx, 1)[0];
-			        pick.uid = CryptoJS.lib.WordArray.random(16).toString();
-			        customDeck[i] = pick;
+			        if (pool.length === 0) return;
+			        
+			        const card = pool.shift(); // 取第一张牌
+			        customDeck[i] = card;
 			
 			        const slot = document.querySelector(`.deck-slot[data-index="${i}"]`);
-			        slot.textContent = `${pick.name}\n${pick.suit}${getPointDisplay(pick.point)}`;
+			        slot.textContent = `${card.name}\n${card.suit}${getPointDisplay(card.point)}`;
 			        slot.classList.add('filled');
 			        cnt++;
 			    });
@@ -768,31 +785,36 @@
 
 			/* ====== 生成编码 ====== */
 			function generateMd5Aes() {
-				const filled = customDeck.filter(c => c).length;
-				if (filled < 160) {
-					log('牌堆未满');
-					return;
-				}
-				const deckStr = customDeck.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`).join('@@');
-				const first = CryptoJS.MD5(deckStr).toString();
-				const ts = Date.now().toString(16).padStart(16, '0');
-				const md5 = CryptoJS.MD5(first + ts).toString();
-				document.getElementById('md5Value').textContent = md5;
-
-				const data = customDeck.map(c => ({
-					n: c.name,
-					s: c.suit,
-					p: c.point,
-					u: c.uid
-				}));
-				const key = CryptoJS.lib.WordArray.random(128 / 8);
-				const iv = CryptoJS.lib.WordArray.random(128 / 8);
-				const enc = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
-					iv
-				}).toString();
-				const aes = [key.toString(CryptoJS.enc.Base64), iv.toString(CryptoJS.enc.Base64), enc].join('::');
-				document.getElementById('aesValue').textContent = aes;
-				log('编码生成成功（含密钥）');
+			    const filled = customDeck.filter(c => c).length;
+			    if (filled < 160) {
+			        log('牌堆未满');
+			        return;
+			    }
+			    
+			    // MD5部分保持不变
+			    const deckStr = customDeck
+			        .sort((a, b) => a.uid.localeCompare(b.uid))
+			        .map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
+			        .join('@@');
+			    
+			    const md5 = CryptoJS.MD5(deckStr).toString();
+			    document.getElementById('md5Value').textContent = md5;
+			
+			    const data = customDeck
+			        .sort((a, b) => a.uid.localeCompare(b.uid)) 
+			        .map(c => ({
+			            n: c.name,
+			            s: c.suit,
+			            p: c.point,
+			            u: c.uid
+			        }));
+			    
+			    const key = CryptoJS.lib.WordArray.random(128 / 8);
+			    const iv = CryptoJS.lib.WordArray.random(128 / 8);
+			    const enc = CryptoJS.AES.encrypt(JSON.stringify(data), key, { iv }).toString();
+			    const aes = [key.toString(CryptoJS.enc.Base64), iv.toString(CryptoJS.enc.Base64), enc].join('::');
+			    document.getElementById('aesValue').textContent = aes;
+			    log('编码生成成功（含密钥）');
 			}
 
 
@@ -831,43 +853,62 @@
 			}
 
 			function decryptInputAES() {
-				const full = document.getElementById('aesInput').value.trim();
-				const res = document.getElementById('decodeResult');
-				if (!full.includes('::')) {
-					res.textContent = '格式错误（需包含 ::）';
-					return;
-				}
-				try {
-					const [keyB64, ivB64, data] = full.split('::');
-					const key = CryptoJS.enc.Base64.parse(keyB64);
-					const iv = CryptoJS.enc.Base64.parse(ivB64);
-					const dec = CryptoJS.AES.decrypt(data, key, {
-						iv
-					}).toString(CryptoJS.enc.Utf8);
-					if (!dec) throw new Error('解密失败');
-					const arr = JSON.parse(dec);
-					if (!Array.isArray(arr) || arr.length !== 160) throw new Error('非160张牌');
-					// 直接回填
-					customDeck = arr.map(c => ({
-						name: c.n,
-						suit: c.s,
-						point: c.p,
-						uid: c.u
-					}));
-					// 立即刷新卡牌区
-					document.querySelectorAll('.deck-slot').forEach((s, i) => {
-						const c = customDeck[i];
-						s.textContent = c ? `${c.name}\n${c.suit}${getPointDisplay(c.point)}` : `槽位 ${i+1}`;
-						s.classList.toggle('filled', !!c);
-					});
-					updateStatusBar();
-					renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
-					res.textContent = '解码成功！牌堆已更新';
-					log('外部 AES 解码成功并回填牌堆');
-				} catch (e) {
-					res.textContent = '解码失败：' + e.message;
-					log('AES 解码失败：' + e.message);
-				}
+			    const full = document.getElementById('aesInput').value.trim();
+			    const res = document.getElementById('decodeResult');
+			    if (!full.includes('::')) {
+			        res.textContent = '格式错误（需包含 ::）';
+			        return;
+			    }
+			    try {
+			        const [keyB64, ivB64, data] = full.split('::');
+			        const key = CryptoJS.enc.Base64.parse(keyB64);
+			        const iv = CryptoJS.enc.Base64.parse(ivB64);
+			        const dec = CryptoJS.AES.decrypt(data, key, { iv }).toString(CryptoJS.enc.Utf8);
+			        if (!dec) throw new Error('解密失败');
+			        const arr = JSON.parse(dec);
+			        if (!Array.isArray(arr) || arr.length !== 160) throw new Error('非160张牌');
+			        
+			        
+			        const tempDeck = new Array(160);
+					const sortedArr = arr.sort((a, b) => a.u.localeCompare(b.u));
+			        
+			        // 按照原始AES中的顺序放置牌
+			        arr.forEach((cardObj, index) => {
+			            tempDeck[index] = {
+			                name: cardObj.n,
+			                suit: cardObj.s,
+			                point: cardObj.p,
+			                uid: cardObj.u
+			            };
+			        });
+			        
+			        // 替换当前牌堆
+			        customDeck = tempDeck;
+			        
+			        // 立即刷新卡牌区
+			        document.querySelectorAll('.deck-slot').forEach((slot, i) => {
+			            const card = customDeck[i];
+			            if (card) {
+			                slot.textContent = `${card.name}\n${card.suit}${getPointDisplay(card.point)}`;
+			                slot.classList.add('filled');
+			            } else {
+			                slot.textContent = `槽位 ${i+1}`;
+			                slot.classList.remove('filled');
+			            }
+			        });
+			        
+			        updateStatusBar();
+			        renderCardGrid(document.querySelector('.category-btn.active').dataset.category);
+			        
+			        // 重新生成编码（基于当前牌堆顺序）
+			        generateMd5Aes();
+			        
+			        res.textContent = '解码成功！牌堆已更新';
+			        log('外部 AES 解码成功并回填牌堆');
+			    } catch (e) {
+			        res.textContent = '解码失败：' + e.message;
+			        log('AES 解码失败：' + e.message);
+			    }
 			}
 
 
@@ -1104,5 +1145,4 @@
 			document.addEventListener('DOMContentLoaded', init);
 		</script>
 	</body>
-
 </html>
