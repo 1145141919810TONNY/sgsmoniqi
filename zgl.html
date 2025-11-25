@@ -427,7 +427,7 @@
 				</a>
 				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
 					class="gitcode-btn" rel="noopener noreferrer">
-					[GitCode]获取后续代码更新(国内git)
+					[GitCode]获取V7.8.3.62镜像文件
 				</a>
 			</div>
 			<div class="license-notice">
@@ -448,13 +448,13 @@
 		<script>
 			// 全局状态
 			const state = {
-				predictionCount: 3,
+				predictionCount: 3,// 当前可预测数量
 				fangqiuStatus: '未使用', // 未使用/本轮已使用/已失效
-				predictions: [],
-				verified: [],
-				currentDirection: null,
-				currentPredictionIndex: 0,
-				verificationIndex: 0,
+				predictions: [],// 预测内容存储数组
+				verified: [],// 验证结果存储
+				currentDirection: null,// 当前预测方向（类型/颜色）
+				currentPredictionIndex: 0,// 当前验证进度索引
+				verificationIndex: 0,// 本轮是否使用方遒
 				currentRoundFangqiuUsed: false
 			};
 
