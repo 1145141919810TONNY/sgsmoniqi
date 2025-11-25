@@ -26,7 +26,7 @@
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 			<div class="nav-buttons">
 				<button class="nav-button"><a href="index.html">切换到新版</a></button>
-				<button class="nav-button" id="checkUpdateBtn">检查更新</button>
+				<button class="nav-button" id="checkUpdateBtn" style="display:none;">检查更新</button>
 			</div>
 		</section>
 
@@ -237,7 +237,7 @@
 			    if (latest === CUR_VER) {
 			      alert('当前已是最新版！');
 			    } else {
-			      const msg = `发现新版本：${latest}（${pubDate}）\n\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
+			      const msg = `发现新版本：${latest}（${pubDate}）\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
 			      if (confirm(msg)) {
 			        window.open('https://github.com/1145141919810tonny/sgsmoniqi/archive/refs/heads/main.zip');
 			      }
@@ -246,6 +246,14 @@
 			    alert('检查失败，请确认已联网！');
 			  }
 			});
+			
+			(function(){
+			  if (location.hostname.includes('github.io')) {
+			    document.getElementById('checkUpdateBtn').style.display = 'none';
+			  } else {
+			    document.getElementById('checkUpdateBtn').style.display = 'inline-block';
+			  }
+			})();
 		</script>
 	</body>
 </html>
