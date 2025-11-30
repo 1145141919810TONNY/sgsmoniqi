@@ -145,7 +145,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V7.8.9.64</h2>
+			<h2 class="hero-title">V7.8.10.64</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 			<div class="nav-buttons">
 				<button class="nav-button"><a href="indexjd.html">切换到经典版</a></button>
@@ -372,14 +372,10 @@
 				</div>
 
 				<div class="update-highlight">
-					<h3 class="update-title">最新版本更新内容 V7.8.9.64</h3>
+					<h3 class="update-title">最新版本更新内容 V7.8.10.64</h3>
 					<div class="update-content">
 						<ul class="version-list">
-							<li>1.在梦之回廊模拟器中新增百万次抽奖测试功能</li>
-							<ul>
-								<li>数据导出功能（仅支持windows系统）</li>
-								<li>详细的数据统计功能</li>
-							</ul>
+							<li>1.新增版本号异常检查功能。如果版本号不为最新或任意历史版本号时，会返回版本号异常的信息。</li>
 						</ul>
 					</div>
 				</div>
@@ -427,27 +423,8 @@
 		</footer>
 
 		<script>
-			const CUR_VER = '7.8.9.64';
+			const CUR_VER = '7.8.10.64';
 			const VER_URL = 'https://1145141919810tonny.github.io/sgsmoniqi/version.json';
-			
-			document.getElementById('checkUpdateBtn').addEventListener('click', async () => {
-			  try {
-			    const res = await fetch(VER_URL);
-			    if (!res.ok) throw new Error('网络错误');
-			    const { latest, pubDate, changelog } = await res.json();
-			
-			    if (latest === CUR_VER) {
-			      alert('当前已是最新版！');
-			    } else {
-			      const msg = `发现新版本：${latest}（${pubDate}）\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
-			      if (confirm(msg)) {
-			        window.open('https://github.com/1145141919810tonny/sgsmoniqi/archive/refs/heads/main.zip');
-			      }
-			    }
-			  } catch (e) {
-			    alert('检查失败，请确认已联网！');
-			  }
-			});
 			
 			(function(){
 			  if (location.hostname.includes('github.io')) {
@@ -456,6 +433,49 @@
 			    document.getElementById('checkUpdateBtn').style.display = 'inline-block';
 			  }
 			})();
+			
+			document.getElementById('checkUpdateBtn').addEventListener('click', async () => {
+			  try {
+			    const res = await fetch(VER_URL);
+			    if (!res.ok) throw new Error('网络错误');
+			    const { latest, history = [], pubDate, changelog } = await res.json();
+			
+			    const allowList = new Set([latest, ...history]);
+			
+			    if (latest === CUR_VER) {                     // 已是最新
+			      alert('当前已是最新版！');
+			    } else if (!allowList.has(CUR_VER)) {         // 异常版本
+			      const go = confirm('版本号异常，可能被修改。是否立即前往下载最新版本？');
+			      if (go) window.open('https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
+			    } else {                                      // 正常旧版 → 提示升级
+			      const msg = `发现新版本：${latest}（${pubDate}）\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
+			      if (confirm(msg)) {
+			        window.open('https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
+			      }
+			    }
+			  } catch (e) {
+			    alert('检查失败，请确认已联网！');
+			  }
+			});
+
+			
+			(async () => {
+			  try {
+			    const res = await fetch(VER_URL);
+			    if (!res.ok) return;   
+			    const { latest, history = [] } = await res.json();
+			
+			    // 把当前版本和最新版本都放进“合法名单”
+			    const allowList = new Set([latest, ...history]);
+			
+			    if (!allowList.has(CUR_VER)) {
+			      const go = confirm('版本号异常，可能被修改。是否立即前往下载最新版本？');
+			      if (go) window.open('https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
+			    }
+
+			  } catch { /* 静默失败，不打扰用户 */ }
+			})();
+
 			// 设置版权年份
 			document.getElementById('copyright-year').textContent = new Date().getFullYear();
 
