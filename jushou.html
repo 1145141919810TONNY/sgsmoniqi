@@ -166,8 +166,11 @@
 			<!-- 武器状态显示 -->
 			<div id="peach-counter">桃可用次数：1</div>
 			<!-- 桃牌计数显示 -->
-			<div id="wine-counter">酒可用次数：1</div>
-			<!-- 酒牌计数显示 -->
+			<div class="wine-box">
+				<div id="wine-counter">酒可用次数：1</div>
+				<!-- 酒牌计数显示 -->
+				<div id="wine-buff">下一张杀伤害+1</div>
+			</div>
 			<div id="delay-area">
 				<div class="delay-section">
 					<h4>兵粮寸断</h4>
@@ -668,169 +671,172 @@
 
 			// 验证并解密用户输入的AES编码
 			function verifyAESDeck() {
-			    // 获取用户输入的AES编码
-			    const input = document.getElementById('verifyAES').value.trim();
-			    const resultSpan = document.getElementById('verifyAESResult');
-			
-			    // 检查输入是否为空
-			    if (!input) {
-			        resultSpan.textContent = '❌❌❌❌ 请输入编码';
-			        resultSpan.style.color = '#f44336';
-			        return;
-			    }
-			
-			    try {
-			        // 分割输入：格式应为 密钥::初始化向量::加密数据
-			        const [keyB64, ivB64, data] = input.split('::');
-			
-			        // 验证格式是否正确
-			        if (!keyB64 || !ivB64 || !data) throw new Error('格式无效');
-			
-			        // 从Base64解析密钥和初始化向量
-			        const key = CryptoJS.enc.Base64.parse(keyB64);
-			        const iv = CryptoJS.enc.Base64.parse(ivB64);
-			
-			        // 使用AES解密数据
-			        const decrypted = CryptoJS.AES.decrypt(data, key, { iv: iv });
-			
-			        // 将解密结果转换为UTF-8字符串
-			        const utf8String = decrypted.toString(CryptoJS.enc.Utf8);
-			
-			        // 检查解密是否成功
-			        if (!utf8String) throw new Error('解密失败');
-			
-			        // 解析解密后的JSON数据
-			        const decoded = JSON.parse(utf8String);
-			
-			        // 重建牌堆数据结构
-			        const newDeck = decoded.map(c => ({
-			            name: c.n,
-			            suit: c.s,
-			            point: c.p,
-			            uid: c.u
-			        }));
-			
-			        
-			        // 重置所有相关状态变量
-			        deck = newDeck; // 直接使用解码的牌堆
-			        drawnCards = [];
-			        discardPile = [];
-			        hand = [];
-			        phase = '';
-			        lastUsedCard = null;
-			        reshuffleUsed = 0;
-			        
-			        // 重置武器和攻击状态
-			        currentWeapon = null;
-			        usedKillCount = 0;
-			        killCount = 2;
-			        hasZhugeLianNu = false;
-			        
-			        // 重置延时锦囊区
-			        bingliangArea = [];
-			        lebuArea = [];
-			        shandianArea = [];
-			        
-			        // 重置伤害计数器
-			        totalDamage = 0;
-			        currentTurnDamage = 0;
-			        wineEffect = false;
-			        
-			        // 重置桃和酒计数
-			        peachCount = 1;
-			        wineCount = 1;
-			        
-			        // 重置青龙偃月刀状态
-			        qinglongActive = false;
-			        qinglongCards = [];
-			        qinglongWineBonus = false;
-			        
-			        // 清空前一张牌信息
-			        previousCard = null;
-			        document.getElementById('previousCardInfo').textContent = '上一张牌：空';
-			
-			        // === 关键修复：基于解码的牌堆生成标识符 ===
-			        generateDeckMD5FromDeck(); // 基于当前牌堆生成MD5
-			        generateDeckAESFromDeck(); // 基于当前牌堆生成AES
-			
-			        // 更新界面显示
-			        updateMD5Display();
-			        updateAESDisplay();
-			        updateRemaining();
-			        updateRemainingCounts();
-			        updateStatus();
-			        updateUI();
-			        
-			        // 清空手牌显示区域
-			        document.getElementById('hand').innerHTML = '<h3>手牌</h3>';
-			        
-			        // 清空牌堆显示
-			        document.getElementById('deck').innerHTML = '';
-			        document.getElementById('remaining').innerHTML = `剩余牌堆: ${deck.length}张`;
-			        
-			        // 重置游戏阶段
-			        document.getElementById('stageInfo').textContent = '当前阶段：准备阶段';
-			        
-			        // 启用/禁用正确的按钮
-			        document.getElementById('drawBtn').disabled = false;
-			        document.getElementById('playBtn').disabled = true;
-			        document.getElementById('endPlayBtn').disabled = true;
-			        
-			        // 更新脚气卡按钮状态
-			        updateReshuffleButton();
-			
-			        // 记录日志
-			        log('AES解码成功，牌堆已完整加载');
-			
-			        // 显示验证成功
-			        resultSpan.textContent = '✅ 验证通过，牌堆已重置';
-			        resultSpan.style.color = '#4CAF50';
-			        
-			    } catch (e) {
-			        // 错误处理
-			        console.error('AES验证失败:', e);
-			        resultSpan.textContent = '❌❌❌❌ 无效编码';
-			        resultSpan.style.color = '#f44336';
-			        log('AES解码失败: ' + e.message);
-			    }
+				// 获取用户输入的AES编码
+				const input = document.getElementById('verifyAES').value.trim();
+				const resultSpan = document.getElementById('verifyAESResult');
+
+				// 检查输入是否为空
+				if (!input) {
+			  resultSpan.textContent = '❌❌❌❌ 请输入编码';
+					resultSpan.style.color = '#f44336';
+					return;
+				}
+
+				try {
+					// 分割输入：格式应为 密钥::初始化向量::加密数据
+					const [keyB64, ivB64, data] = input.split('::');
+
+					// 验证格式是否正确
+					if (!keyB64 || !ivB64 || !data) throw new Error('格式无效');
+
+					// 从Base64解析密钥和初始化向量
+					const key = CryptoJS.enc.Base64.parse(keyB64);
+					const iv = CryptoJS.enc.Base64.parse(ivB64);
+
+					// 使用AES解密数据
+					const decrypted = CryptoJS.AES.decrypt(data, key, {
+						iv: iv
+					});
+
+					// 将解密结果转换为UTF-8字符串
+					const utf8String = decrypted.toString(CryptoJS.enc.Utf8);
+
+					// 检查解密是否成功
+					if (!utf8String) throw new Error('解密失败');
+
+					// 解析解密后的JSON数据
+					const decoded = JSON.parse(utf8String);
+
+					// 重建牌堆数据结构
+					const newDeck = decoded.map(c => ({
+						name: c.n,
+						suit: c.s,
+						point: c.p,
+						uid: c.u
+					}));
+
+
+					// 重置所有相关状态变量
+					deck = newDeck; // 直接使用解码的牌堆
+					drawnCards = [];
+					discardPile = [];
+					hand = [];
+					phase = '';
+					lastUsedCard = null;
+					reshuffleUsed = 0;
+
+					// 重置武器和攻击状态
+					currentWeapon = null;
+					usedKillCount = 0;
+					killCount = 2;
+					hasZhugeLianNu = false;
+
+					// 重置延时锦囊区
+					bingliangArea = [];
+					lebuArea = [];
+					shandianArea = [];
+
+					// 重置伤害计数器
+					totalDamage = 0;
+					currentTurnDamage = 0;
+					wineEffect = false;
+
+					// 重置桃和酒计数
+					peachCount = 1;
+					wineCount = 1;
+
+					// 重置青龙偃月刀状态
+					qinglongActive = false;
+					qinglongCards = [];
+					qinglongWineBonus = false;
+
+					// 清空前一张牌信息
+					previousCard = null;
+					document.getElementById('previousCardInfo').textContent = '上一张牌：空';
+
+					// === 关键修复：基于解码的牌堆生成标识符 ===
+					generateDeckMD5FromDeck(); // 基于当前牌堆生成MD5
+					generateDeckAESFromDeck(); // 基于当前牌堆生成AES
+
+					// 更新界面显示
+					updateMD5Display();
+					updateAESDisplay();
+					updateRemaining();
+					updateRemainingCounts();
+					updateStatus();
+					updateUI();
+
+					// 清空手牌显示区域
+					document.getElementById('hand').innerHTML = '<h3>手牌</h3>';
+
+					// 清空牌堆显示
+					document.getElementById('deck').innerHTML = '';
+					document.getElementById('remaining').innerHTML = `剩余牌堆: ${deck.length}张`;
+
+					// 重置游戏阶段
+			 	document.getElementById('stageInfo').textContent = '当前阶段：准备阶段';
+
+					// 启用/禁用正确的按钮
+					document.getElementById('drawBtn').disabled = false;
+					document.getElementById('playBtn').disabled = true;
+					document.getElementById('endPlayBtn').disabled = true;
+
+					// 更新脚气卡按钮状态
+					updateReshuffleButton();
+
+					// 记录日志
+					log('AES解码成功，牌堆已完整加载');
+
+					// 显示验证成功
+					resultSpan.textContent = '✅ 验证通过，牌堆已重置';
+					resultSpan.style.color = '#4CAF50';
+
+				} catch (e) {
+					// 错误处理
+					console.error('AES验证失败:', e);
+					resultSpan.textContent = '❌❌❌❌ 无效编码';
+					resultSpan.style.color = '#f44336';
+					log('AES解码失败: ' + e.message);
+				}
 			}
-			
+
 			function generateDeckMD5FromDeck() {
-			    const deckString = deck
-			        .sort((a, b) => a.uid.localeCompare(b.uid))
-			        .map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
-			        .join('@@');
-			
-			    currentMD5 = CryptoJS.MD5(deckString).toString();
+				const deckString = deck
+					.sort((a, b) => a.uid.localeCompare(b.uid))
+					.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
+					.join('@@');
+
+				currentMD5 = CryptoJS.MD5(deckString).toString();
 			}
-			
+
 			function generateDeckAESFromDeck() {
-			    try {
-			        const deckData = deck.map(c => ({
-			            n: c.name,
-			            s: c.suit,
-			            p: c.point,
-			            u: c.uid
-			        }));
-			
-			        const key = CryptoJS.lib.WordArray.random(128 / 8);
-			        const iv = CryptoJS.lib.WordArray.random(128 / 8);
-			
-			        const encrypted = CryptoJS.AES.encrypt(
-			            JSON.stringify(deckData),
-			            key,
-			            { iv: iv }
-			        );
-			
-			        currentAES = [
-			            key.toString(CryptoJS.enc.Base64),
-			            iv.toString(CryptoJS.enc.Base64),
-			            encrypted.toString()
-			        ].join('::');
-			    } catch (e) {
-			        console.error('AES生成失败:', e);
-			        currentAES = 'ERROR';
-			    }
+				try {
+					const deckData = deck.map(c => ({
+						n: c.name,
+						s: c.suit,
+						p: c.point,
+						u: c.uid
+					}));
+
+					const key = CryptoJS.lib.WordArray.random(128 / 8);
+					const iv = CryptoJS.lib.WordArray.random(128 / 8);
+
+					const encrypted = CryptoJS.AES.encrypt(
+						JSON.stringify(deckData),
+						key, {
+							iv: iv
+						}
+					);
+
+					currentAES = [
+						key.toString(CryptoJS.enc.Base64),
+						iv.toString(CryptoJS.enc.Base64),
+						encrypted.toString()
+					].join('::');
+				} catch (e) {
+					console.error('AES生成失败:', e);
+					currentAES = 'ERROR';
+				}
 			}
 			// 生成安全的随机索引（用于抽牌）
 			function getSecureRandomIndex(max) {
@@ -1659,48 +1665,48 @@
 
 				// 统一计算杀类卡牌造成的伤害
 				function handleKillDamage(killCard) {
-				    // 基础伤害值
-				    let damage = 0;
-				
-				    // 根据杀的类型决定基础伤害
-				    switch (killCard.name) {
-				        case '杀':
-				            damage = wineEffect ? 2 : 1;          // 普通杀
-				            break;
-				        case '雷杀':
-				            damage = wineEffect ? 2 : 1;          // 雷杀
-				            break;
-				        case '火杀':
-				            damage = wineEffect ? 3 : 2;          // 火杀
-				            break;
-				        default:
-				            damage = 0;
-				    }
-				
-				    // 古锭刀效果：所有杀的基础伤害+1
-				    const baseDamageBonus = currentWeapon === '古锭刀' ? 1 : 0;
-				    damage += baseDamageBonus;
-				
-				    // 朱雀羽扇效果：仅对普通杀（杀）伤害+1
-				    if (currentWeapon === '朱雀羽扇' && killCard.name === '杀') {
-				        damage += 1;
-				        log('朱雀羽扇：普通杀伤害+1');
-				    }
-				
-				    // 结算伤害
-				    if (damage > 0) {
-				        totalDamage += damage;
-				        currentTurnDamage += damage;
-				        log(`造成${damage}点伤害（总伤害：${totalDamage}，当前回合伤害：${currentTurnDamage}）`);
-				
-				        // 记录古锭刀效果
-				        if (baseDamageBonus > 0) {
-				            log(`古锭刀效果：基础伤害+1`);
-				        }
-				    }
-				
-				    // 重置酒效果
-				    wineEffect = false;
+					// 基础伤害值
+					let damage = 0;
+
+					// 根据杀的类型决定基础伤害
+					switch (killCard.name) {
+						case '杀':
+							damage = wineEffect ? 2 : 1; // 普通杀
+							break;
+						case '雷杀':
+							damage = wineEffect ? 2 : 1; // 雷杀
+							break;
+						case '火杀':
+							damage = wineEffect ? 3 : 2; // 火杀
+							break;
+						default:
+							damage = 0;
+					}
+
+					// 古锭刀效果：所有杀的基础伤害+1
+					const baseDamageBonus = currentWeapon === '古锭刀' ? 1 : 0;
+					damage += baseDamageBonus;
+
+					// 朱雀羽扇效果：仅对普通杀（杀）伤害+1
+					if (currentWeapon === '朱雀羽扇' && killCard.name === '杀') {
+						damage += 1;
+						log('朱雀羽扇：普通杀伤害+1');
+					}
+
+					// 结算伤害
+					if (damage > 0) {
+						totalDamage += damage;
+						currentTurnDamage += damage;
+						log(`造成${damage}点伤害（总伤害：${totalDamage}，当前回合伤害：${currentTurnDamage}）`);
+
+						// 记录古锭刀效果
+						if (baseDamageBonus > 0) {
+							log(`古锭刀效果：基础伤害+1`);
+						}
+					}
+
+					// 重置酒效果
+					wineEffect = false;
 				}
 
 				// 青龙偃月刀特殊处理
@@ -2587,7 +2593,7 @@
 				// 获取手牌容器
 				const handContainer = dialog.querySelector('.hand-container');
 
-			 // 显示所有手牌
+				// 显示所有手牌
 				hand.forEach((card, index) => {
 					const cardDiv = document.createElement('div');
 					cardDiv.className = 'card-selectable';
@@ -2612,7 +2618,7 @@
 								selectedCards.push(index);
 								cardDiv.style.border = "3px solid red"; // 选中样式
 							}
-			  	} else {
+						} else {
 							selectedCards.splice(cardIndex, 1);
 							cardDiv.style.border = "1px solid #ccc"; // 恢复默认
 						}
@@ -2663,7 +2669,7 @@
 				// 移除两张手牌
 				const cardsToUse = [];
 				selectedCards.forEach(index => {
-			 	cardsToUse.push(hand.splice(index, 1)[0]);
+					cardsToUse.push(hand.splice(index, 1)[0]);
 				});
 
 				// 添加到弃牌堆
@@ -2710,6 +2716,10 @@
 				// 更新其它状态
 				document.getElementById('peach-counter').textContent = `桃可用次数：${peachCount}`;
 				document.getElementById('wine-counter').textContent = `酒可用次数：${wineCount}`;
+				const wineBuff = document.getElementById('wine-buff');
+				wineBuff.textContent = wineEffect ? '下一张杀伤害+1' : '当前无酒加成';
+				wineBuff.classList.toggle('active', wineEffect);
+
 				document.getElementById('total-damage').textContent = `总伤害: ${totalDamage}`;
 				document.getElementById('turn-damage').textContent = `当前回合伤害: ${currentTurnDamage}`;
 				zhuge.textContent = currentWeapon ? `当前武器：${currentWeapon}` : "当前武器：无";
@@ -2729,7 +2739,7 @@
 				const btn = document.getElementById('zhangbaBtn');
 				btn.style.display = (currentWeapon === '丈八蛇矛') ? 'block' : 'none';
 
-			 // 检查杀次数限制：当杀次数用尽时禁用按钮（除非装备诸葛连弩）
+				// 检查杀次数限制：当杀次数用尽时禁用按钮（除非装备诸葛连弩）
 				if (currentWeapon === '丈八蛇矛') {
 					btn.disabled = (!hasZhugeLianNu && usedKillCount >= 2);
 					if (btn.disabled) {
@@ -4217,7 +4227,7 @@
 				// 装备牌优先级（数值在4-5之间）
 				const equipmentCards = [
 					'青龙偃月刀', '丈八蛇矛', '贯石斧', '方天画戟', '麒麟弓',
-					'雌雄双股剑', '寒冰剑', '青釭剑','古锭刀','骅骝',
+					'雌雄双股剑', '寒冰剑', '青釭剑', '古锭刀', '骅骝',
 					'朱雀羽扇', '八卦阵', '仁王盾', '白银狮子', '藤甲',
 					'赤兔', '大宛', '爪黄飞电', '的卢', '绝影', '紫骍'
 				];
