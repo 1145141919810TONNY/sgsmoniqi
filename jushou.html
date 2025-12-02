@@ -3120,12 +3120,12 @@
 			function updateDelayArea() {
 				const bingliangContainer = document.getElementById('bingliang-container');
 				const lebuContainer = document.getElementById('lebu-container');
-				const shandianContainer = document.getElementById('shandian-container'); // 新增
+				const shandianContainer = document.getElementById('shandian-container'); 
 
 				// 清空容器
 				bingliangContainer.innerHTML = '';
 				lebuContainer.innerHTML = '';
-				shandianContainer.innerHTML = ''; // 新增
+				shandianContainer.innerHTML = ''; 
 
 				// 兵粮寸断区域
 				if (bingliangArea.length === 0) {
@@ -4009,7 +4009,7 @@
 				});
 				lebuArea = [];
 
-				// 闪电区（新增）
+				// 闪电区
 				shandianArea.forEach(card => {
 					discardPile.push(card);
 					log(`弃置闪电: ${card.suit}${getPointDisplay(card.point)}`);
