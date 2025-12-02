@@ -167,8 +167,11 @@
 			<!-- 武器状态显示 -->
 			<div id="peach-counter">桃可用次数：1</div>
 			<!-- 桃牌计数显示 -->
-			<div id="wine-counter">酒可用次数：1</div>
-			<!-- 酒牌计数显示 -->
+			<div class="wine-box">
+			  <div id="wine-counter">酒可用次数：1</div>
+			  <div id="wine-buff">当前无酒加成</div>
+			</div>
+
 			<div id="delay-area">
 				<div class="delay-section">
 					<h4>兵粮寸断</h4>
@@ -2518,6 +2521,10 @@
 				// 更新其它状态
 				document.getElementById('peach-counter').textContent = `桃可用次数：${peachCount}`;
 				document.getElementById('wine-counter').textContent = `酒可用次数：${wineCount}`;
+				const wineBuff = document.getElementById('wine-buff');
+				wineBuff.textContent = wineEffect ? '下一张杀伤害+1' : '当前无酒加成';
+				wineBuff.classList.toggle('active', wineEffect);
+
 				document.getElementById('total-damage').textContent = `总伤害: ${totalDamage}`;
 				document.getElementById('turn-damage').textContent = `当前回合伤害: ${currentTurnDamage}`;
 				zhuge.textContent = currentWeapon ? `当前武器：${currentWeapon}` : "当前武器：无";
