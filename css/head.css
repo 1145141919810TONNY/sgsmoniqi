@@ -2183,3 +2183,22 @@ h3.hero-title {
     transform-origin: right bottom; 
 }
 
+.wine-box{
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 4px 0;
+  background: #fafafa;
+  display: inline-block; 
+}
+.wine-box > div{
+  line-height: 1.5;
+}
+#wine-buff{
+  font-size: 13px;
+  color: #666;
+}
+#wine-buff.active{
+  color: #ff9800;
+  font-weight: bold;
+}
