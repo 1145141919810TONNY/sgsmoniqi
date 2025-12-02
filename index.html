@@ -145,7 +145,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V7.8.11.64</h2>
+			<h2 class="hero-title">V7.8.12.65</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 			<div class="nav-buttons">
 				<button class="nav-button"><a href="indexjd.html">切换到经典版</a></button>
@@ -394,12 +394,10 @@
 				</div>
 
 				<div class="update-highlight">
-					<h3 class="update-title">最新版本更新内容 V7.8.11.64</h3>
+					<h3 class="update-title">最新版本更新内容 V7.8.12.65</h3>
 					<div class="update-content">
 						<ul class="version-list">
-							<li>1.新增二维码下载链接，于两个主页的右下角常驻</li>
-							<li>追加更新1：为了保证移动端也可离线运行，提供一个能让移动端完整运行代码的软件二维码。</li>
-						    <li>追加更新2：现在也可以直接点击对应的二维码跳转链接了。</li>
+							<li>1.细节优化：给所有模拟器中添加一个当前是否有酒加成的提示。（单机版已同步此功能）</li>
 						</ul>
 					</div>
 				</div>
@@ -447,7 +445,7 @@
 		</footer>
 
 		<script>
-			const CUR_VER = '7.8.11.64';
+			const CUR_VER = '7.8.12.65';
 			const VER_URL = 'https://1145141919810tonny.github.io/sgsmoniqi/version.json';
 
 			(function() {
@@ -478,7 +476,7 @@
 						if (go) window.open(
 							'https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
 					} else { // 正常旧版 → 提示升级
-			  	const msg = `发现新版本：${latest}（${pubDate}）\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
+						const msg = `发现新版本：${latest}（${pubDate}）\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
 						if (confirm(msg)) {
 							window.open(
 								'https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
@@ -509,7 +507,8 @@
 					}
 
 				} catch {
-					/* 静默失败，不打扰用户 */ }
+					/* 静默失败，不打扰用户 */
+				}
 			})();
 
 			// 设置版权年份
@@ -535,6 +534,3 @@
 		</script>
 	</body>
 </html>
-
-
-
