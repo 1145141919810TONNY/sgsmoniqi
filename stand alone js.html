@@ -1262,7 +1262,6 @@
 			</button>
 		</div>
 		<div id="hand"></div>
-		<!-- 新增的整理手牌按钮 -->
 		<div style="margin-top: 15px; text-align: center;">
 			<button id="organizeHandBtn"
 				style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px;">
@@ -3925,12 +3924,12 @@
 			function updateDelayArea() {
 				const bingliangContainer = document.getElementById('bingliang-container');
 				const lebuContainer = document.getElementById('lebu-container');
-				const shandianContainer = document.getElementById('shandian-container'); // 新增
+				const shandianContainer = document.getElementById('shandian-container'); 
 
 				// 清空容器
 				bingliangContainer.innerHTML = '';
 				lebuContainer.innerHTML = '';
-				shandianContainer.innerHTML = ''; // 新增
+				shandianContainer.innerHTML = ''; 
 
 				// 兵粮寸断区域
 				if (bingliangArea.length === 0) {
