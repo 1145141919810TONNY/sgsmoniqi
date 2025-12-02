@@ -2130,3 +2130,56 @@ h3.hero-title {
     font-family: monospace;
     font-size: 14px;
 }
+
+#qrDemo svg {
+  width: 200px;            
+  height: 200px;
+  max-width: 100%;       
+  display: inline-block;   
+  image-rendering: crisp-edges; 
+  border-radius: 8px;       
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  transition: width .3s, height .3s;
+  cursor: pointer;    
+}
+
+@media (max-width: 768px) {
+  #qrDemo svg {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  #qrDemo svg {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #qrDemo svg {
+    width: 240px;
+    height: 240px;
+  }
+}
+
+#qrDemo p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #555;
+  word-break: keep-all;
+}
+
+#qrDemo {
+    position: fixed;
+    right: 20px;  
+    bottom: 70px; 
+    z-index: 1000;
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    transform: scale(0.65);  
+    transform-origin: right bottom; 
+}
+
