@@ -385,7 +385,7 @@
 			<h3 class="hero-title">由于本页需要用到外部牌堆数据，因此该页面无法脱离主要文件单机运行</h3>
 			<h3 class="hero-title">由于本页面牌堆的特殊性（初始并非由系统一次性生成完整牌堆），如需生成附带校验信息的安全日志，请先点击“生成编码”以获取 MD5 与 AES 内容；否则日志将仅包含牌堆明细，文件体积约为 13 KB。若您仅需不含编码的日志（含编码文件约 28 KB），可直接导出，无需预先生成编码。</h3>
 			<h3 class="hero-title">为方便操作花色点数问题（以防忘记)，你可以先点击需要添加的牌，此时会有一个点数与花色的下拉菜单。你可以先不选择点数与花色，先吧网页下拉到你需要的位置后再进行选择。</h3>
-			<h3 class="hero-title">本页面的AES编码有一些问题。其他页面生成的AES编码可在本页面正常解码，但是本页面的AES编码解码到其他模拟器页面时将会打乱牌堆的顺序。目前正在努力的寻找修复的方法。</h3>
+			<h3 class="hero-title">本页面的AES编码问题已解决，可以放心跨页面使用。</h3>
 			<div class="nav-buttons">
 				<button class="nav-button"><a href="index.html">跳转到新版</a></button>
 				<button class="nav-button"><a href="indexjd.html">跳转到经典版</a></button>
@@ -785,36 +785,36 @@
 
 			/* ====== 生成编码 ====== */
 			function generateMd5Aes() {
-			    const filled = customDeck.filter(c => c).length;
-			    if (filled < 160) {
-			        log('牌堆未满');
-			        return;
-			    }
-			    
-			    // MD5部分保持不变
-			    const deckStr = customDeck
-			        .sort((a, b) => a.uid.localeCompare(b.uid))
-			        .map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
-			        .join('@@');
-			    
-			    const md5 = CryptoJS.MD5(deckStr).toString();
-			    document.getElementById('md5Value').textContent = md5;
-			
-			    const data = customDeck
-			        .sort((a, b) => a.uid.localeCompare(b.uid)) 
-			        .map(c => ({
-			            n: c.name,
-			            s: c.suit,
-			            p: c.point,
-			            u: c.uid
-			        }));
-			    
-			    const key = CryptoJS.lib.WordArray.random(128 / 8);
-			    const iv = CryptoJS.lib.WordArray.random(128 / 8);
-			    const enc = CryptoJS.AES.encrypt(JSON.stringify(data), key, { iv }).toString();
-			    const aes = [key.toString(CryptoJS.enc.Base64), iv.toString(CryptoJS.enc.Base64), enc].join('::');
-			    document.getElementById('aesValue').textContent = aes;
-			    log('编码生成成功（含密钥）');
+				const filled = customDeck.filter(c => c).length;
+				if (filled < 160) {
+					log('牌堆未满');
+					return;
+				}
+
+				// 采用槽位顺序生成 MD5/AES（保持与页面槽位显示一致）
+				// 这样生成的 AES 表示当前槽位的顺序，能够被其他页面按顺序还原。
+				const deckStr = customDeck
+					.map((c, i) => `${i}|${c.name}|${c.suit}|${c.point}|${c.uid}`)
+					.join('@@');
+
+				const md5 = CryptoJS.MD5(deckStr).toString();
+				document.getElementById('md5Value').textContent = md5;
+
+				// 在 data 中显式包含槽位索引 i，以便解码端能恢复到相同槽位
+				const data = customDeck.map((c, i) => ({
+					n: c.name,
+					s: c.suit,
+					p: c.point,
+					u: c.uid,
+					i: i
+				}));
+
+				const key = CryptoJS.lib.WordArray.random(128 / 8);
+				const iv = CryptoJS.lib.WordArray.random(128 / 8);
+				const enc = CryptoJS.AES.encrypt(JSON.stringify(data), key, { iv }).toString();
+				const aes = [key.toString(CryptoJS.enc.Base64), iv.toString(CryptoJS.enc.Base64), enc].join('::');
+				document.getElementById('aesValue').textContent = aes;
+				log('编码生成成功（含密钥，按槽位顺序）');
 			}
 
 
@@ -869,21 +869,35 @@
 			        if (!Array.isArray(arr) || arr.length !== 160) throw new Error('非160张牌');
 			        
 			        
-			        const tempDeck = new Array(160);
-					const sortedArr = arr.sort((a, b) => a.u.localeCompare(b.u));
-			        
-			        // 按照原始AES中的顺序放置牌
-			        arr.forEach((cardObj, index) => {
-			            tempDeck[index] = {
-			                name: cardObj.n,
-			                suit: cardObj.s,
-			                point: cardObj.p,
-			                uid: cardObj.u
-			            };
-			        });
-			        
-			        // 替换当前牌堆
-			        customDeck = tempDeck;
+					const tempDeck = new Array(160);
+
+					// 如果 AES 中包含槽位索引 i，则优先根据 i 还原到对应槽位；
+					// 否则按数组顺序填充（保留旧实现以兼容旧 AES）。
+					if (arr.length > 0 && typeof arr[0].i !== 'undefined') {
+						arr.forEach(cardObj => {
+							const idx = parseInt(cardObj.i, 10);
+							if (!isNaN(idx) && idx >= 0 && idx < 160) {
+								tempDeck[idx] = {
+									name: cardObj.n,
+									suit: cardObj.s,
+									point: cardObj.p,
+									uid: cardObj.u
+								};
+							}
+						});
+					} else {
+						arr.forEach((cardObj, index) => {
+							tempDeck[index] = {
+								name: cardObj.n,
+								suit: cardObj.s,
+								point: cardObj.p,
+								uid: cardObj.u
+							};
+						});
+					}
+
+					// 替换当前牌堆
+					customDeck = tempDeck;
 			        
 			        // 立即刷新卡牌区
 			        document.querySelectorAll('.deck-slot').forEach((slot, i) => {
