@@ -123,7 +123,22 @@
 		<div class="accordion active">
 			<button class="accordion-header">最新版本内容</button>
 			<div class="accordion-content">
-				
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.13.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/4</div>
+					<ul class="version-list">
+						<li><span class="highlight">重要核心功能修复：修复了AES的解密问题，现在AES解码可以在各模拟器与自定义牌堆页面中自由转换与编解码。（此问题修复已同步至单机版）</span></li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="accordion">
+			<button class="accordion-header">V7.X</button>
+			<div class="accordion-content">
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.12.65更新内容</h2>
 					<div class="update-date">更新时间：2025/12/3</div>
@@ -131,14 +146,7 @@
 						<li>1.细节优化：给所有模拟器中添加一个当前是否有酒加成的提示。（单机版已同步此功能）</li>
 					</ul>
 				</div>
-				
-			</div>
-		</div>
 
-		<div class="accordion">
-			<button class="accordion-header">V7.X</button>
-			<div class="accordion-content">
-				
 				<div class="update-section">
 					<h2 class="version-title">V7.8.11.64更新内容</h2>
 					<div class="update-date">更新时间：2025/12/2</div>
@@ -148,7 +156,7 @@
 						<li>追加更新2：现在也可以直接点击对应的二维码跳转链接了。</li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.10.64更新内容</h2>
 					<div class="update-date">更新时间：2025/11/30</div>
@@ -156,7 +164,7 @@
 						<li>1.新增版本号异常检查功能。如果版本号不为最新或任意历史版本号时，会返回版本号异常的信息。</li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.9.64更新内容</h2>
 					<div class="update-date">更新时间：2025/11/28</div>
@@ -168,7 +176,7 @@
 						</ul>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.8.64更新内容</h2>
 					<div class="update-date">更新时间：2025/11/27</div>
@@ -176,7 +184,7 @@
 						<li>1.修复单机版和友诸葛亮模拟器一个重复绑定的问题</li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.7.63更新内容</h2>
 					<div class="update-date">更新时间：2025/11/26</div>
@@ -185,7 +193,7 @@
 						<li>2.删除单机版里的更新日志</li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.6.62更新内容</h2>
 					<div class="update-date">更新时间：2025/11/25</div>
@@ -194,7 +202,7 @@
 						<li>追加更新：将所有页面页尾Gitcode按钮文字从：[gitcode]获取后续代码更新（国内git）替换为：【gitcode】获取V7.8.3.62镜像文件</li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.5.62更新内容</h2>
 					<div class="update-date">更新时间：2025/11/24</div>
@@ -202,7 +210,7 @@
 						<li>1.新增检查更新的功能。以json实现，直接接入GitHub仓库检查更新</li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.4.62更新内容</h2>
 					<div class="update-date">更新时间：2025/11/24</div>
@@ -216,7 +224,7 @@
 						<li><span class="highlight">重要通知：GitCode已于上版本终止更新</span></li>
 					</ul>
 				</div>
-				
+
 				<div class="update-section">
 					<h2 class="version-title">V7.8.3.62更新内容</h2>
 					<div class="update-date">更新时间：2025/11/19</div>
@@ -1187,48 +1195,48 @@
 	</body>
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
-		    const stickyHeader = document.getElementById('stickyHeader');
-		    const accordions = document.querySelectorAll('.accordion');
-		    
-		    let currentActiveAccordion = null;
-		
-		    accordions.forEach((accordion, index) => {
-		        accordion.id = `accordion-${index}`;
-		    });
-		
-		    window.addEventListener('scroll', function() {
-		        let currentAccordion = null;
-		
-		        accordions.forEach(accordion => {
-		            const rect = accordion.getBoundingClientRect();
-		            if (rect.top <= 100 && rect.bottom >= 100) {
-		                currentAccordion = accordion;
-		                currentActiveAccordion = accordion;
-		            }
-		        });
-		
-		        if (currentAccordion) {
-		            const headerText = currentAccordion.querySelector('.accordion-header').textContent;
-		            stickyHeader.textContent = headerText;
-		            stickyHeader.style.display = 'block';
-		        } else {
-		            stickyHeader.style.display = 'none';
-		        }
-		    });
-		
-		    stickyHeader.addEventListener('click', function() {
-		        if (currentActiveAccordion) {
-		            currentActiveAccordion.classList.toggle('active');
-		        }
-		    });
-		    accordions.forEach(accordion => {
-		        const header = accordion.querySelector('.accordion-header');
-		
-		        header.addEventListener('click', function() {
-		            accordion.classList.toggle('active');
-		            currentActiveAccordion = accordion;
-		        });
-		    });
+			const stickyHeader = document.getElementById('stickyHeader');
+			const accordions = document.querySelectorAll('.accordion');
+
+		 let currentActiveAccordion = null;
+
+			accordions.forEach((accordion, index) => {
+				accordion.id = `accordion-${index}`;
+			});
+
+			window.addEventListener('scroll', function() {
+				let currentAccordion = null;
+
+				accordions.forEach(accordion => {
+					const rect = accordion.getBoundingClientRect();
+					if (rect.top <= 100 && rect.bottom >= 100) {
+						currentAccordion = accordion;
+						currentActiveAccordion = accordion;
+					}
+				});
+
+				if (currentAccordion) {
+					const headerText = currentAccordion.querySelector('.accordion-header').textContent;
+					stickyHeader.textContent = headerText;
+					stickyHeader.style.display = 'block';
+				} else {
+					stickyHeader.style.display = 'none';
+				}
+			});
+
+			stickyHeader.addEventListener('click', function() {
+				if (currentActiveAccordion) {
+					currentActiveAccordion.classList.toggle('active');
+				}
+			});
+			accordions.forEach(accordion => {
+				const header = accordion.querySelector('.accordion-header');
+
+				header.addEventListener('click', function() {
+					accordion.classList.toggle('active');
+					currentActiveAccordion = accordion;
+				});
+			});
 		});
 
 
