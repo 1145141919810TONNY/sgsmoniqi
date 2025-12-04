@@ -1646,16 +1646,18 @@
 			}
 
 			function generateDeckMD5() {
-				const deckString = deck
-					.sort((a, b) => a.uid.localeCompare(b.uid))
-					.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
-					.join('@@');
-				const firstHash = CryptoJS.MD5(deckString).toString();
-				const timestamp = Date.now().toString(16).padStart(16, '0');
-				currentMD5 = CryptoJS.MD5(firstHash + timestamp).toString();
-				const isDebug = new URLSearchParams(window.location.search).has('debug');
-				currentMD5 = isDebug ? firstHash : CryptoJS.MD5(firstHash + timestamp).toString();
-				if (isDebug) console.log("调试模式MD5（不含时间戳）:", currentMD5);
+			    // 基于当前牌堆数组的顺序生成 MD5（按数组顺序），确保解码后显示的 MD5 与当前牌堆一致
+			    const deckString = deck
+			        .map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
+			        .join('@@');
+			
+			    const firstHash = CryptoJS.MD5(deckString).toString();
+			    const timestamp = Date.now().toString(16).padStart(16, '0');
+			
+			    const isDebug = new URLSearchParams(window.location.search).has('debug');
+			    currentMD5 = isDebug ? firstHash : CryptoJS.MD5(firstHash + timestamp).toString();
+			
+			    if (isDebug) console.log("调试模式MD5（不含时间戳）:", currentMD5);
 			}
 			const deckSnapshots = {};
 
@@ -1738,26 +1740,37 @@
 
 			function generateDeckAES() {
 				try {
+					// 简化牌堆数据结构（减少JSON大小）
 					const deckData = deck.map(c => ({
-						n: c.name,
-						s: c.suit,
-						p: c.point,
-						u: c.uid
+						n: c.name, // 卡牌名称（缩写）
+						s: c.suit, // 花色
+						p: c.point, // 点数
+						u: c.uid // 唯一ID（缩写）
 					}));
+			
+					// 生成随机密钥（128位）
 					const key = CryptoJS.lib.WordArray.random(128 / 8);
+			
+					// 生成随机初始化向量（128位）
 					const iv = CryptoJS.lib.WordArray.random(128 / 8);
+			
+					// 使用AES-CBC模式加密牌堆数据
 					const encrypted = CryptoJS.AES.encrypt(
-						JSON.stringify(deckData),
-						key, {
+						JSON.stringify(deckData), // 要加密的字符串化牌堆数据
+						key, // 加密密钥
+						{
 							iv: iv
-						}
+						} // 初始化向量
 					);
+			
+					// 构建AES编码：密钥::初始化向量::加密数据
 					currentAES = [
-						key.toString(CryptoJS.enc.Base64),
-						iv.toString(CryptoJS.enc.Base64),
-						encrypted.toString()
+						key.toString(CryptoJS.enc.Base64), // Base64编码的密钥
+						iv.toString(CryptoJS.enc.Base64), // Base64编码的初始化向量
+						encrypted.toString() // 加密后的字符串
 					].join('::');
 				} catch (e) {
+					// 错误处理：输出错误并设置错误标识
 					console.error('AES生成失败:', e);
 					currentAES = 'ERROR';
 				}
@@ -1810,43 +1823,161 @@
 			});
 
 			function verifyAESDeck() {
-				const input = document.getElementById('verifyAES').value.trim();
-				const resultSpan = document.getElementById('verifyAESResult');
-				if (!input) {
-					resultSpan.textContent = '❌ 请输入编码';
-					resultSpan.style.color = '#f44336';
-					return;
-				}
-				try {
-					const [keyB64, ivB64, data] = input.split('::');
-					if (!keyB64 || !ivB64 || !data) throw new Error('格式无效');
-					const key = CryptoJS.enc.Base64.parse(keyB64);
-					const iv = CryptoJS.enc.Base64.parse(ivB64);
-					const decrypted = CryptoJS.AES.decrypt(data, key, {
-						iv: iv
-					});
-					const utf8String = decrypted.toString(CryptoJS.enc.Utf8);
-					if (!utf8String) throw new Error('解密失败');
-					const decoded = JSON.parse(utf8String);
-					deck = decoded.map(c => ({
-						name: c.n,
-						suit: c.s,
-						point: c.p,
-						uid: c.u
-					}));
-					generateDeckMD5();
-					updateMD5Display();
-					updateRemaining();
-					revealDeck();
-					log('AES解码成功，牌堆已加载');
-					resultSpan.textContent = '✅ 验证通过';
-					resultSpan.style.color = '#4CAF50';
-				} catch (e) {
-					console.error('AES验证失败:', e);
-					resultSpan.textContent = '❌ 无效编码';
-					resultSpan.style.color = '#f44336';
-					log('AES解码失败: ' + e.message);
-				}
+			    // 获取用户输入的AES编码
+			    const input = document.getElementById('verifyAES').value.trim();
+			    const resultSpan = document.getElementById('verifyAESResult');
+			
+			    // 检查输入是否为空
+			    if (!input) {
+			        resultSpan.textContent = '❌❌ 请输入AES编码';
+			        resultSpan.style.color = '#f44336';
+			        return;
+			    }
+			
+			    try {
+			        // 分割输入：格式应为 密钥::初始化向量::加密数据
+			        const parts = input.split('::');
+			        if (parts.length !== 3) {
+			            throw new Error('AES格式无效，应为 key::iv::data 格式');
+			        }
+			
+			        const [keyB64, ivB64, encryptedData] = parts;
+			
+			        // 从Base64解析密钥和初始化向量
+			        const key = CryptoJS.enc.Base64.parse(keyB64);
+			        const iv = CryptoJS.enc.Base64.parse(ivB64);
+			
+			        // 使用AES解密数据
+			        const decrypted = CryptoJS.AES.decrypt(encryptedData, key, { iv: iv });
+			        const utf8String = decrypted.toString(CryptoJS.enc.Utf8);
+			
+			        if (!utf8String) {
+			            throw new Error('解密失败或数据为空');
+			        }
+			
+			        // 解析解密后的JSON数据
+			        const decoded = JSON.parse(utf8String);
+			
+			        // 兼容性处理：检查是否包含槽位索引
+			        let newDeck;
+			        if (Array.isArray(decoded) && decoded.length > 0 && decoded[0].i !== undefined) {
+			            // 带槽位索引的格式：按索引排序
+			            const sorted = decoded.slice().sort((a, b) => a.i - b.i);
+			            newDeck = sorted.map(card => ({
+			                name: card.n,
+			                suit: card.s,
+			                point: card.p,
+			                uid: card.u || CryptoJS.lib.WordArray.random(16).toString()
+			            }));
+			            log('检测到带槽位索引的AES编码，已按顺序还原牌堆');
+			        } else {
+			            // 旧格式：直接映射
+			            newDeck = decoded.map(card => ({
+			                name: card.n,
+			                suit: card.s,
+			                point: card.p,
+			                uid: card.u || CryptoJS.lib.WordArray.random(16).toString()
+			            }));
+			            log('使用旧格式AES编码还原牌堆');
+			        }
+			
+			        // === 重置所有游戏状态 ===
+			        
+			        // 牌堆状态
+			        deck = newDeck;
+			        drawnCards = [];
+			        discardPile = [];
+			        hand = [];
+			        
+			        // 游戏阶段状态
+			        phase = '准备';
+			        lastUsedCard = null;
+			        previousCard = null;
+			
+			        // 武器和攻击状态
+			        currentWeapon = null;
+			        usedKillCount = 0;
+			        killCount = 2;
+			        hasZhugeLianNu = false;
+			
+			        // 延时锦囊区
+			        bingliangArea = [];
+			        lebuArea = [];
+			        shandianArea = [];
+			
+			        // 伤害计数器
+			        totalDamage = 0;
+			        currentTurnDamage = 0;
+			        wineEffect = false;
+			
+			        // 桃和酒计数
+			        peachCount = 1;
+			        wineCount = 1;
+			
+			        // 青龙偃月刀状态（文档2特有）
+			        qinglongActive = false;
+			        qinglongCards = [];
+			        qinglongWineBonus = false;
+			
+			        // 脚气卡状态（如果存在）
+			        if (typeof reshuffleUsed !== 'undefined') {
+			            reshuffleUsed = 0;
+			        }
+			
+			        // === 重新生成标识符 ===
+			        generateDeckMD5();
+			        generateDeckAES();
+			
+			        // === 更新界面显示 ===
+			        updateMD5Display();
+			        updateAESDisplay();
+			        updateRemaining();
+			        updateRemainingCounts();
+			        updateStatus();
+			        updateUI();
+			
+			        // 清空手牌显示
+			        const handContainer = document.getElementById('hand');
+			        handContainer.innerHTML = '<h3>手牌</h3>';
+			
+			        // 清空牌堆显示
+			        document.getElementById('deck').innerHTML = '';
+			        document.getElementById('remaining').innerHTML = `剩余牌堆: ${deck.length}张`;
+			
+			        // 更新前一张牌信息
+			        document.getElementById('previousCardInfo').textContent = '上一张牌：空';
+			
+			        // 更新阶段信息
+			        const stageInfo = document.getElementById('stageInfo');
+			        if (stageInfo) {
+			            stageInfo.textContent = '当前阶段：准备阶段';
+			        }
+			
+			        // 重置按钮状态
+			        document.getElementById('drawBtn').disabled = false;
+			        document.getElementById('playBtn').disabled = true;
+			        document.getElementById('endPlayBtn').disabled = true;
+			
+			        // 更新脚气卡按钮（如果存在）
+			        if (document.getElementById('reshuffleBtn')) {
+			            updateReshuffleButton();
+			        }
+			
+			        // 更新丈八蛇矛按钮
+			        updateWeaponButton();
+			
+			        log('AES解码成功，牌堆和游戏状态已完整重置');
+			        
+			        // 显示成功消息
+			        resultSpan.textContent = '✅ 验证通过，牌堆已加载';
+			        resultSpan.style.color = '#4CAF50';
+			
+			    } catch (error) {
+			        console.error('AES解码失败:', error);
+			        resultSpan.textContent = '❌ 解码失败: ' + error.message;
+			        resultSpan.style.color = '#f44336';
+			        log('AES解码错误: ' + error.message);
+			    }
 			}
 
 			// 更新延时锦囊区域显示
