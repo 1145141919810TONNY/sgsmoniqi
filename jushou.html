@@ -675,7 +675,7 @@
 				const input = document.getElementById('verifyAES').value.trim();
 				const resultSpan = document.getElementById('verifyAESResult');
 
-				// 检查输入是否为空
+				// 检查 输入是否为空
 				if (!input) {
 			  resultSpan.textContent = '❌❌❌❌ 请输入编码';
 					resultSpan.style.color = '#f44336';
@@ -707,13 +707,29 @@
 					// 解析解密后的JSON数据
 					const decoded = JSON.parse(utf8String);
 
-					// 重建牌堆数据结构
-					const newDeck = decoded.map(c => ({
-						name: c.n,
-						suit: c.s,
-						point: c.p,
-						uid: c.u
-					}));
+					// 兼容：如果解码数据包含槽位索引 `i`，则按 `i` 排序还原槽位顺序；
+					// 否则按数组本身的顺序使用（向后兼容旧实现）。
+					let newDeck;
+					if (Array.isArray(decoded) && decoded.length > 0 && Object.prototype.hasOwnProperty.call(decoded[0], 'i')) {
+						// 按槽位索引升序排序，然后映射为牌对象
+						const sorted = decoded.slice().sort((a, b) => (a.i - b.i));
+						newDeck = sorted.map(c => ({
+							name: c.n,
+							suit: c.s,
+							point: c.p,
+							uid: c.u
+						}));
+						log('检测到带槽位索引的 AES，已按槽位顺序还原牌堆');
+					} else {
+						// 旧格式：按数组顺序重建牌堆
+						newDeck = decoded.map(c => ({
+							name: c.n,
+							suit: c.s,
+							point: c.p,
+							uid: c.u
+						}));
+						log('按解码数组顺序重建牌堆（未检测到槽位索引）');
+					}
 
 
 					// 重置所有相关状态变量
@@ -801,12 +817,12 @@
 			}
 
 			function generateDeckMD5FromDeck() {
-				const deckString = deck
-					.sort((a, b) => a.uid.localeCompare(b.uid))
-					.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
-					.join('@@');
+							// 基于当前牌堆的顺序生成 MD5（按数组顺序），确保解码后显示的 MD5 与当前牌堆一致
+							const deckString = deck
+								.map(c => `${c.name}|${c.suit}|${c.point}|${c.uid}`)
+								.join('@@');
 
-				currentMD5 = CryptoJS.MD5(deckString).toString();
+							currentMD5 = CryptoJS.MD5(deckString).toString();
 			}
 
 			function generateDeckAESFromDeck() {
