@@ -528,48 +528,51 @@ button {
 }
 
 #status-area {
-    display: grid;
-    grid-template-columns: 1fr 2fr; 
-    gap: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 15px 0;
-    width: 100%; 
-    box-sizing: border-box;
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 20px;
+	padding: 15px;
+	background-color: #f8f9fa;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin: 15px 0;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 /* 左侧状态信息 */
 .status-left {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 #damage-counter {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-    background-color: #ffeef0;
-    border-radius: 6px;
-    border-left: 4px solid #f44336;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 10px;
+	background-color: #ffeef0;
+	border-radius: 6px;
+	border-left: 4px solid #f44336;
 }
 
-#total-damage, #turn-damage {
-    font-size: 14px;
-    font-weight: bold;
+#total-damage,
+#turn-damage {
+	font-size: 14px;
+	font-weight: bold;
 }
 
-#kill-counter, #zhuge-status, 
-#peach-counter, #wine-counter {
-    padding: 10px;
-    background-color: #e3f2fd;
-    border-radius: 6px;
-    border-left: 4px solid #2196F3;
-    font-size: 14px;
-    font-weight: bold;
+#kill-counter,
+#zhuge-status,
+#peach-counter,
+#wine-counter {
+	padding: 10px;
+	background-color: #e3f2fd;
+	border-radius: 6px;
+	border-left: 4px solid #2196F3;
+	font-size: 14px;
+	font-weight: bold;
 }
 
 
@@ -855,17 +858,16 @@ button::after {
 		max-height: 200px;
 		overflow-y: auto;
 	}
-	
+
 	.header {
-			width: 95%;
-			left: 2.5%;
-			right: 2.5%;
-			padding: 6px 0;
-			font-size: 14px;
-		}
+		width: 95%;
+		left: 2.5%;
+		right: 2.5%;
+		padding: 6px 0;
+		font-size: 14px;
+	}
 }
 
-/* 新增的更新日志页面样式 */
 .update-log-container {
 	max-width: 900px;
 	margin: 0 auto;
@@ -1401,18 +1403,19 @@ button::after {
 		width: 80%;
 		margin-bottom: 10px;
 	}
+
 	#status-area {
-	        grid-template-columns: 1fr;
-	    }
-	    
-	    #delay-area {
-	        flex-direction: column;
-	    }
-	    
-	    .delay-section {
-	        min-width: 100%;
-	        max-width: 100%;
-	    }
+		grid-template-columns: 1fr;
+	}
+
+	#delay-area {
+		flex-direction: column;
+	}
+
+	.delay-section {
+		min-width: 100%;
+		max-width: 100%;
+	}
 }
 
 @media (max-width: 480px) {
@@ -1435,18 +1438,19 @@ button::after {
 		width: 80%;
 		margin-bottom: 10px;
 	}
+
 	#status-area {
-	        grid-template-columns: 1fr;
-	    }
-	    
-	    #delay-area {
-	        flex-direction: column;
-	    }
-	    
-	    .delay-section {
-	        min-width: 100%;
-	        max-width: 100%;
-	    }
+		grid-template-columns: 1fr;
+	}
+
+	#delay-area {
+		flex-direction: column;
+	}
+
+	.delay-section {
+		min-width: 100%;
+		max-width: 100%;
+	}
 }
 
 .hero-section {
@@ -1484,6 +1488,9 @@ h2.hero-title {
 
 h3.hero-title {
 	font-size: 16px;
+}
+h4.hero-title {
+	font-size: 10px;
 }
 
 .hero-subtitle {
@@ -1897,308 +1904,324 @@ h3.hero-title {
 	overflow-x: auto;
 }
 
- /* 延时锦囊区域样式 */
-    #delay-area {
-        display: flex;
-        gap: 15px;
-        justify-content: space-between;
-    }
-    
-    .delay-section {
-        flex: 1;
-        min-width: 120px;
-        max-width: 200px;
-        border: 1px solid #b38b6d;
-        border-radius: 8px;
-        padding: 10px;
-        background: #fff8e1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .delay-section h4 {
-        margin: 0 0 8px;
-        text-align: center;
-        color: #8d6e63;
-        font-size: 14px;
-        border-bottom: 1px solid #b38b6d;
-        padding-bottom: 5px;
-    }
-    
-    .delay-cards {
-        flex-grow: 1;
-        min-height: 80px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        justify-content: center;
-        align-items: flex-start;
-    }
-    
-    .delay-card {
-        padding: 6px;
-        margin: 3px 0;
-        background-color: #f0f0f0;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        text-align: center;
-        font-size: 12px;
-        flex: 0 0 calc(50% - 10px);
-    }
+/* 延时锦囊区域样式 */
+#delay-area {
+	display: flex;
+	gap: 15px;
+	justify-content: space-between;
+}
 
-   
-   .delay-card.disabled {
-       color: #999;
-       font-style: italic;
-   }
-   
-   /* 延时锦囊区域标题样式 */
-   .delay-section h4 {
-       margin: 10px 0 5px;
-       font-size: 14px;
-       color: #555;
-   }
-   
-   .modal-backdrop {
-       position: fixed;
-       top: 0;
-       left: 0;
-       right: 0;
-       bottom: 0;
-       background: rgba(0,0,0,0.5);
-       z-index: 9999;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-   }
-   
-   .card-selector-modal {
-       background: white;
-       padding: 25px;
-       border-radius: 12px;
-       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-       min-width: 400px;
-       max-width: 90vw;
-       text-align: center;
-   }
-   
-   .dialog-button {
-       padding: 12px 20px;
-       border: none;
-       border-radius: 6px;
-       cursor: pointer;
-       font-size: 16px;
-       transition: all 0.2s;
-       margin-top: 15px;
-   }
-   
-   .dialog-button:hover {
-       transform: translateY(-2px);
-       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-   }
-   
-   /* 可选择的延时锦囊样式 */
-   .delay-card-selectable {
-       padding: 10px;
-       border: 2px solid #8d6e63;
-       border-radius: 8px;
-       background: #fff8e1;
-       cursor: pointer;
-       transition: all 0.3s;
-       min-width: 100px;
-       text-align: center;
-   }
-   
-   .delay-card-selectable:hover {
-       transform: translateY(-5px);
-       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-       background: #ffecb3;
-   }
-   
-   /* 不同锦囊类型的颜色区分 */
-   .delay-card-selectable:nth-child(odd) {
-       background: #e8f5e9; /* 乐不思蜀浅绿色 */
-   }
-   
-   .delay-card-selectable:nth-child(even) {
-       background: #fff8e1; /* 兵粮寸断浅黄色 */
-   }
-   
-   /* 可选择的延时锦囊样式 */
-   .delay-card-selectable {
-       padding: 10px;
-       border: 2px solid #4caf50; /* 绿色边框表示获取 */
-       border-radius: 8px;
-       background: #e8f5e9; /* 浅绿色背景 */
-       cursor: pointer;
-       transition: all 0.3s;
-       min-width: 100px;
-       text-align: center;
-       margin-bottom: 8px;
-   }
-   
-   .delay-card-selectable:hover {
-       transform: translateY(-5px);
-       box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-       background: #c8e6c9; /* 悬停时加深背景色 */
-   }
-   
-   /* 不同锦囊类型的颜色区分 */
-   .delay-card-selectable.bingliang {
-       border-color: #ff9800; /* 兵粮寸断橙色边框 */
-       background: #fff3e0; /* 兵粮寸断浅橙色背景 */
-   }
-   
-   .delay-card-selectable.lebu {
-       border-color: #2196f3; /* 乐不思蜀蓝色边框 */
-       background: #e3f2fd; /* 乐不思蜀浅蓝色背景 */
-   }
-   
-   #status-area {
-     display: grid;
-     grid-template-columns: 1fr 2fr;
-     gap: 20px;
-     padding: 15px;
-     background-color: #f8f9fa;
-     border-radius: 8px;
-     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-     margin: 15px 0;
-     transition: none;
-   }
-   
-   #status-area.collapsed {
-     display: none;
-   }
-   
-   #status-area:not(.collapsed) {
-       display: grid; /* 保持网格布局 */
-       width: 100%; /* 强制100%宽度 */
-   }
+.delay-section {
+	flex: 1;
+	min-width: 120px;
+	max-width: 200px;
+	border: 1px solid #b38b6d;
+	border-radius: 8px;
+	padding: 10px;
+	background: #fff8e1;
+	display: flex;
+	flex-direction: column;
+}
+
+.delay-section h4 {
+	margin: 0 0 8px;
+	text-align: center;
+	color: #8d6e63;
+	font-size: 14px;
+	border-bottom: 1px solid #b38b6d;
+	padding-bottom: 5px;
+}
+
+.delay-cards {
+	flex-grow: 1;
+	min-height: 80px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.delay-card {
+	padding: 6px;
+	margin: 3px 0;
+	background-color: #f0f0f0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	text-align: center;
+	font-size: 12px;
+	flex: 0 0 calc(50% - 10px);
+}
+
+
+.delay-card.disabled {
+	color: #999;
+	font-style: italic;
+}
+
+/* 延时锦囊区域标题样式 */
+.delay-section h4 {
+	margin: 10px 0 5px;
+	font-size: 14px;
+	color: #555;
+}
+
+.modal-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.card-selector-modal {
+	background: white;
+	padding: 25px;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+	min-width: 400px;
+	max-width: 90vw;
+	text-align: center;
+}
+
+.dialog-button {
+	padding: 12px 20px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 16px;
+	transition: all 0.2s;
+	margin-top: 15px;
+}
+
+.dialog-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 可选择的延时锦囊样式 */
+.delay-card-selectable {
+	padding: 10px;
+	border: 2px solid #8d6e63;
+	border-radius: 8px;
+	background: #fff8e1;
+	cursor: pointer;
+	transition: all 0.3s;
+	min-width: 100px;
+	text-align: center;
+}
+
+.delay-card-selectable:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+	background: #ffecb3;
+}
+
+/* 不同锦囊类型的颜色区分 */
+.delay-card-selectable:nth-child(odd) {
+	background: #e8f5e9;
+	/* 乐不思蜀浅绿色 */
+}
+
+.delay-card-selectable:nth-child(even) {
+	background: #fff8e1;
+	/* 兵粮寸断浅黄色 */
+}
+
+/* 可选择的延时锦囊样式 */
+.delay-card-selectable {
+	padding: 10px;
+	border: 2px solid #4caf50;
+	/* 绿色边框表示获取 */
+	border-radius: 8px;
+	background: #e8f5e9;
+	/* 浅绿色背景 */
+	cursor: pointer;
+	transition: all 0.3s;
+	min-width: 100px;
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.delay-card-selectable:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+	background: #c8e6c9;
+	/* 悬停时加深背景色 */
+}
+
+/* 不同锦囊类型的颜色区分 */
+.delay-card-selectable.bingliang {
+	border-color: #ff9800;
+	/* 兵粮寸断橙色边框 */
+	background: #fff3e0;
+	/* 兵粮寸断浅橙色背景 */
+}
+
+.delay-card-selectable.lebu {
+	border-color: #2196f3;
+	/* 乐不思蜀蓝色边框 */
+	background: #e3f2fd;
+	/* 乐不思蜀浅蓝色背景 */
+}
+
+#status-area {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 20px;
+	padding: 15px;
+	background-color: #f8f9fa;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin: 15px 0;
+	transition: none;
+}
+
+#status-area.collapsed {
+	display: none;
+}
+
+#status-area:not(.collapsed) {
+	display: grid;
+	/* 保持网格布局 */
+	width: 100%;
+	/* 强制100%宽度 */
+}
 
 /* 整理手牌按钮样式 */
 #organizeHandBtn {
-    transition: all 0.3s ease;
-    cursor: pointer;
+	transition: all 0.3s ease;
+	cursor: pointer;
 }
 
 #organizeHandBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #organizeHandBtn:disabled {
-    cursor: not-allowed;
+	cursor: not-allowed;
 }
 
 /* 火攻对话框样式 */
-.huogong-dialog, .huogong-options, .discard-options {
-    z-index: 10002;
+.huogong-dialog,
+.huogong-options,
+.discard-options {
+	z-index: 10002;
 }
 
 .discard-card {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    background: white;
-    transition: all 0.3s;
-    min-width: 80px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 10px;
+	cursor: pointer;
+	background: white;
+	transition: all 0.3s;
+	min-width: 80px;
 }
 
 .discard-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    background: #fff9c4;
+	transform: translateY(-3px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	background: #fff9c4;
 }
 
 /* 青龙偃月刀弹窗样式 */
 .qinglong-dialog {
-    background: linear-gradient(135deg, #ffecb3, #ffe082);
+	background: linear-gradient(135deg, #ffecb3, #ffe082);
 }
 
 .qinglong-dialog h3 {
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .kill-option:hover {
-    background: #fff3e0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+	background: #fff3e0;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #qinglongUsedCards {
-    font-family: monospace;
-    font-size: 14px;
+	font-family: monospace;
+	font-size: 14px;
 }
 
 #qrDemo svg {
-  width: 200px;            
-  height: 200px;
-  max-width: 100%;       
-  display: inline-block;   
-  image-rendering: crisp-edges; 
-  border-radius: 8px;       
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
-  transition: width .3s, height .3s;
-  cursor: pointer;    
+	width: 200px;
+	height: 200px;
+	max-width: 100%;
+	display: inline-block;
+	image-rendering: crisp-edges;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+	transition: width .3s, height .3s;
+	cursor: pointer;
 }
 
 @media (max-width: 768px) {
-  #qrDemo svg {
-    width: 160px;
-    height: 160px;
-  }
+	#qrDemo svg {
+		width: 160px;
+		height: 160px;
+	}
 }
 
 @media (max-width: 480px) {
-  #qrDemo svg {
-    width: 140px;
-    height: 140px;
-  }
+	#qrDemo svg {
+		width: 140px;
+		height: 140px;
+	}
 }
 
 @media (min-width: 1200px) {
-  #qrDemo svg {
-    width: 240px;
-    height: 240px;
-  }
+	#qrDemo svg {
+		width: 240px;
+		height: 240px;
+	}
 }
 
 #qrDemo p {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #555;
-  word-break: keep-all;
+	margin: 8px 0 0;
+	font-size: 13px;
+	color: #555;
+	word-break: keep-all;
 }
 
 #qrDemo {
-    position: fixed;
-    right: 20px;  
-    bottom: 70px; 
-    z-index: 1000;
-    text-align: center;
-    font-size: 12px;
-    color: #555;
-    transform: scale(0.65);  
-    transform-origin: right bottom; 
+	position: fixed;
+	right: 20px;
+	bottom: 70px;
+	z-index: 1000;
+	text-align: center;
+	font-size: 12px;
+	color: #555;
+	transform: scale(0.65);
+	transform-origin: right bottom;
 }
 
-.wine-box{
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px 10px;
-  margin: 4px 0;
-  background: #fafafa;
-  display: inline-block; 
+.wine-box {
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	padding: 6px 10px;
+	margin: 4px 0;
+	background: #fafafa;
+	display: inline-block;
 }
-.wine-box > div{
-  line-height: 1.5;
+
+.wine-box>div {
+	line-height: 1.5;
 }
-#wine-buff{
-  font-size: 13px;
-  color: #666;
+
+#wine-buff {
+	font-size: 13px;
+	color: #666;
 }
-#wine-buff.active{
-  color: #ff9800;
-  font-weight: bold;
+
+#wine-buff.active {
+	color: #ff9800;
+	font-weight: bold;
 }
