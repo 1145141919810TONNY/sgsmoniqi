@@ -28,7 +28,9 @@
 		</section>
 <div class="header-placeholder"></div>
 <div><span id="piBox"><span id="piFirst">1</span><span id="piRest">415</span></span></div>
-
+<div id="posInfo" style="margin-top:10px;font-size:18px;color:#666;">
+  当前：小数点后第 <span id="posNum">1</span> 位数
+</div>
 <div>
   <button id="skill">割圆</button>
   <button id="back">重差</button>
@@ -98,6 +100,7 @@ function render(){
   const s = piStr.slice(pos-1, pos+3);
   $first.textContent = s[0];
   $rest.textContent  = s.slice(1);
+  document.getElementById('posNum').textContent = pos;
 }
 $skill.onclick = async () => {
   await ensurePiSegment(pos+4);
