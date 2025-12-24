@@ -22,7 +22,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V7.8.13.66</h2>
+			<h2 class="hero-title">V7.9.0.66</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 			<div class="nav-buttons">
 				<button class="nav-button"><a href="index.html">切换到新版</a></button>
@@ -150,6 +150,12 @@
 						<span class="btn-primary">查看内容</span>
 					</div>
 				</a>
+				<a href="liuhui.html" class="feature-card" target="_blank">
+					<div class="card-content">
+						<h2 class="card-title">数刘徽模拟器</h2>
+						<span class="btn-primary">查看内容</span>
+					</div>
+				</a>
 				<a href="MIT LICENSE.html" class="feature-card" target="_blank">
 					<div class="card-content">
 						<h2 class="card-title">MIT LICENSE协议页面</h2>
@@ -178,11 +184,18 @@
 			</div>
 
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容 V7.8.13.66</h3>
+				<h3 class="update-title">最新版本更新内容 V7.9.0.66</h3>
 				<div class="update-content">
 					<ul class="version-list">
-						<li><span class="highlight">重要核心功能修复：修复了AES的解密问题，现在AES解码可以在各模拟器与自定义牌堆页面中自由转换与编解码。（此问题修复已同步至单机版）</span></li>
-						<li>有关V7.8.11.64版本的补充说明：由于更新的二维码使用的是SVG矢量图，因此，你的编译器可能会有两个左右的报错。但是请放心，这部分的语法是没有问题的。</li>
+						<li>1. 新增<span class="highlight">“数刘徽模拟器”</span>网页以及入口，可脱离主样式表运行</li>
+							<li>2. 基于 π 位数接口实现无限精度，理论支持 31.4 万亿位动态计算</li>
+						<li>3. 核心机制：
+								<ul>
+									<li>3.1 技能“割圆”：每触发一次 π 后移 1 位，每回合累计最多 3 次，每次会提示摸等量的牌</li>
+									<li>3.2 技能“重差”：每回合限一次，π 后移 1 位但不触发摸牌</li>
+									<li>3.3 回合结束自动清零触发计数并重置“重差”使用次数</li>
+								</ul>
+							</li>
 					</ul>
 				</div>
 			</div>
@@ -228,7 +241,7 @@
 			</div>
 		</footer>
 		<script>
-			const CUR_VER = '7.8.13.66';
+			const CUR_VER = '7.9.0.66';
 			const VER_URL = 'https://1145141919810tonny.github.io/sgsmoniqi/version.json';
 			
 			(function(){
@@ -304,4 +317,3 @@
 		</script>
 	</body>
 </html>
-
