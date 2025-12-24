@@ -125,11 +125,18 @@
 			<div class="accordion-content">
 
 				<div class="update-section">
-					<h2 class="version-title">V7.8.13.66更新内容</h2>
-					<div class="update-date">更新时间：2025/12/4</div>
+					<h2 class="version-title">V7.9.0.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/24</div>
 					<ul class="version-list">
-						<li><span class="highlight">重要核心功能修复：修复了AES的解密问题，现在AES解码可以在各模拟器与自定义牌堆页面中自由转换与编解码。（此问题修复已同步至单机版）</span></li>
-						<li>有关V7.8.11.64版本的补充说明：由于更新的二维码使用的是SVG矢量图，因此，你的编译器可能会有两个左右的报错。但是请放心，这部分的语法是没有问题的。</li>
+						<li>1. 新增<span class="highlight">“数刘徽模拟器”</span>网页以及入口，可脱离主样式表运行</li>
+						<li>2. 基于 π 位数接口实现无限精度，理论支持 31.4 万亿位动态计算</li>
+				    <li>3. 核心机制：
+							<ul>
+								<li>3.1 技能“割圆”：每触发一次 π 后移 1 位，每回合累计最多 3 次，每次会提示摸等量的牌</li>
+								<li>3.2 技能“重差”：每回合限一次，π 后移 1 位但不触发摸牌</li>
+								<li>3.3 回合结束自动清零触发计数并重置“重差”使用次数</li>
+							</ul>
+						</li>
 					</ul>
 				</div>
 
@@ -139,6 +146,17 @@
 		<div class="accordion">
 			<button class="accordion-header">V7.X</button>
 			<div class="accordion-content">
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.13.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/4</div>
+					<ul class="version-list">
+						<li><span
+								class="highlight">重要核心功能修复：修复了AES的解密问题，现在AES解码可以在各模拟器与自定义牌堆页面中自由转换与编解码。（此问题修复已同步至单机版）</span>
+						</li>
+						<li>有关V7.8.11.64版本的补充说明：由于更新的二维码使用的是SVG矢量图，因此，你的编译器可能会有两个左右的报错。但是请放心，这部分的语法是没有问题的。</li>
+					</ul>
+				</div>
 
 				<div class="update-section">
 					<h2 class="version-title">V7.8.12.65更新内容</h2>
@@ -1199,7 +1217,7 @@
 			const stickyHeader = document.getElementById('stickyHeader');
 			const accordions = document.querySelectorAll('.accordion');
 
-		 let currentActiveAccordion = null;
+			let currentActiveAccordion = null;
 
 			accordions.forEach((accordion, index) => {
 				accordion.id = `accordion-${index}`;
@@ -1295,4 +1313,3 @@
 		window.addEventListener('load', updateButtonVisibility);
 	</script>
 </html>
-
