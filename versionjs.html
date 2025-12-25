@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>三国杀模拟器版本更新日志</title>
+		<link rel="stylesheet" href="css/head.css">
+	</head>
+	<style>
+		.accordion-container {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 20px;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			line-height: 1.6;
+			color: #333;
+			background-color: #f5f7fa;
+		}
+
+		.accordion-container h1 {
+			text-align: center;
+			margin-bottom: 30px;
+			color: #2c3e50;
+		}
+
+		.accordion {
+			background: white;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			margin-bottom: 20px;
+		}
+
+		.accordion-header {
+			padding: 15px 20px;
+			background-color: #d32f2f;
+			color: #ffd700;
+			cursor: pointer;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			transition: background-color 0.3s;
+			border: none;
+			width: 100%;
+			text-align: left;
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		.accordion-header:hover {
+			background-color: #b71c1c;
+		}
+
+		.accordion-header::after {
+			content: '+';
+			font-size: 20px;
+			transition: transform 0.3s;
+			color: #ffd700;
+		}
+
+		.accordion.active .accordion-header::after {
+			transform: rotate(45deg);
+			content: '−';
+		}
+
+		.accordion-content {
+			padding: 0;
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+		}
+
+		.accordion.active .accordion-content {
+			padding: 20px;
+			max-height: 1000000px;
+		}
+
+		.accordion-content-wrapper {
+			display: grid;
+			grid-template-rows: 0fr;
+			transition: grid-template-rows 0.3s ease-out;
+		}
+
+		.accordion.active .accordion-content-wrapper {
+			grid-template-rows: 1fr;
+		}
+
+		.accordion-content {
+			min-height: 0;
+			overflow: hidden;
+		}
+
+		.sticky-header {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: #d32f2f;
+			color: #ffd700;
+			padding: 15px 20px;
+			display: none;
+			z-index: 1000;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			font-weight: bold;
+			font-size: 16px;
+		}
+
+		.accordion {
+			scroll-margin-top: 80px;
+		}
+	</style>
+	<body>
+		<div id="stickyHeader" class="sticky-header"></div>
+
+		<section class="hero-section">
+			<h1 class="hero-title">三国杀模拟器版本更新日志</h1>
+			<div class="nav-buttons">
+				<button class="nav-button"><a href="index.html">返回新版主页</a></button>
+				<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
+			</div>
+		</section>
+
+		<div class="accordion active">
+			<button class="accordion-header">最新版本内容</button>
+			<div class="accordion-content">
+				
+				<div class="update-section">
+					<h2 class="version-title">V8.0.1.67更新内容</h2>
+					<div class="update-date">更新时间：2025/12/27</div>
+					<ul class="version-list">
+						<li>将页尾，MIT许可证的版权年份从2025修改为2025~2026.在这提前祝各位将军新年快乐。</li>
+					</ul>
+				</div>
+				
+			</div>
+		</div>
+		
+		<div class="accordion">
+			<button class="accordion-header">V8.X</button>
+			<div class="accordion-content">
+				
+				<div class="update-section">
+					<h2 class="version-title">V8.0.0.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/26</div>
+					<ul class="version-list">
+						<li>1.将原有的“数刘徽模拟器”更名为“数刘徽计数器”</li>
+						<li>2.新增“数刘徽模拟器”网页以及入口</li>
+						<ul>
+							<li>2.1.将数刘徽的完整技能组合集成到“无技能模拟器”中,技能模板简化如下：</li>
+							<ul>
+								<li>割圆：锁定技，每当你使用一张手牌时，若点数等于当前π的第一位数时，摸X张牌（“X”最多为3，本回合每触发一次该技能则“X”+1）</li>
+								<li>重差：出牌阶段限一次，你可以弃置一张手牌，然后使小数点向后移动一位数。</li>
+							</ul>
+						</ul>
+					</ul>
+				</div>
+				
+			</div>
+		</div>
+
+		<div class="accordion">
+			<button class="accordion-header">V7.X</button>
+			<div class="accordion-content">
+				
+				<div class="update-section">
+					<h2 class="version-title">V7.9.1.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/25</div>
+					<ul class="version-list">
+						<li>1.细节优化：在“数刘徽模拟器”中，新增当前小数点后第X位的统计</li>
+					</ul>
+				</div>
+				
+				<div class="update-section">
+					<h2 class="version-title">V7.9.0.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/24</div>
+					<ul class="version-list">
+						<li>1. 新增<span class="highlight">“数刘徽模拟器”</span>网页以及入口，可脱离主样式表运行</li>
+						<li>2. 基于 π 位数接口实现无限精度，理论支持 31.4 万亿位动态计算</li>
+				    <li>3. 核心机制：
+							<ul>
+								<li>3.1 技能“割圆”：每触发一次 π 后移 1 位，每回合累计最多 3 次，每次会提示摸等量的牌</li>
+								<li>3.2 技能“重差”：每回合限一次，π 后移 1 位但不触发摸牌</li>
+								<li>3.3 回合结束自动清零触发计数并重置“重差”使用次数</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.13.66更新内容</h2>
+					<div class="update-date">更新时间：2025/12/4</div>
+					<ul class="version-list">
+						<li><span
+								class="highlight">重要核心功能修复：修复了AES的解密问题，现在AES解码可以在各模拟器与自定义牌堆页面中自由转换与编解码。（此问题修复已同步至单机版）</span>
+						</li>
+						<li>有关V7.8.11.64版本的补充说明：由于更新的二维码使用的是SVG矢量图，因此，你的编译器可能会有两个左右的报错。但是请放心，这部分的语法是没有问题的。</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.12.65更新内容</h2>
+					<div class="update-date">更新时间：2025/12/3</div>
+					<ul class="version-list">
+						<li>1.细节优化：给所有模拟器中添加一个当前是否有酒加成的提示。（单机版已同步此功能）</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.11.64更新内容</h2>
+					<div class="update-date">更新时间：2025/12/2</div>
+					<ul class="version-list">
+						<li>1.新增二维码下载链接，于两个主页的右下角常驻</li>
+						<li>追加更新1：为了保证移动端也可离线运行，提供一个能让移动端完整运行代码的软件二维码。</li>
+						<li>追加更新2：现在也可以直接点击对应的二维码跳转链接了。</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.10.64更新内容</h2>
+					<div class="update-date">更新时间：2025/11/30</div>
+					<ul class="version-list">
+						<li>1.新增版本号异常检查功能。如果版本号不为最新或任意历史版本号时，会返回版本号异常的信息。</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.9.64更新内容</h2>
+					<div class="update-date">更新时间：2025/11/28</div>
+					<ul class="version-list">
+						<li>1.在梦之回廊模拟器中新增百万次抽奖测试功能</li>
+						<ul>
+							<li>数据导出功能（仅支持windows系统）</li>
+							<li>详细的数据统计功能</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.8.64更新内容</h2>
+					<div class="update-date">更新时间：2025/11/27</div>
+					<ul class="version-list">
+						<li>1.修复单机版和友诸葛亮模拟器一个重复绑定的问题</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.7.63更新内容</h2>
+					<div class="update-date">更新时间：2025/11/26</div>
+					<ul class="version-list">
+						<li>1.修正十万次洗牌公式中的笔误并统一格式（此问题修复已同步至单机版）</li>
+						<li>2.删除单机版里的更新日志</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.6.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/25</div>
+					<ul class="version-list">
+						<li>1.现在，如果使用GitHub pages在线服务时，<span class="highlight">会隐藏检查更新的按钮</span></li>
+						<li>追加更新：将所有页面页尾Gitcode按钮文字从：[gitcode]获取后续代码更新（国内git）替换为：【gitcode】获取V7.8.3.62镜像文件</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.5.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/24</div>
+					<ul class="version-list">
+						<li>1.新增检查更新的功能。以json实现，直接接入GitHub仓库检查更新</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.4.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/24</div>
+					<ul class="version-list">
+						<li>1.在随机标记页面新增骆统“勤政”随机数生成器，当满足条件时，会按照以下概率显示：</li>
+						<ul>
+							<li>1.【杀】，【桃】，【无中生有】为40%</li>
+							<li>2.【闪】，【酒】，【决斗】为60%</li>
+						</ul>
+						<li>2.删除随机标记页面测试区域</li>
+						<li><span class="highlight">重要通知：GitCode已于上版本终止更新</span></li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.3.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/19</div>
+					<ul class="version-list">
+						<li>1.将版本更新信息页面的展示优化：除了最新版本信息外，其余将会按照大版本分类折叠，这将大幅减少本页面的长度</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.2.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/18</div>
+					<ul class="version-list">
+						<li>1.新增梦之回廊模拟器中的动态显示：未来10抽可以抽到25号碎片的概率</li>
+						<li>2.在开盒子模拟器中新增暂停按键。点击取消暂停或任意抽奖行为都将重启系统抽奖倒计时。方便用于记录截图等。</li>
+						<li>3.将开盒子模拟器中的空格从“50连抽”更改为“暂停/启动”功能</li>
+						<li>4.移动端优化：开盒子模拟器中，将会有专属的“暂停/启动”按钮以及专属控制逻辑</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.1.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/14</div>
+					<ul class="version-list">
+						<li>1.新增开盒子模拟器，开袋子模拟器，梦之回廊模拟器的核心代码说明，可点击展开与收起</li>
+						<li>2.优化移动端的手感：在开盒子模拟器和开袋子模拟器中，新增移动端专属按钮：单点50连抽与连续50连抽的按钮，以弥补手机端无法使用快捷键实现连抽的功能。</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.8.0.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/13</div>
+					<ul class="version-list">
+						<li>1. 新增 <span class="highlight">梦之回廊模拟器</span> 网页及入口</li>
+						<li><span class="highlight">注意：本次更新的页面为 GitHub 独占，规避可能存在的风险</span></li>
+						<ul>
+							<li>1.1: 基于 <span class="highlight">官方概率公示</span> 与 <span class="highlight">推理保底算法</span>
+								的碎片抽奖模拟（请勿代入现实，仅为概率模拟）</li>
+							<li>1.2: 完整实现 <span class="highlight">25 碎片集齐系统</span>，含 300 抽硬保底与 250 抽软保底机制</li>
+							<li>1.3: 支持 <span class="highlight">三种抽奖模式</span>：
+								<ul>
+									<li>单抽 – 每次抽取 1 次</li>
+									<li>十连抽 – 每次抽取 10 次</li>
+									<li>三十连抽 – 每次抽取 30 次</li>
+								</ul>
+							</li>
+							<li>1.4: 实时显示 <span class="highlight">花费统计</span>：
+								<ul>
+									<li>累计抽取次数</li>
+									<li>累计花费金额（每抽 = 3 元）</li>
+									<li>当前已拥有碎片数量 / 25</li>
+								</ul>
+							</li>
+							<li>1.5: 特色功能：
+								<ul>
+									<li>完整 <span class="highlight">概率公示表</span>，数据源自官方公布（仅供参考，实际以游戏为准）</li>
+									<li>响应式设计，完美适配桌面和移动设备</li>
+									<li>碎片收集进度可视化 – 25 宫格实时点亮</li>
+									<li>抽取日志倒序置顶，最新记录一目了然</li>
+								</ul>
+							</li>
+							<li>1.6: 该页面可单独下载使用，脱离联机版运行时仅页顶页尾 CSS 失效</li>
+							<li>1.7: <span class="highlight">重要提醒：本模拟器所有数据均为虚拟生成，与《三国杀》官方实际活动无关，请勿据此进行任何消费决策！</span>
+							</li>
+						</ul>
+						<li>2. 新增 <span class="highlight">开袋子模拟器</span> 网页以及入口</li>
+						<ul>
+							<li>2.1: 基于 <span class="highlight">权重随机算法</span> 的纯概率抽奖模拟（请勿代入现实，仅为概率模拟）</li>
+							<li>2.2: 完整实现 <span class="highlight">开袋子</span> 抽奖系统，无保底机制</li>
+							<li>2.3: 支持 <span class="highlight">三种抽奖模式</span>：
+								<ul>
+									<li>单抽 – 每次抽取 1 个袋子</li>
+									<li>10 连抽 – 每次抽取 10 个袋子</li>
+									<li>50 连抽 – 每次抽取 50 个袋子</li>
+								</ul>
+							</li>
+							<li>2.4: 实时显示 <span class="highlight">花费统计</span>：
+								<ul>
+									<li>累计抽取次数</li>
+									<li>累计花费银币数量（每个袋子 = 100 银币）</li>
+									<li>累计消耗史诗宝珠数量（每个袋子 = 0.01 个史诗宝珠）</li>
+								</ul>
+							</li>
+							<li>2.5: 特色功能：
+								<ul>
+									<li>抽到 <span class="highlight">"当期史诗武将*1"</span> 时 <span
+											class="highlight">弹窗提示</span>（可开关）
+									</li>
+									<li>完整的 <span class="highlight">概率公示表</span>，数据基于指定权重计算（仅供参考，实际以游戏为准）</li>
+									<li>响应式设计，完美适配桌面和移动设备</li>
+									<li>支持 <span class="highlight">回车键和空格键快捷 50 抽</span>，可长按连续抽取</li>
+								</ul>
+							</li>
+							<li>2.6: 该页面可单独下载使用，脱离联机版运行时仅页顶页尾 CSS 失效</li>
+							<li>2.7: <span class="highlight">重要提醒：本模拟器所有数据均为虚拟生成，与任何游戏官方实际活动无关，请勿据此进行任何消费决策！</span></li>
+						</ul>
+
+						<li>3. 核心算法特性</li>
+						<ul>
+							<li>3.1: 梦之回廊：基于 <span class="highlight">官方碎片掉落概率</span>，1~22 片按固定表递减；23~25 片进入
+								soft-pity，240
+								抽后概率线性飙升，271 拉起必出，300 抽硬保底必齐</li>
+							<li>3.2: 开袋子：基于 <span class="highlight">权重随机算法</span>，严格按照指定权重进行概率分布，无保底机制，每次抽取均为独立随机事件</li>
+							<li>3.3: 智能花费计算，实时更新银币、史诗宝珠或人民币消耗</li>
+						</ul>
+
+						<li>4. 概率设置</li>
+						<ul>
+							<li>4.1: 梦之回廊：第 1 片 100% → 第 22 片 1.95% 逐级递减；第 23 片起进入 soft-pity，240 抽后基础概率 5% 起跳</li>
+							<li>4.2: 开袋子（基于指定权重）：严格按照官方给出的概率执行</li>
+						</ul>
+						<li>5.将“开盒子模拟器”、“开袋子模拟器”、“梦之回廊模拟器”页面在新版主页里归类于<span class="highlight">“github限定”</span>分类</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.7.1.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/12 PM</div>
+					<ul class="version-list">
+						<li>1.修复与优化<span class="highlight">开盒子模拟器</span>的内容</li>
+						<ul>
+							<li>1.1修复了“用户本次抽取”的表格不会被正确清0的问题</li>
+							<li>1.2将系统抽取日志从正序排列改为倒序排列，现在最新的一个信息将始终置顶</li>
+							<li>1.3新增50抽的快捷键：回车键与空格键以方便双手迅速操作,以减少鼠标的压力（你可以通过长按按钮以达到更快速的抽取速度，抽取的间隔速度将以你键盘长按输入的延迟为准）</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.7.0.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/12 AM</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">开盒子模拟器</span>网页以及入口</li>
+						<li><span class="highlight">注意：该页面为GitHub独占，规避可能存在的风险</span></li>
+						<ul>
+							<li>1.1:基于<span class="highlight">权重系统</span>的硬性保底机制模拟<span
+									class="highlight">（请勿代入现实，仅为概率模拟）</span>
+							</li>
+							<li>1.2:完整实现<span class="highlight">20000抽周期</span>的史诗奖励保底系统</li>
+							<li>1.3:支持<span class="highlight">四种抽奖模式</span>：</li>
+							<ul>
+								<li>1.3.1:模式1 - 手动抽奖（单抽/10连/50连）</li>
+								<li>1.3.2:模式2 - 每5秒自动50抽</li>
+								<li>1.3.3:模式3 - 每5秒自动500抽</li>
+								<li>1.3.4:模式4 - 每5秒自动5000抽</li>
+							</ul>
+							<li>1.4:实时显示<span class="highlight">史诗奖励剩余数量</span>和周期进度条</li>
+							<li>1.5:完整的<span class="highlight">统计系统</span>：</li>
+							<ul>
+								<li>1.5.1:用户本次/累计抽取统计</li>
+								<li>1.5.2:系统本次/累计抽取统计</li>
+								<li>1.5.3:实时抽奖日志记录</li>
+							</ul>
+							<li>1.6:特色功能：</li>
+							<ul>
+								<li>1.6.1:抽到顶级史诗时<span class="highlight">弹窗提示</span>（可开关）</li>
+								<li>1.6.2:用户<span class="highlight">累计花费计算</span>（按2元/抽，50连88.88元）<span
+										class="highlight">（虚拟计算，请勿真实消费）</span></li>
+								<li>1.6.3:完整的<span class="highlight">概率公示表</span>，数据源自官方公布<span
+										class="highlight">（仅供参考，实际以游戏为准）</span></li>
+								<li>1.6.4:响应式设计，完美适配桌面和移动设备</li>
+							</ul>
+							<li>1.7:该页面可单独下载使用，脱离联机版运行时仅页顶页尾CSS失效</li>
+							<li>1.8:<span class="highlight">重要提醒：本模拟器所有数据均为虚拟生成，与官方实际活动无关，请勿据此进行任何消费决策！</span></li>
+						</ul>
+						<li>2.核心算法特性</li>
+						<ul>
+							<li>2.1:基于<span class="highlight">权重随机算法</span>，真实还原抽奖概率<span
+									class="highlight">（模拟效果，非真实爆率）</span>
+							</li>
+							<li>2.2:实现<span class="highlight">硬性保底机制</span>，史诗奖励抽完即止</li>
+							<li>2.3:周期重置系统，20000抽后自动刷新奖池</li>
+							<li>2.4:智能权重分配，确保概率分布的准确性</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.6.1.62更新内容</h2>
+					<div class="update-date">更新时间：2025/11/11</div>
+					<ul class="version-list">
+						<li>1.修复了整理手牌的一些bug。（此bug修复已同步至单机版）</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.6.0.61更新内容</h2>
+					<div class="update-date">更新时间：2025/10/26</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">自定义牌堆编辑器</span>网页以及入口</li>
+						<ul>
+							<li>1.1:支持<span class="highlight">160张牌</span>的完整牌堆自定义编辑</li>
+							<li>1.2:提供<span class="highlight">卡牌分类筛选</span>功能（基本牌、锦囊牌、装备牌等）</li>
+							<li>1.3:支持<span class="highlight">花色点数</span>的精确选择与放置</li>
+							<li>1.4:内置<span class="highlight">随机洗牌</span>功能填充剩余空槽位</li>
+							<li>1.5:生成<span class="highlight">MD5和AES编码</span>用于牌堆校验</li>
+							<li>1.6:支持<span class="highlight">外部AES编码解码</span>并回填牌堆</li>
+							<li>1.7:导出<span class="highlight">安全日志文件</span>（含完整牌堆信息）</li>
+							<li>1.8:由于该页需要用到外部牌堆数据，因此该页面无法脱离主要文件单机运行</li>
+						</ul>
+						<li>2.核心功能特性</li>
+						<ul>
+							<li>2.1:完整的<span class="highlight">卡牌池管理系统</span>，实时显示剩余卡牌数量</li>
+							<li>2.2:智能的<span class="highlight">槽位状态跟踪</span>，实时更新已放置牌数</li>
+							<li>2.3:安全的<span class="highlight">加密编码系统</span>，确保牌堆数据完整性</li>
+							<li>2.4:详细的<span class="highlight">操作日志记录</span>，方便追溯编辑过程</li>
+						</ul>
+						<li>3.优化了操作台元素，使其在小屏幕下可完整显示</li>
+						<li>4.修复了经典版主页在一些情况下小屏幕没有触发优化UI的问题</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.5.1.61更新内容</h2>
+					<div class="update-date">更新时间：2025/10/25</div>
+					<ul class="version-list">
+						<li>1.修复了友诸葛亮技能标记里，若在本轮演策完成后，点击中断预测，会重复执行上一轮的演策结果。现在将该功能绑定于仅在本轮预测开启且未结束时可使用该功能。</li>
+						<li>2.根据游戏实测，友诸葛亮的演策数量下限为0（原本为1)，现在已将该问题修复</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.5.0.61更新内容</h2>
+					<div class="update-date">更新时间：2025/9/29</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">友诸葛亮技能模拟器</span>网页以及入口</li>
+						<ul>
+							<li>1.1:完整模拟诸葛亮<span class="highlight">"演策"</span>和<span class="highlight">"方遒"</span>技能
+							</li>
+							<li>1.2:采用顺序弹窗流程记录预测，高度还原游戏机制</li>
+							<li>1.3:支持预测方向选择（类型/颜色）</li>
+							<li>1.4:完整的预测验证流程与结果结算系统</li>
+							<li>1.5:方遒技能的发动与效果实现</li>
+							<li>1.6:预测结果影响后续可预测数量</li>
+							<li>1.7:响应式设计，适配桌面与移动设备</li>
+							<li>1.8:该页面可单独下载使用，脱离联机版运行时仅页顶页尾CSS失效</li>
+						</ul>
+						<li>2.界面与交互优化</li>
+						<ul>
+							<li>2.1:采用精致卡片式UI设计，直观展示预测状态</li>
+							<li>2.2:状态栏实时显示可预测数量、方遒状态和验证进度</li>
+							<li>2.3:模态框交互流程，确保操作顺序正确</li>
+							<li>2.4:预测卡片根据验证状态动态变色（正确/错误/隐藏）</li>
+						</ul>
+						<li>3.核心功能特性</li>
+						<ul>
+							<li>3.1:演策技能 - 可进行多次预测，选择预测方向与具体值</li>
+							<li>3.2:方遒技能 - 可选择发动，影响预测结果结算</li>
+							<li>3.3:验证系统 - 逐步验证每个预测的正确性</li>
+							<li>3.4:中断功能 - 可提前中断预测流程</li>
+							<li>3.5:重置功能 - 完全重置模拟器状态</li>
+							<li>3.6:结果结算 - 根据正确预测数量给予不同效果</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.4.4.61更新内容</h2>
+					<div class="update-date">更新时间：2025/9/16</div>
+					<ul class="version-list">
+						<li>1.上线bug/问题反馈页面：你可以在此向我的<span class="highlight">GitHub lssues</span>反馈相关问题</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.4.3.61更新内容</h2>
+					<div class="update-date">更新时间：2025/9/6 PM</div>
+					<ul class="version-list">
+						<li>1.经过一定调研，现决定将<span class="highlight">经典版主页</span>（也就是旧版的主页）重新添加进来</li>
+						<ul>
+							<li>1.1:新版主页与经典版主页并行</li>
+							<li>1.2:在所有其他页面均可选择跳转到新版还是经典版主页（将所有其他页面的跳转按钮统一化）</li>
+							<li>1.3:默认主页是新版，可在主页里手动切换对应的主页</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.4.2.61更新内容</h2>
+					<div class="update-date">更新时间：2025/9/6 AM</div>
+					<ul class="version-list">
+						<li>1.重构了<span class="highlight">主页</span>的样式，且对所有的链接进行了分类处理。</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.4.1.61更新内容</h2>
+					<div class="update-date">更新时间：2025/8/30</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">大宝模拟器</span>里以下音效</li>
+						<ul>
+							<li>1.1:新增：当你装备【<span class="highlight">古锭刀</span>】时且使用【杀】，会触发【古锭刀】的游戏内音效</li>
+							<li>1.2.新增：使用【杀】时，会随机触发界徐盛的以下4句游戏台词：（使用base64编码存储所有音频）</li>
+							<ul>
+								<li>1.2.1:江东铁臂，御敌于千里之外（大小：12.35kb）</li>
+								<li>1.2.2:破军建吴，正在此时（大小：12.04kb）</li>
+								<li>1.2.3:以攻为守，破敌卫疆（大小：11.43kb）</li>
+								<li>1.2.4:这长江天堑后，便是江东铁臂（大小：16.07kb）</li>
+								<li>出于系统优化考虑，其他台词的音频均超过60kb大小，因此只添加这四句。</li>
+								<li>出于系统优化考虑，【丈八蛇矛】，【青龙偃月刀】使用的杀不触发所有音频以及动画效果，以免造成加载卡顿</li>
+								<li>以上两个新增的音频会在条件正确时同时叠加触发（包括叠加“癫狂屠戮”以及“无双，万军取首”的音效和动画）</li>
+							</ul>
+						</ul>
+						<li>2.音频优化：现在，大宝模拟器在打开页面时，会有3000ms的预加载音频的功能，以保证流畅运行。若打开浏览器有短暂白屏，属于正常现象。</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.4.0.61更新内容</h2>
+					<div class="update-date">更新时间：2025/8/27</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">面杀随机标记</span>的网页以及入口</li>
+						<ul>
+							<li>1.1:目前支持<span class="highlight">李傕</span>的技能<span class="highlight">“狼袭”</span>和<span
+									class="highlight">徐荣</span>的技能<span
+									class="highlight">“凶镬”</span>技能随机效果。三个效果都是平分概率33.33%
+							</li>
+							<li>1.2.该页面可单独下载使用，可脱离head.css单独使用，只会令页头页尾以及回到顶部的css失效，不会影响其他效果</li>
+							<li>1.3.页面顶部有对应导航栏，日后更新其他标记时若过长可一键直达</li>
+							<li>1.4.为了方便移动端使用标记页面，在页面右上角有一个额外的导航栏</li>
+							<li>1.5.日后会支持更多其他武将的随机技能标记</li>
+							<li>1.6.这里的测试区域没有任何作用，只做检索功能测试使用，下次更新这个页面会将其删除</li>
+						</ul>
+						<li>2.细节优化：</li>
+						<ul>
+							<li>2.1.将面杀小标记页面的导航栏在小页面/超小页面里取消置顶，正常大屏幕置顶。（随机标记页面同）。取而代之的是移动端专属的右上角菜单栏。</li>
+							<li>2.2.小页面/超小页面会隐藏掉原本的“返回主页”按钮，转到移动端专属的右上角菜单栏里。（随机标记页面相同）</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.3.0.61更新内容</h2>
+					<div class="update-date">更新时间：2025/8/26</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">大宝模拟器</span>的网页以及入口</li>
+						<ul>
+							<li>1.1.界徐盛的技能简化为：默认所有杀的伤害基数+1（杀，雷杀为2，火杀为3）</li>
+							<li>1.2.大宝模拟器特有：</li>
+							<ul>
+								<li>1.2.1.一次性造成3点伤害时，会有“癫狂屠戮”的动画和音效</li>
+								<li>1.2.2.一次性造成4点或更多伤害时，会有“无双，万军取首”的动画和音效</li>
+								<li>1.2.3.在操作台上可以打开或关闭动画和音效，这个功能是默认打开的。</li>
+								<li>1.2.4.当发现【杀】在开始游戏时被禁用，刷新网页或结束出牌阶段即可。这个是概率的问题，我也不知道问题出在哪里了。</li>
+							</ul>
+						</ul>
+						<li>2.新增<span class="highlight">面杀小标记</span>的网页以及入口，这个网页可以为面杀提供一些便利。</li>
+						<ul>
+							<li>2.1:目前支持<span class="highlight">张让的“滔乱”</span>技能，和<span
+									class="highlight">神荀彧“定汉”</span>技能的标记，以及一个测试窗口（可用作备用），这个测试窗口提供1-10共10个数字标记位</li>
+							<li>2.2.点击<span class="highlight">“展开/收起”</span>按钮可展开/收起对应模块</li>
+							<li>2.3.点击<span class="highlight">“一键重置所有区域”</span>或<span
+									class="highlight">“一键重置”</span>会重置全部区域的标记或对应模块的标记</li>
+							<li>2.4.日后会支持更多其他武将的技能标记</li>
+							<li>2.5.该页面可单独下载使用，可脱离head.css单独使用，只会令页头页尾以及回到顶部的css失效，不会影响其他效果</li>
+							<li>2.6.页面顶部有对应导航栏，日后更新其他标记时若过长可一键直达</li>
+							<li>2.7.为了方便移动端使用标记页面，在页面右上角有一个额外的导航栏</li>
+						</ul>
+						<li>3.将<span class="highlight">大宝模拟器</span>以及<span
+								class="highlight">无技能版模拟器</span>初始桃可用次数从1调整为0（因为界沮授开局少1滴血的缘故）</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V7.2.0.61更新内容</h2>
+					<div class="update-date">更新时间：2025/8/25</div>
+					<ul class="version-list">
+						<li>1.新增了以下武器牌的作用：</li>
+						<ul>
+							<li>1.1:【<span class="highlight">雌雄双股剑</span>】：简化后，默认对手是异性且选择让你摸一张牌</li>
+							<li>1.2.【<span class="highlight">古锭刀</span>】：简化后，默认对手没有手牌，【杀】伤害+1</li>
+							<li>1.3.【<span class="highlight">丈八蛇矛</span>】的作用：</li>
+							<ul>
+								<li>1.3.1.装备【<span class="highlight">丈八蛇矛</span>】后，会在<span
+										class="highlight">“手牌”</span>上新增一个“丈八”按钮，卸掉武器后会消失</li>
+								<li>1.3.2.点击后按钮后，可选取两张手牌当做【杀】使用</li>
+								<li>1.3.3.这张【杀】会被记录为空</li>
+								<li>1.3.4.当出现无法选择卡牌时，请点击<span
+										class="highlight">取消</span>按钮重新点一次。（这通常会出现在刚上丈八后第一次出杀或新的回合开始）
+								</li>
+								<li>1.3.5.当出【杀】次数达到上限时，无法点击按钮</li>
+							</ul>
+							<li>1.4.【<span class="highlight">朱雀羽扇</span>】：令普通【杀】变成【火杀】（伤害系数+1）</li>
+							<li>说明：至此，所有武器牌乃至全部游戏卡牌（不含扩展）的作用都已经写完了。【寒冰剑】，【贯石斧】，【麒麟弓】，【方天画戟】和【青釭剑】以及防具，坐骑牌由于简化后的作用于单人模拟没有什么用处，因此不做对应效果代码补充
+							</li>
+						</ul>
+						<li>2.单机版同步</li>
+						<ul>
+							<li>2.1:联机版V7.2.0.61的所有内容</li>
+							<li>2.2.至此，由于所有卡牌作用都写完了。受限于单机版的文件限制，单机版现在是正式停更的状态了，除非日后发现卡牌有什么使用上的bug会同步修复补丁外，V6.1将会是单机版最终的版本号
+							</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.1.0.60更新内容</h2>
+					<div class="update-date">更新时间：2025/8/24</div>
+					<ul class="version-list">
+						<li>1.新增了【<span class="highlight">青龙偃月刀</span>】的完整流程：</li>
+						<ul>
+							<li>1.1.当使用【杀】时，呼出弹窗检索手牌中所有的【杀】</li>
+							<li>1.2.在【<span class="highlight">青龙偃月刀</span>】插入结算使用的【杀】不计入出杀次数上限</li>
+							<li>1.3.只有第一张（触发【<span class="highlight">青龙偃月刀</span>】之前的【杀】享受到【酒】的伤害加成）</li>
+							<li>1.4.无论是否选择继续出【杀】，通过【<span class="highlight">青龙偃月刀</span>】使用的【杀】均会检索技能渐营</li>
+							<li>1.5.无论是否选择继续出【杀】，最终结算【杀】的伤害系数永远是最后一张【杀】的种类</li>
+						</ul>
+						<li>2.在手牌区旁边新增一个小的记录上一张使用手牌的详细信息</li>
+						<li>3.单机版同步</li>
+						<ul>
+							<li>3.1:同步了联机版V7.1.0.60的所有内容</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.0.1.57更新内容</h2>
+					<div class="update-date">更新时间：2025/8/22</div>
+					<ul class="version-list">
+						<li>1.修复了【火攻】的使用错误问题</li>
+						<li>2.单机版同步</li>
+						<ul>
+							<li>2.1:同步修复【火攻】的使用错误问题</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V7.0.0.56更新内容</h2>
+					<div class="update-date">更新时间：2025/8/22</div>
+					<ul class="version-list">
+						<li>1.新增了无技能模拟器的网页以及入口</li>
+						<li>预告：</li>
+						<ul>
+							<li>1.决定了接下来会逐渐补全其他装备的代码</li>
+							<li>2.新增的这个无技能的纯净版的网页，是为了日后方便添加其他简单的武将技能代码</li>
+						</ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="accordion">
+			<button class="accordion-header">V6.X</button>
+			<div class="accordion-content">
+
+				<div class="update-section">
+					<h2 class="version-title">V6.5.0.56更新内容</h2>
+					<div class="update-date">更新时间：2025/8/21</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">无懈可击</span>卡牌完整结算流程：
+							<ul>
+								<li>1.1：当使用锦囊牌时自动触发无懈可击检测</li>
+								<li>1.2：弹出交互式对话框显示可用的无懈可击牌</li>
+								<li>1.3：支持多张无懈可击连锁使用（偶数张生效，奇数张失效）</li>
+								<li>1.4：无懈可击使用后自动触发<span class="highlight">渐营</span>技能检查</li>
+							</ul>
+						</li>
+						<li>2.实现<span class="highlight">火攻</span>卡牌完整交互流程：
+							<ul>
+								<li>2.1：目标选择阶段（自己/他人）</li>
+								<li>2.2：对自己使用时可选择：
+									<ul>
+										<li>结束结算（无事发生）</li>
+										<li>弃置手牌（桃可用次数+1）</li>
+									</ul>
+								</li>
+								<li>2.3：对他人使用时：
+									<ul>
+										<li>从牌堆顶亮出1张牌</li>
+										<li>可选择弃置同花色手牌（回合伤害+1）</li>
+									</ul>
+								</li>
+								<li>2.4：火攻使用后自动触发<span class="highlight">渐营</span>技能</li>
+							</ul>
+						</li>
+						<li>3.新增<span class="highlight">整理手牌</span>功能：
+							<ul>
+								<li>3.1：明确排序优先级规则：诸葛连弩→杀→酒→锦囊牌→装备牌→桃→闪→无懈可击</li>
+								<li>3.2：添加3秒操作冷却防止误触</li>
+							</ul>
+						</li>
+						<li>4.单机版同步：
+							<ul>
+								<li>4.1：同步了以上所有内容</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="update-section">
+					<h2 class="version-title">V6.4.0.55更新内容</h2>
+					<div class="update-date">更新时间：2025/8/20</div>
+					<ul class="version-list">
+						<li>1.修复与优化：
+							<ul>
+								<li>1.1：优化了<span class="highlight">状态信息区</span>的排布</li>
+								<li>1.2：修复了【<span class="highlight">杀</span>】与【<span
+										class="highlight">诸葛连弩</span>】的错误使用关系（原本卸掉诸葛连弩后杀会错误计数），并使用新的，更详细的计数方式</li>
+								<li>1.3：为<span class="highlight">状态信息区</span>添加展开与收起按钮</li>
+							</ul>
+						</li>
+						<li>2.新增<span class="highlight">状态信息区</span>内的伤害显示，伤害数据如下：
+							<ul>
+								<li>2.1：【<span class="highlight">杀</span>】，【<span
+										class="highlight">雷杀</span>】的基础伤害为<span class="highlight">1</span></li>
+								<li>2.2：【<span class="highlight">火杀</span>】的基础伤害为<span class="highlight">2</span>
+								</li>
+								<li>2.3：【<span class="highlight">酒</span>】可使下一张【<span
+										class="highlight">杀</span>】的伤害<span class="highlight">+1</span></li>
+							</ul>
+						</li>
+						<li>3.新增以下卡牌的作用
+							<ul>
+								<li>3.1：【<span class="highlight">南蛮入侵</span>】、【<span
+										class="highlight">万箭齐发</span>】的伤害为<span class="highlight">2</span></li>
+								<li>3.2：【<span class="highlight">决斗</span>】的作用：
+									<ul>
+										<li>3.2.1：不断打出【<span class="highlight">杀</span>】，但【<span
+												class="highlight">杀</span>】不检索技能</li>
+										<li>3.2.2：【<span class="highlight">桃</span>】可用次数<span
+												class="highlight">+1</span>
+										</li>
+										<li>3.2.3：伤害数值<span class="highlight">+1</span></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>4.单机版同步：
+							<ul>
+								<li>4.1：同步了以上所有内容</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.3.1.54更新内容</h2>
+					<div class="update-date">更新时间：2025/8/19</div>
+					<ul class="version-list">
+						<li>1.在主页里增加GitHub下载完整ZIP直链的按钮</li>
+					</ul>
+				</div>
+
+
+				<div class="update-section">
+					<h2 class="version-title">V6.3.0.54更新内容</h2>
+					<div class="update-date">更新时间：2025/8/18</div>
+					<ul class="version-list">
+						<li>1.新增了【<span class="highlight">过河拆桥</span>】卡牌的完整功能：</li>
+						<ul>
+							<li>1.1: 当状态区有【<span class="highlight">兵粮寸断</span>】或【<span
+									class="highlight">乐不思蜀</span>】时，使用过河拆桥会弹出选择框</li>
+							<li>1.2:可选择<span class="highlight">拆除一张延时锦囊</span>或仅使用效果</li>
+							<li>1.3: 无论选择如何，都会触发<span class="highlight">渐营技能</span>检查</li>
+						</ul>
+						<li>2.新增了【<span class="highlight">顺手牵羊</span>】卡牌的完整功能：</li>
+						<ul>
+							<li>2.1: 当状态区有延时锦囊时，使用顺手牵羊会弹出选择框</li>
+							<li>2.2: 可选择<span class="highlight">获取一张延时锦囊</span>到手牌或仅摸一张牌</li>
+							<li>2.3: 无论选择如何，都会触发<span class="highlight">渐营技能</span>检查</li>
+						</ul>
+						<li>3.修复了<span class="highlight">延时锦囊牌使用时不触发技能</span>的问题：</li>
+						<ul>
+							<li>3.1: 使用【<span class="highlight">兵粮寸断</span>】、【<span
+									class="highlight">乐不思蜀</span>】或【<span class="highlight">闪电</span>】时，会正确检查<span
+									class="highlight">渐营技能</span>并触发额外摸牌效果</li>
+						</ul>
+						<li>4.单机版代码同步：</li>
+						<ul>
+							<li>4.1: 同步了过河拆桥和顺手牵羊的完整功能实现</li>
+							<li>4.2: 同步了延时锦囊牌触发技能的修复</li>
+						</ul>
+						<li>5.将更新日志从<span class="highlight">正序</span>调整为<span class="highlight">倒序</span>排列</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.2.1.53更新内容</h2>
+					<div class="update-date">更新时间：2025/8/15</div>
+					<ul class="version-list">
+						<li>1.移除了【<span class="highlight">五谷丰登</span>】的取消按钮，以修复点击取消后无法正确触发渐营的问题</li>
+						<li>2.单机版代码同步：</li>
+						<ul>
+							<li>2.1:同步了移除【<span class="highlight">五谷丰登</span>】的取消按钮代码</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.2.0.52更新内容</h2>
+					<div class="update-date">更新时间：2025/8/14</div>
+					<ul class="version-list">
+						<li>1.增加了延时锦囊牌的作用：</li>
+						<ul>
+							<li>1.1:【<span class="highlight">兵粮寸断</span>】、【<span
+									class="highlight">乐不思蜀</span>】使用上限为2张，超过则禁用。回合结束后清空</li>
+							<li>1.2:【<span class="highlight">闪电</span>】使用上限为1张，超过则禁用。回合结束后清空</li>
+						</ul>
+						<li>2.单机版代码同步：</li>
+						<ul>
+							<li>2.1:同步了延时锦囊牌的作用</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.1.3.51更新内容</h2>
+					<div class="update-date">更新时间：2025/8/10</div>
+					<ul class="version-list">
+						<li>1.修复了主页里&lt;div class="main-content"&gt;缺少一个&lt;/div&gt;闭合导致&lt;/body&gt;报错的问题）</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.1.2.51更新内容</h2>
+					<div class="update-date">更新时间：2025/8/8</div>
+					<ul class="version-list">
+						<li>1.修复了页尾按钮在页面过窄时会捅出界面的问题（≥768px或≥480px）</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.1.1.51更新内容</h2>
+					<div class="update-date">更新时间：2025/8/7</div>
+					<ul class="version-list">
+						<li>1.新增页尾处<span class="highlight">GitCode</span>链接按钮（经过一段时间的观望后，决定添加该按钮及链接）</li>
+						<li>2.新增卡牌【<span class="highlight">五谷丰登</span>】的作用：从牌堆顶翻开三张牌，选择其中一张加入手牌。</li>
+						<li>3.单机版代码同步</li>
+						<ul>
+							<li>3.1:卡牌【<span class="highlight">顺手牵羊</span>】作用同步至单机版</li>
+							<li>3.2:将优化后的牌堆数组同步至单机版</li>
+							<li>3.3:卡牌【<span class="highlight">五谷丰登</span>】作用同步至单机版</li>
+							<li>3.4:删除单机版<span class="highlight">洗牌性能测试</span>按钮及其代码</li>
+						</ul>
+						<li>4.新版本号的定义（以目前版本号V6.1.1.51举例“VX.Y.Z.AA”）</li>
+						<ul>
+							<li>4.1:当X+1时，标志着大版本更新，如V5.0的重构页面，V6.0的红利期算法更新。当X+1时，Y、Z会同步清0；</li>
+							<li>4.2:当Y+1时，标记着小版本更新，比如在主要模拟器页面新增一些功能，但是相对不那么重要。当Y+1时，Z会同步清0；</li>
+							<li>4.3:当Z+1时，标记着非常小的版本更新，如不新增功能，修复bug，优化css等，亦或有单机版的代码同步；</li>
+							<li>4.4:AA为单机版版本号，十位数或更高与版本号X同理，个位数与Y同理，当AA不动时，代表单机版没有改动或同步</li>
+							<li>4.5:X,Y,Z与AA区分，XYZ始终为主模拟器（联机版的版本号），AA只代表单机版去掉小数点的版本号</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.1更新内容</h2>
+					<div class="update-date">更新时间：2025/8/3</div>
+					<ul class="version-list">
+						<li>1.新增【<span class="highlight">顺手牵羊</span>】卡牌的作用：使用时额外从牌堆顶摸1张牌</li>
+						<li>2.紧急调整红利期算法：</li>
+						<ul>
+							<li>2.1:牌堆顶的定义改为：牌堆顶的<span class="highlight">10张牌</span>（第5~14张）。</li>
+							<li>2.2:牌堆底的定义改为：牌堆倒数<span class="highlight">10张牌</span></li>
+							<li>修改原因是因为还是要增加牌堆的其他随机性，61张牌已经占据牌堆的约38%了</li>
+						</ul>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V6.0更新内容</h2>
+					<div class="update-date">更新时间：2025/8/2</div>
+					<ul class="version-list">
+						<li>1.删除了<span
+								class="highlight">随机版的性能测试按钮</span>以及对应js代码。通过优化代码，已经做到不怎么消耗性能了，因此将其删除(减少代码量约<span
+								class="highlight">100行</span>)</li>
+						<li>
+							2.<span class="highlight">新增沮爹模拟器红利期算法版本：</span>
+							<ul>
+								<li>2.1:红利期算法会将<span class="highlight">诸葛连弩</span>锁定在手牌的第一张</li>
+								<li>2.2:红利期算法以<span class="highlight">红利牌</span>和<span
+										class="highlight">黑利牌</span>作为媒介洗牌
+								</li>
+								<ul>
+									<li>2.2.1:目前被定义为<span class="highlight">红利牌</span>为：【<span
+											class="highlight">无中生有</span>】，【<span class="highlight">顺手牵羊</span>】，【<span
+											class="highlight">过河拆桥</span>】。这些牌将会有<span
+											class="highlight">90%</span>的几率出现在<span class="highlight">牌堆顶</span>
+									</li>
+									<li>2.2.2:目前被定义为<span class="highlight">黑利牌</span>为：【<span
+											class="highlight">闪</span>】，【<span class="highlight">桃</span>】以及<span
+											class="highlight">其他武器牌</span>。这些牌将会有<span
+											class="highlight">90%</span>的几率出现在<span class="highlight">牌堆底</span>
+									</li>
+									<li>2.2.3:其他卡牌依旧为随机方式插入到牌堆的其他空位上</li>
+									<li>2.2.4:无论是红利牌还是黑利牌，在没有通过红利期算法随机到对应牌堆顶/底的情况时，也会加入到随机洗牌的序列</li>
+									<li>2.2.5:牌堆顶的定义是：除了开局抽的4张牌外，牌堆顶的<span class="highlight">30张牌</span>（第5~34张）。
+									</li>
+									<li>2.2.6:牌堆底的定义是：牌堆倒数<span class="highlight">30张牌</span></li>
+									<li>2.2.7:出现牌堆没有按照预设属于正常现象，调教的概率不为100%，以尽可能贴近真实的红利期牌堆</li>
+									<li>2.2.8:红利期版本删除脚气卡的使用，请直接点击重新洗牌以代替其效果</li>
+								</ul>
+							</ul>
+						<li>3.新增核心洗牌对比代码页面</li>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="accordion">
+			<button class="accordion-header">V5.X</button>
+			<div class="accordion-content">
+
+				<div class="update-section">
+					<h2 class="version-title">V5.4 更新内容</h2>
+					<div class="update-date">更新时间：2025/7/31</div>
+					<ul class="version-list">
+						<li>
+							1. <strong>CSS性能优化</strong>：
+							<ul>
+								<li>1.1 删除冗余CSS规则，<span class="highlight">删除约200行css代码</span>。目前head.css代码量为1574行
+								</li>
+							</ul>
+						</li>
+						<li>
+							2. <strong>关键问题修复</strong>：
+							<ul>
+								<li>2.1 修正<span class="highlight">header占位符</span>拼写错误（影响3个核心页面）</li>
+							</ul>
+						</li>
+						<li>
+							3. <strong>维护性提升</strong>：
+							<ul>
+								<li>3.1 实现CSS规则<span class="highlight">100%利用率</span>（消除所有未使用样式）</li>
+								<li>3.2 增加<span class="highlight">移动端响应式备用高度</span>方案</li>
+							</ul>
+						</li>
+						<li>4:为所有页面添加<span class="highlight">"回到顶部"</span>按钮</li>
+						<li>4.1:由于更新页面布局比较特殊，单独加个<span class="highlight">"滚到底部"</span>的按钮</li>
+						<li>5.为所有历史版本（及以后版本）前方添加<span class="highlight">更新时间</span></li>
+						<li>6.优化牌堆数组（card.js），<span class="highlight">减少代码量（284行→244行）</span></li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V5.3更新内容</h2>
+					<div class="update-date">更新时间：2025/7/30</div>
+					<ul class="version-list">
+						<li>1.修复了页尾<span class="highlight">bilibili和github按钮</span>可能会长短不一的问题</li>
+						<li>2.将<span class="highlight">单机版V5.0的代码开源</span>并允许通过复制粘贴后运行</li>
+						<li>由于现在开发的方向已经让文件数量越来越多，单机版版本号只会停留在V5.0了，见谅。GitHub的版本会继续更新，除非在原有的基础上开发其他卡牌的作用</li>
+						<li>3.统一了<span class="highlight">非模拟器页面顶部的css</span></li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V5.2更新内容</h2>
+					<div class="update-date">更新时间：2025/7/20</div>
+					<ul class="version-list">
+						<li>1.由于gitee莫名其妙被封号，因此<span class="highlight">单机版不再更新</span></li>
+						<li>2.原因同上，导致开源协议丢失，新写了一个<span class="highlight">五国语言的MIT
+								LICENSE页面</span>，入口和以前的一样，点击对应页尾文字即可</li>
+						<li>3.由于准备开发红利期洗牌算法，与随机版会分开。现在统一版本号到主页部分(现已着手开发)</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V5.1更新内容</h2>
+					<div class="update-date">更新时间：2025/7/16</div>
+					<ul class="version-list">
+						<li>1.重新给模拟器页面写上更全面的<span class="highlight">注释</span></li>
+						<li>2.更新<span class="highlight">开源教学网页</span></li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V5.0更新内容</h2>
+					<div class="update-date">更新时间：2025/6/29</div>
+					<ul class="version-list">
+						<li>1.<span class="highlight">重构整个页面文件</span>，即将脱离本地化，接入<span class="highlight">GitHub
+								Pages</span>静态网页托管功能</li>
+						<li>2.日后会更新其他武将的摸牌模拟器</li>
+						<li>3.将<span class="highlight">css样式，牌堆js代码分开另外的文件</span>，日后更新会使文件边幅大幅度变小</li>
+						<li>4.修复了点击非"添加指定牌"但是弹出对应弹出的bug</li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="accordion">
+			<button class="accordion-header">V4.X和更早</button>
+			<div class="accordion-content">
+
+				<div class="update-section">
+					<h2 class="version-title">V4.2更新内容</h2>
+					<div class="update-date">更新时间：2025/5/24</div>
+					<ul class="version-list">
+						<li>1.1：新增<span class="highlight">洗牌均匀性测试窗口</span>重新测试按钮</li>
+						<li>1.2：完善洗牌均匀性测试窗口的计算公式</li>
+						<li>1.3：优化了洗牌均匀性测试窗口的排序</li>
+						<li>2.重新针对<span class="highlight">移动端</span>进行一次css样式优化</li>
+						<li>3.修复了最左边的更新信息按钮弹窗内容会被遮挡的问题</li>
+						<li>4.修复了【<span class="highlight">借刀杀人</span>】的一些bug</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V4.1更新内容</h2>
+					<div class="update-date">更新时间：2025/5/18</div>
+					<ul class="version-list">
+						<li>1.修复了【桃园结义】可以让桃的可使用次数为<span class="highlight">-1的bug</span></li>
+						<li>2.修复了显示<span class="highlight">AES展开时按钮显示不完全</span>的bug</li>
+						<li>3.将锦囊牌细分为<span class="highlight">普通锦囊牌和延时锦囊牌</span>方便日后的更新</li>
+						<li>4.优化了若浏览器窗口过小时，会遮挡部分内容的情况</li>
+						<li>5.删除了旧的<span class="highlight">脚气卡计数器</span>显示（即V4.0前标明删除就跑不了的部分）</li>
+						<li>6.优化了一些代码细节，增强代码的可读性</li>
+						<li>7.增加了<span class="highlight">十万次随机洗牌</span>的功能，以及有诸葛连弩的概率提示</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V4.0更新内容</h2>
+					<div class="update-date">更新时间：2025/5/1</div>
+					<ul class="version-list">
+						<li>重要更新：该源码获取了<span class="highlight">MIT License开源许可</span></li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V3.3更新内容</h2>
+					<div class="update-date">更新时间：2025/5/1</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">操作台的快捷键</span></li>
+						<li>2.新增以下牌的作用：
+							<ul>
+								<li>2.1：【<span
+										class="highlight">借刀杀人</span>】：功能1:从牌堆里检索并获得一张武器牌<br>功能2:让自己能使用一张闪，如果不使用闪的话，状态区桃可使用的次数+1
+								</li>
+								<li>2.2：常态禁用【<span class="highlight">无懈可击</span>】的使用</li>
+								<li>2.3：【<span class="highlight">桃园结义</span>】-1次桃的可使用次数</li>
+							</ul>
+						</li>
+						<li>3.新增测试功能：<span class="highlight">手动添加指定牌</span>到手牌区（方便我自己测试卡牌的bug时使用）</li>
+						<li>4.删除记牌器的图片（由于图片的代码实在太长太大了，不得已删除。若确实需要，点击页尾处"获取更新”跳转链接获取）</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V3.2更新内容</h2>
+					<div class="update-date">更新时间：2025/4/24</div>
+					<ul class="version-list">
+						<li>1.新增以下卡牌的作用：
+							<ul>
+								<li>1.1【<span class="highlight">无中生有</span>】：额外摸两张牌</li>
+								<li>1.2【<span class="highlight">铁索连环</span>】：功能1：重铸摸一张牌，不检索花色点数<br>功能2：不摸牌，使用并检索花色点数
+								</li>
+								<li>1.3新增【<span class="highlight">杀</span>】的使用次数限制,默认为2次，使用2次后会被禁用，直到结束出牌阶段</li>
+								<li>1.4【<span class="highlight">诸葛连弩</span>】：解除【杀】的使用次数限制</li>
+								<li>1.5新增【<span class="highlight">桃</span>】【<span
+										class="highlight">酒</span>】的正确使用次数（界沮授开局少1滴血）
+								</li>
+								<li>1.6常规下，禁用【闪】的使用（功能后续会继续开发）</li>
+							</ul>
+						</li>
+						<li>2.新增<span class="highlight">状态信息区</span>（该区域以后会逐渐新增功能）</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V3.1更新内容</h2>
+					<div class="update-date">更新时间：2025/4/9</div>
+					<ul class="version-list">
+						<li>1.新增<span class="highlight">MD5码</span>的生成与校检</li>
+						<li>2.新增<span class="highlight">结束出牌阶段</span>按钮，以便日后功能更新</li>
+						<li>3.新增<span
+								class="highlight">AES编码</span>的生成与校检，并与MD5码联合绑定，且可解码他人分享的本模拟器生成的AES编码内容。AES码生成时，会排除掉开局发的4张牌，只会生成剩下的<span
+								class="highlight">156张牌</span></li>
+						<li>4.新增<span class="highlight">牌堆日志</span>的生成。该功能只能在windows系统内使用。（有可能检测不到是否windows，不管了）
+						</li>
+						<li>5.在记牌器区域背景通过base64编码加上沮爹帅气的脸庞，本地也可以看到沮爹帅气的脸庞力！</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V3.0更新内容</h2>
+					<div class="update-date">更新时间：2025/4/6</div>
+					<ul class="version-list">
+						<li>1.新增了<span class="highlight">模拟出牌阶段</span>（功能尚未完善）</li>
+						<li>2.新增了<span class="highlight">标沮授的技能代码</span>（需要进入出牌阶段才可使用）</li>
+						<li>3.刷新牌堆自动发<span class="highlight">4张牌</span></li>
+						<li>4.优化了牌堆代码，大幅度减少牌堆代码的臃肿度</li>
+						<li>5.新增<span class="highlight">日志区</span></li>
+						<li>6.新增<span class="highlight">展开和收起记牌器</span>的按钮</li>
+						<li>7.新增<span class="highlight">刷新网页</span>按钮</li>
+						<li>8.采用了新的<span class="highlight">牌堆随机代码</span>方式，令其更加安全的且更加接近真随机牌堆，并且让新算法尝试适配较旧的浏览器</li>
+						<li>9.修复了牌堆代码里的一些花色的格式不一导致<span class="highlight">渐营无法正确触发</span>的bug</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V2.1更新内容</h2>
+					<div class="update-date">更新时间：2025/3/25</div>
+					<ul class="version-list">
+						<li>1.新增了<span class="highlight">脚气卡</span>的使用，在发的牌等于4张且每次洗牌时少于7次可使用</li>
+						<li>2.优化了更新内容的排版，更加简洁界面</li>
+						<li>3.优化了<span class="highlight">基锦装</span>的组合代码，使代码更加简洁</li>
+						<li>4.更新了较完整的注释，网页端浏览器可按<span class="highlight">F12查看</span>并学习</li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V2.0更新内容</h2>
+					<div class="update-date">更新时间：2025/3/21</div>
+					<ul class="version-list">
+						<li>1.新增了<span class="highlight">记牌器</span>的显示</li>
+						<li>2.添加了V1.0版本里牌堆漏掉的<span class="highlight">5张酒</span></li>
+						<li>3.新增<span class="highlight">抽到ak提示</span></li>
+						<li>4.优化并置顶了<span class="highlight">交互按钮</span></li>
+					</ul>
+				</div>
+
+				<div class="update-section">
+					<h2 class="version-title">V1.0原始版本内容</h2>
+					<div class="update-date">开始时间：2025/3/18</div>
+					<ul class="version-list">
+						<li>1.提供<span class="highlight">基本的抽1-4张牌</span>的功能</li>
+						<li>2.提供<span class="highlight">洗牌功能</span>，查看<span class="highlight">剩余牌堆</span>功能</li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取V7.8.3.62镜像文件
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy;<span id="copyright-year">2025~2026</span>bilibili月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+		<button id="backToTopBtn">回到顶部</button>
+		<button id="scrollToBottomBtn" class="show">滚到底部</button>
+	</body>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const stickyHeader = document.getElementById('stickyHeader');
+			const accordions = document.querySelectorAll('.accordion');
+
+			let currentActiveAccordion = null;
+
+			accordions.forEach((accordion, index) => {
+				accordion.id = `accordion-${index}`;
+			});
+
+			window.addEventListener('scroll', function() {
+				let currentAccordion = null;
+
+				accordions.forEach(accordion => {
+					const rect = accordion.getBoundingClientRect();
+					if (rect.top <= 100 && rect.bottom >= 100) {
+						currentAccordion = accordion;
+						currentActiveAccordion = accordion;
+					}
+				});
+
+				if (currentAccordion) {
+					const headerText = currentAccordion.querySelector('.accordion-header').textContent;
+					stickyHeader.textContent = headerText;
+					stickyHeader.style.display = 'block';
+				} else {
+					stickyHeader.style.display = 'none';
+				}
+			});
+
+			stickyHeader.addEventListener('click', function() {
+				if (currentActiveAccordion) {
+					currentActiveAccordion.classList.toggle('active');
+				}
+			});
+			accordions.forEach(accordion => {
+				const header = accordion.querySelector('.accordion-header');
+
+				header.addEventListener('click', function() {
+					accordion.classList.toggle('active');
+					currentActiveAccordion = accordion;
+				});
+			});
+		});
+
+
+		// 获取按钮
+		const backToTopBtn = document.getElementById('backToTopBtn');
+
+		// 滚动事件监听，控制按钮显示隐藏
+		window.addEventListener('scroll', () => {
+			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+				backToTopBtn.style.display = 'block';
+			} else {
+				backToTopBtn.style.display = 'none';
+			}
+		});
+
+		// 点击按钮回到顶部
+		backToTopBtn.addEventListener('click', () => {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 平滑滚动
+			});
+		});
+
+		// 获取滚到底部按钮
+		const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+
+		// 判断是否接近页面底部（距离底部200px以内）
+		function isNearBottom() {
+			const scrollPosition = window.scrollY + window.innerHeight;
+			const distanceFromBottom = document.body.scrollHeight - scrollPosition;
+			return distanceFromBottom <= 200;
+		}
+
+		// 更新按钮显示状态（直接切换display属性）
+		function updateButtonVisibility() {
+			if (isNearBottom()) {
+				scrollToBottomBtn.style.display = 'none'; // 底部200px内隐藏
+			} else {
+				scrollToBottomBtn.style.display = 'block'; // 其余情况显示
+			}
+		}
+
+		// 滚动事件监听
+		window.addEventListener('scroll', updateButtonVisibility);
+
+		// 点击按钮滚动到底部
+		scrollToBottomBtn.addEventListener('click', () => {
+			window.scrollTo({
+				top: document.body.scrollHeight,
+				behavior: 'smooth' // 平滑滚动
+			});
+		});
+
+		// 页面加载后初始化按钮状态
+		window.addEventListener('load', updateButtonVisibility);
+	</script>
+</html>

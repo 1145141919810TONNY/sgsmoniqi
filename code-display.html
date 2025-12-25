@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>沮爹模拟器 - 完整代码展示</title>
+		<link rel="stylesheet" href="css/head.css">
+
+	</head>
+	<body class="cd-body">
+		<div class="cd-container">
+			<header class="cd-header">
+				<h1 class="hero-title">沮爹模拟器单机版开源代码展示</h1>
+				<div class="cd-nav-buttons">
+					<a href="index.html" class="cd-nav-button">返回主页</a>
+					<a href="jushou.html" class="cd-nav-button">进入沮爹模拟器</a>
+					<a href="stand alone js.html" class="cd-nav-button">查看效果</a>
+				</div>
+			</header>
+
+			<div class="cd-code-display">
+				<div class="cd-code-header">
+					<div>
+						<h2>若为其他系统，则不一定有效，或为显示乱码/加载失败</h2>
+						<h3>代码下方有使用教程</h3>
+					</div>
+				</div>
+				<div class="cd-code-content">
+					<div class="cd-loading">正在加载代码...</div>
+					<pre id="codeOutput" class="cd-pre"></pre>
+				</div>
+			</div>
+		</div>
+		<h2>完整HTML代码使用教程（该教程仅限windwos使用）</h2>
+		<div class="cd-copy-instructions">1.点击代码后自动全选。然后请使用右键复制或使用 Ctrl+C</div>
+		<div class="cd-copy-instructions">2.在你的桌面新建一个.txt后缀的文本文档</div>
+		<div class="cd-copy-instructions">3.将代码复制进去并保存</div>
+		<div class="cd-copy-instructions">4.将后缀名从.txt改为.html并保存</div>
+		<div class="cd-copy-instructions">5.双击运行（设置好运行浏览器即可）</div>
+		<h2>若加载失败，请直接前往效果页面</h2>
+		<div class="cd-copy-instructions">1.右键页面，然后点击查看页面源代码</div>
+		<div class="cd-copy-instructions">2.跟着上面的第二步开始</div>
+		
+
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取V7.8.3.62镜像文件
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy;<span id="copyright-year">2025~2026</span>bilibili月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+		
+		<button id="backToTopBtn">回到顶部</button>
+
+		<script>
+			// 使用fetch API加载代码文件
+			async function loadCode() {
+				try {
+					const response = await fetch('stand alone js.html');
+					if (!response.ok) {
+						throw new Error('无法加载代码文件');
+					}
+
+					const code = await response.text();
+					displayCode(code);
+					showSelectionHint();
+				} catch (error) {
+					console.error('加载代码失败:', error);
+					document.querySelector('.cd-loading').textContent = '加载失败: ' + error.message;
+				}
+			}
+			
+			function displayCode(code) {
+			    const output = document.getElementById('codeOutput');
+			    const loading = document.querySelector('.cd-loading');
+			    if (loading) loading.remove();
+			
+			    
+			    const pre = document.createElement('pre');
+			    pre.textContent = code;
+			    output.appendChild(pre);
+				}
+
+			// 显示代码并添加语法高亮
+			function applyHighlights(node) {
+			        if (node.nodeType === Node.TEXT_NODE) {
+			            const text = node.textContent;
+			            
+			            // 转义HTML特殊字符
+			            const escaped = text
+			                .replace(/&/g, '&amp;')
+			                .replace(/</g, '&lt;')
+			                .replace(/>/g, '&gt;');
+			
+			            // 创建临时容器
+			            const temp = document.createElement('div');
+			            temp.innerHTML = escaped;
+			            
+			            // 应用语法高亮
+			            const highlight = temp.innerHTML
+			                .replace(/(&lt;\/?)(\w+)/g, '<span class="cd-html-tag">$1$2</span>')
+			                .replace(/\s([\w-]+)=/g, ' <span class="cd-html-attr">$1</span>=')
+			                .replace(/("(?:\\"|[^"])*")/g, '<span class="cd-html-string">$1</span>')
+			                .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="cd-html-comment">$1</span>');
+			            
+			            // 创建高亮元素
+			            const highlightSpan = document.createElement('span');
+			            highlightSpan.innerHTML = highlight;
+			            
+			            // 替换文本节点
+			            node.replaceWith(highlightSpan);
+			        } 
+			        else if (node.nodeType === Node.ELEMENT_NODE) {
+			            // 递归处理子节点
+			            Array.from(node.childNodes).forEach(applyHighlights);
+			        }
+	
+				// 添加全选功能
+				output.addEventListener('dblclick', function() {
+					selectAllCode();
+				});
+			}
+
+			// 全选代码功能
+			function selectAllCode() {
+				const pre = document.getElementById('codeOutput');
+				const range = document.createRange();
+				range.selectNodeContents(pre);
+				const selection = window.getSelection();
+				selection.removeAllRanges();
+				selection.addRange(range);
+
+				// 添加视觉反馈
+				pre.classList.add('cd-highlight');
+				setTimeout(() => pre.classList.remove('cd-highlight'), 1000);
+			}
+
+			// 显示选择提示
+			function showSelectionHint() {
+				const hint = document.createElement('div');
+				hint.className = 'cd-selection-hint';
+				hint.textContent = '提示：单击代码区域可全选代码';
+				document.body.appendChild(hint);
+
+				setTimeout(() => {
+					hint.style.opacity = '0';
+					setTimeout(() => document.body.removeChild(hint), 500);
+				}, 2500);
+			}
+			
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
+			
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+			  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+			    backToTopBtn.style.display = 'block';
+			  } else {
+			    backToTopBtn.style.display = 'none';
+			  }
+			});
+			
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+			  window.scrollTo({
+			    top: 0,
+			    behavior: 'smooth' // 平滑滚动
+			  });
+			});
+			    
+
+			// 页面加载完成后开始加载代码
+			window.addEventListener('DOMContentLoaded', loadCode);
+
+			// 更新版权年份
+			document.getElementById('copyright-year').textContent = new Date().getFullYear();
+		</script>
+	</body>
+</html>

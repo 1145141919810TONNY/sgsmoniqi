@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>沮爹红利期和随机洗牌版本核心洗牌代码对比</title>
+		<link rel="stylesheet" href="css/head.css">
+	</head>
+	<body>
+		<button id="backToTopBtn">回到顶部</button>
+
+		<div class="header-placeholder"></div>
+		<section class="hero-section">
+			<h1 class="hero-title">沮爹红利期和纯随机洗牌版本核心洗牌代码对比</h1>
+			<h3 class="hero-title">将鼠标悬停在函数名上查看完整源代码</h3>
+			<div class="nav-buttons">
+				<button class="nav-button"><a href="index.html">返回新版主页</a></button>
+				<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
+			</div>
+		</section>
+
+		<div class="function-category">一、随机洗牌功能</div>
+		<div class="cd-code-display">
+			<div class="cd-code-header">
+				<div>
+					<h2>initializeDeck()函数</h2>
+				</div>
+			</div>
+			<div class="cd-code-content">
+				<p>// 初始化牌堆函数<br />
+					function initializeDeck() {<br />
+					// 清空操作日志<br />
+					document.getElementById('log').innerHTML = '';<br />
+					log("牌堆初始化开始");<br />
+					<br />
+					// 重置所有牌堆相关变量<br />
+					deck = [];<br />
+					drawnCards = [];<br />
+					discardPile = [];<br />
+					hand = [];<br />
+					document.getElementById('deck').innerHTML = ''; // 清空牌堆显示区域<br />
+					reshuffleUsed = 0; // 重置脚气卡使用次数<br />
+					phase = ''; // 重置游戏阶段<br />
+					lastUsedCard = null; // 重置最后使用的卡牌<br />
+					peachCount = 1; // 重置桃使用次数<br />
+					wineCount = 1; // 重置酒使用次数<br />
+					<br />
+					// 使用外部定义的standardDeck（在card.js中）创建牌堆<br />
+					standardDeck.forEach(card => {<br />
+					// 处理每张卡牌的花色和点数<br />
+					card.suits.forEach(suitStr => {<br />
+					// 使用正则表达式解析花色和点数<br />
+					const match = suitStr.match(/^([♠♥♣♦]️?)([JQKA]|\d+)$/);<br />
+					if (match) {<br />
+					const suitPart = match[1]; // 提取花色部分<br />
+					let point = match[2]; // 提取点数部分<br />
+					<br />
+					// 将字母点数转换为数字<br />
+					switch (point) {<br />
+					case 'J':<br />
+					point = 11;<br />
+					break;<br />
+					case 'Q':<br />
+					point = 12;<br />
+					break;<br />
+					case 'K':<br />
+					point = 13;<br />
+					break;<br />
+					case 'A':<br />
+					point = 1;<br />
+					break;<br />
+					default:<br />
+					point = parseInt(point, 10); // 数字点数直接转换为整数<br />
+					}<br />
+					<br />
+					// 根据卡牌数量创建多个副本<br />
+					for (let i = 0; i
+					< card.count; i++) {<br />
+					// 创建卡牌对象并添加到牌堆<br />
+					deck.push({<br />
+					name: card.name, // 卡牌名称<br />
+					suit: suitPart, // 花色<br />
+					point: point, // 点数<br />
+					uid: CryptoJS.lib.WordArray.random(16).toString() // 唯一ID<br />
+					});<br />
+					}<br />
+					}<br />
+					});<br />
+					});<br />
+					<br />
+					// 重置武器和攻击状态<br />
+					currentWeapon = null;<br />
+					killCount = 2;<br />
+					hasZhugeLianNu = false;<br />
+					<br />
+					// 更新状态显示<br />
+					updateStatus();<br />
+					// 洗牌<br />
+					shuffleDeck();<br />
+					// 生成牌堆MD5<br />
+					generateDeckMD5();<br />
+					// 更新MD5显示<br />
+					updateMD5Display();<br />
+					// 生成牌堆AES<br />
+					generateDeckAES();<br />
+					// 更新AES显示<br />
+					updateAESDisplay();<br />
+					// 更新剩余牌数显示<br />
+					updateRemaining();<br />
+					// 开始游戏<br />
+					startGame();<br />
+					log("牌堆初始化完成");<br />
+					}<br />
+				</p>
+			</div>
+			</div>
+			
+	<div class="key-points">
+			<h3>关键技术点</h3>
+			<ul>
+				<li>1.游戏状态重置：执行全量变量清零（牌堆、弃牌堆、手牌等数据结构），包含游戏阶段(phase)、计数器和持久化状态(lastUsedCard)的初始化</li>
+				<li>2. 牌堆重构算法：基于外部标准牌组配置(standardDeck)，通过正则表达式解析花色/点数标识，实现扑克字母面值(J/Q/K/A)到数值(11-13/1)的标准化转换</li>
+			</ul>
+		</div>
+	
+		<div class="cd-code-display">
+			<div class="cd-code-header">
+				<div>
+					<h2>shuffleDeck()函数</h2>
+				</div>
+			</div>
+			<div class="cd-code-content">
+				<p>// 洗牌函数<br />
+					function shuffleDeck() {<br />
+						// Fisher-Yates洗牌算法<br />
+						for (let i = deck.length - 1; i > 0; i--) {<br />
+							const j = Math.floor(Math.random() * (i + 1));<br />
+							[deck[i], deck[j]] = [deck[j], deck[i]];<br />
+						}<br />
+						<br />
+						// 如果装备的武器不在牌堆中，重置武器状态<br />
+						if (!deck.some(c => c.name === currentWeapon)) {<br />
+							currentWeapon = null;<br />
+							hasZhugeLianNu = false;<br />
+							killCount = 2;<br />
+						}<br />
+						<br />
+						// 重置桃和酒的使用次数<br />
+						peachCount = 1;<br />
+						document.getElementById('peach-counter').textContent = `桃可用次数：1`;<br />
+						wineCount = 1;<br />
+						<br />
+						// 更新状态<br />
+						updateStatus();<br />
+						<br />
+						// 生成新的AES编码<br />
+						generateDeckAES();<br />
+						updateAESDisplay();<br />
+					}<br />
+				</p>
+			</div>
+		</div>
+		
+		<div class="key-points">
+			<h3>关键技术点</h3>
+			<ul>
+				<li>1. Fisher-Yates洗牌算法：使用经典洗牌算法实现牌堆随机排序</li>
+				<li>2. 武器状态管理：在洗牌后自动检测武器卡缺失情况并重置相关状态</li>
+			</ul>
+		</div>
+		
+		<div class="cd-code-display">
+			<div class="cd-code-header">
+				<div>
+					<h2>handleReshuffle()函数</h2>
+				</div>
+			</div>
+			<div class="cd-code-content">
+				<p>// 脚气卡使用（重新洗牌）<br />
+					function handleReshuffle() {<br />
+						// 验证脚气卡使用条件<br />
+						if (!validateReshuffle()) return;<br />
+						<br />
+						// 记录日志<br />
+						log(`开始使用脚气卡（当前已用${reshuffleUsed}次）`);<br />
+						<br />
+						// 回收当前手牌<br />
+						const currentDrawn = hand.splice(-4, 4);<br />
+						log(`回收手牌：${currentDrawn.map(c => c.name).join(', ')}`);<br />
+						<br />
+						// 将手牌放回牌堆顶部<br />
+						deck.unshift(...currentDrawn);<br />
+						<br />
+						// 洗牌<br />
+						shuffleDeck();<br />
+						<br />
+						// 更新脚气卡使用次数<br />
+						reshuffleUsed++;<br />
+						log(`脚气卡洗牌完成（${reshuffleUsed}/${MAX_RESHUFLE}次）`);<br />
+						<br />
+						// 清空已抽取牌堆<br />
+						discardPile.push(...drawnCards);<br />
+						drawnCards = [];<br />
+						<br />
+						// 重新抽牌<br />
+						drawCards(4);<br />
+						log(`重新抽取4张牌，剩余牌堆：${deck.length}张`);<br />
+						<br />
+						// 更新界面<br />
+						updateCounter();<br />
+						updateReshuffleButton();<br />
+					}<br />
+				</p>
+			</div>
+		</div>
+		
+		<div class="key-points">
+			<h3>关键技术点</h3>
+			<ul>
+				<li>1. 手牌回收机制：使用splice(-4,4)精确截取最后4张手牌进行回收操作</li>
+				<li>2. 牌堆重组流程：通过unshift将回收手牌置于牌堆顶部，确保重新洗牌后优先分发</li>
+			</ul>
+		</div>
+		
+		<div class="function-category">二、红利洗牌功能</div>
+		
+		<div class="cd-code-display">
+			<div class="cd-code-header">
+				<div>
+					<h2>initializeDeck()函数（红利期版）</h2>
+				</div>
+			</div>
+			<div class="cd-code-content">
+				<p>function initializeDeck() {<br />
+						// 清空操作日志<br />
+						document.getElementById('log').innerHTML = '';<br />
+						log("牌堆初始化开始");<br />
+						<br />
+						// 重置预留的AK<br />
+						reservedInitialAK = null;<br />
+						<br />
+						// 重置所有牌堆相关变量<br />
+						deck = [];<br />
+						drawnCards = [];<br />
+					 discardPile = [];<br />
+						hand = [];<br />
+						document.getElementById('deck').innerHTML = ''; // 清空牌堆显示区域<br />
+						reshuffleUsed = 0; // 重置脚气卡使用次数<br />
+						phase = ''; // 重置游戏阶段<br />
+						lastUsedCard = null; // 重置最后使用的卡牌<br />
+						peachCount = 1; // 重置桃使用次数<br />
+						wineCount = 1; // 重置酒使用次数<br />
+						<br />
+						// 使用外部定义的standardDeck（在card.js中）创建牌堆<br />
+						standardDeck.forEach(card => {<br />
+							// 处理每张卡牌的花色和点数<br />
+							card.suits.forEach(suitStr => {<br />
+								// 使用正则表达式解析花色和点数<br />
+								const match = suitStr.match(/^([♠♥♣♦]️?)([JQKA]|\d+)$/);<br />
+								if (match) {<br />
+									const suitPart = match[1]; // 提取花色部分<br />
+									let point = match[2]; // 提取点数部分<br />
+									<br />
+									// 将字母点数转换为数字<br />
+									switch (point) {<br />
+										case 'J':<br />
+											point = 11;<br />
+											break;<br />
+										case 'Q':<br />
+											point = 12;<br />
+											break;<br />
+										case 'K':<br />
+											point = 13;<br />
+											break;<br />
+										case 'A':<br />
+											point = 1;<br />
+											break;<br />
+										default:<br />
+											point = parseInt(point, 10); // 数字点数直接转换为整数<br />
+									}<br />
+									<br />
+									// 根据卡牌数量创建多个副本<br />
+									for (let i = 0; i < card.count; i++) {<br />
+										// 创建卡牌对象并添加到牌堆<br />
+										deck.push({<br />
+											name: card.name, // 卡牌名称<br />
+											suit: suitPart, // 花色<br />
+											point: point, // 点数<br />
+											uid: CryptoJS.lib.WordArray.random(16).toString() // 唯一ID<br />
+										});<br />
+									}<br />
+								}<br />
+							});<br />
+					 });<br />
+						<br />
+						// 重置武器和攻击状态<br />
+						currentWeapon = null;<br />
+						killCount = 2;<br />
+						hasZhugeLianNu = false;<br />
+						<br />
+						// 更新状态显示<br />
+						updateStatus();<br />
+						// 洗牌<br />
+						shuffleDeck();<br />
+						// 生成牌堆MD5<br />
+						generateDeckMD5();<br />
+						// 更新MD5显示<br />
+					 updateMD5Display();<br />
+						// 生成牌堆AES<br />
+						generateDeckAES();<br />
+						// 更新AES显示<br />
+						updateAESDisplay();<br />
+						// 更新剩余牌数显示<br />
+						updateRemaining();<br />
+						// 开始游戏<br />
+						startGame();<br />
+						log("牌堆初始化完成");<br />
+					}<br />
+				</p>
+			</div>
+		</div>
+		
+		<div class="key-points">
+			<h3>关键技术点</h3>
+			<ul>
+				<li>1. AK预留机制：新增预留AK状态管理(reservedInitialAK)，为红利期模式提供特殊卡牌处理能力</li>
+				<li>2. 牌堆重构算法：保留标准牌组构建流程，确保卡牌唯一性和标准化处理</li>
+			</ul>
+			
+			<h3>技术对比点</h3>
+			<p>相比随机洗牌版initializeDeck()函数：</p>
+			<ul>
+				<li>新增了预留AK管理：添加了<code>reservedInitialAK = null;</code>初始化操作</li>
+				<li>保留了核心牌堆构建逻辑和状态重置功能</li>
+				<li>保持相同的密码学安全机制（MD5/AES校验）</li>
+			</ul>
+		</div>
+		
+		<div class="cd-code-display">
+			<div class="cd-code-header">
+				<div>
+					<h2>shuffleDeck()函数（红利期版）</h2>
+				</div>
+			</div>
+			<div class="cd-code-content">
+				<p>function shuffleDeck() {<br />
+						log("开始特殊规则洗牌");<br />
+						<br />
+						// 1. 分类卡牌<br />
+						const heil = []; // 黑利牌<br />
+						const hl = []; // 红利牌<br />
+						const other = []; // 其他牌<br />
+						<br />
+					 // 定义黑利牌列表<br />
+						const heilCards = [<br />
+							"闪", "桃", "雌雄双股剑", "青龙偃月刀", "青釭剑",<br />
+							"丈八蛇矛", "麒麟弓", "贯石斧", "方天画戟",<br />
+							"寒冰剑", "古锭刀", "朱雀羽扇"<br />
+						];<br />
+						<br />
+						// 定义红利牌列表<br />
+						const hlCards = ["无中生有", "顺手牵羊", "过河拆桥"];<br />
+						<br />
+						deck.forEach(card => {<br />
+							if (heilCards.includes(card.name)) {<br />
+								heil.push(card);<br />
+							} else if (hlCards.includes(card.name)) {<br />
+								hl.push(card);<br />
+							} else {<br />
+								other.push(card);<br />
+							}<br />
+						});<br />
+						<br />
+						// 日志分类结果<br />
+						log(`分类完成: heil=${heil.length}|hl=${hl.length}|other=${other.length}${reservedInitialAK ? '|ak_reserved' : ''}`);<br />
+						<br />
+						// 2. 对每类牌进行内部洗牌<br />
+						shuffleArray(heil);<br />
+					 shuffleArray(hl);<br />
+						shuffleArray(other);<br />
+						<br />
+						// 3. 构建新牌堆：红利牌 -> 其他牌 -> 黑利牌<br />
+						deck = [...hl, ...other, ...heil];<br />
+						<br />
+						// 4. 额外的洗牌：将前10张和后10张随机交换<br />
+						const swaps = Math.min(10, Math.floor(deck.length / 2));<br />
+						for (let i = 0; i < swaps; i++) {<br />
+							const j = deck.length - 1 - i;<br />
+							[deck[i], deck[j]] = [deck[j], deck[i]];<br />
+						}<br />
+						<br />
+						// 5. 如果之前预留了AK，添加到日志但不放回牌堆<br />
+						if (reservedInitialAK) {<br />
+							log(`预留的诸葛连弩不在牌堆中，将出现在初始手牌`);<br />
+						}<br />
+						<br />
+						// 6. 如果装备的武器不在牌堆中，重置武器状态<br />
+						if (!deck.some(c => c.name === currentWeapon)) {<br />
+					  currentWeapon = null;<br />
+							hasZhugeLianNu = false;<br />
+							killCount = 2;<br />
+						}<br />
+						<br />
+						// 重置桃和酒的使用次数<br />
+						peachCount = 1;<br />
+						document.getElementById('peach-counter').textContent = `桃可用次数：1`;<br />
+						wineCount = 1;<br />
+						<br />
+						// 更新状态<br />
+						updateStatus();<br />
+						<br />
+						// 生成新的AES编码（牌堆不包含预留的AK）<br />
+						generateDeckAES();<br />
+					 updateAESDisplay();<br />
+						<br />
+						log("特殊规则洗牌完成");<br />
+					}<br />
+				</p>
+			</div>
+		</div>
+		
+		<div class="key-points">
+			<h3>关键技术点</h3>
+			<ul>
+				<li>1. 卡牌分类系统：基于预定义的黑利牌(heilCards)和红利牌(hlCards)实现卡牌智能分类</li>
+				<li>2. 分层洗牌策略：分别对三类卡牌（黑利/红利/其他）独立洗牌，再按红利->其他->黑利的顺序重组牌堆</li>
+			</ul>
+			
+			<h3>技术对比点</h3>
+			<p>相比随机洗牌版shuffleDeck()函数：</p>
+			<ul>
+				<li>完全重构洗牌逻辑：用分层分类洗牌取代Fisher-Yates算法</li>
+				<li>新增头尾交换机制：随机交换牌堆顶部和底部的10张卡牌，增加不确定性</li>
+				<li>集成红利期规则：通过卡牌分类和特定排序实现游戏机制的改变</li>
+				<li>保留武器状态管理和桃酒次数重置功能</li>
+			</ul>
+		</div>
+		
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取V7.8.3.62镜像文件
+				</a>
+			</div>
+			<div class="license-notice">
+				<p>
+					Copyright &copy;<span id="copyright-year">2025~2026</span>bilibili月が綺麗ですね_<br />
+					Released under the
+					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
+						MIT License
+					</a>
+				</p>
+				<p class="i18n-annotation">
+					(法律条款以英文版<a href="MIT LICENSE.html" target="_blank">LICENSE</a>文件为准)
+				</p>
+			</div>
+		</footer>
+	</body>
+	<script>
+		// 获取按钮
+		const backToTopBtn = document.getElementById('backToTopBtn');
+
+		// 滚动事件监听，控制按钮显示隐藏
+		window.addEventListener('scroll', () => {
+			if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+				backToTopBtn.style.display = 'block';
+			} else {
+				backToTopBtn.style.display = 'none';
+			}
+		});
+
+		// 点击按钮回到顶部
+		backToTopBtn.addEventListener('click', () => {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth' // 平滑滚动
+			});
+		});
+	</script>
+</html>
