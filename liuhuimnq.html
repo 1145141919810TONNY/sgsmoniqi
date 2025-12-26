@@ -1582,6 +1582,8 @@
 				// 设置按钮状态
 				document.getElementById('drawBtn').disabled = false; // 摸牌阶段可用
 				document.getElementById('playBtn').disabled = true; // 出牌阶段禁用
+				document.getElementById('back').disabled = true; // 重差按钮禁用
+				document.getElementById('back').style.backgroundColor = '#999'; // 设置重差按钮为灰色
 
 				// 更新界面
 				updateUI();
@@ -1591,6 +1593,8 @@
 			function initializeButtons() {
 				document.getElementById('drawBtn').disabled = false; // 摸牌阶段可用
 				document.getElementById('playBtn').disabled = true; // 出牌阶段禁用
+				document.getElementById('back').disabled = true; // 重差按钮禁用
+				document.getElementById('back').style.backgroundColor = '#999'; // 设置重差按钮为灰色
 			}
 
 			// 摸牌阶段处理
@@ -1610,6 +1614,8 @@
 				// 更新按钮状态
 				document.getElementById('drawBtn').disabled = true; // 禁用摸牌按钮
 				document.getElementById('playBtn').disabled = false; // 启用出牌按钮
+				document.getElementById('back').disabled = true; // 禁用重差按钮
+				document.getElementById('back').style.backgroundColor = '#999'; // 设置重差按钮为灰色
 
 				// 更新界面
 				updateUI();
@@ -1627,6 +1633,8 @@
 				document.getElementById('drawBtn').disabled = true; // 禁用摸牌按钮
 				document.getElementById('playBtn').disabled = true; // 禁用出牌按钮
 				document.getElementById('endPlayBtn').disabled = false; // 启用结束出牌按钮
+				document.getElementById('back').disabled = false; // 启用重差按钮
+				document.getElementById('back').style.backgroundColor = '#2196F3'; // 恢复重差按钮颜色
 
 				// 更新界面
 				updateUI();
@@ -3806,6 +3814,14 @@
 				// 更新按钮状态
 				document.getElementById('playBtn').disabled = phase !== '摸牌';
 				document.getElementById('endPlayBtn').disabled = phase !== '出牌';
+				document.getElementById('back').disabled = phase !== '出牌'; // 重差按钮只在出牌阶段启用
+				// 设置重差按钮颜色
+				const backBtn = document.getElementById('back');
+				if (phase === '出牌') {
+					backBtn.style.backgroundColor = '#2196F3'; // 出牌阶段启用时的颜色
+				} else {
+					backBtn.style.backgroundColor = '#999'; // 非出牌阶段禁用时的颜色
+				}
 			}
 
 			// 结束出牌阶段
@@ -3858,9 +3874,9 @@
 				backUsedThisTurn = false;
 				// 重置X计数
 				roundTriggerCnt = 0;
-				// 启用重差按钮
-				document.getElementById('back').disabled = false;
-				document.getElementById('back').style.backgroundColor = '#2196F3';
+				// 禁用重差按钮（因为现在不在出牌阶段）
+				document.getElementById('back').disabled = true;
+				document.getElementById('back').style.backgroundColor = '#999';
 
 				// 更新界面
 				updateUI();
@@ -4231,6 +4247,12 @@
 			
 			// 重差技能函数
 			function useBackSkill() {
+				// 检查是否在出牌阶段
+				if (phase !== '出牌') {
+					log('重差技能只能在出牌阶段使用');
+					return;
+				}
+				
 				// 检查是否已经使用过重差（每回合限一次）
 				if (backUsedThisTurn) {
 					log('重差技能本回合已使用，无法再次使用');
@@ -4770,7 +4792,7 @@
 			</div>
 			<div class="license-notice">
 				<p>
-					Copyright &copy;<span id="copyright-year">2025~2026</span>bilibili月が綺麗ですね_<br />
+					Copyright &copy; <span id="copyright-year">2025~2026</span> bilibili 月が綺麗ですね_<br />
 					Released under the
 					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
 						MIT License
