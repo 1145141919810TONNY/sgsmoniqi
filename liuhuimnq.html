@@ -1633,8 +1633,9 @@
 				document.getElementById('drawBtn').disabled = true; // 禁用摸牌按钮
 				document.getElementById('playBtn').disabled = true; // 禁用出牌按钮
 				document.getElementById('endPlayBtn').disabled = false; // 启用结束出牌按钮
-				document.getElementById('back').disabled = false; // 启用重差按钮
-				document.getElementById('back').style.backgroundColor = '#2196F3'; // 恢复重差按钮颜色
+				// 重差按钮：如果本回合已使用则禁用，否则启用
+				document.getElementById('back').disabled = backUsedThisTurn;
+				document.getElementById('back').style.backgroundColor = backUsedThisTurn ? '#999' : '#2196F3';
 
 				// 更新界面
 				updateUI();
@@ -3814,13 +3815,14 @@
 				// 更新按钮状态
 				document.getElementById('playBtn').disabled = phase !== '摸牌';
 				document.getElementById('endPlayBtn').disabled = phase !== '出牌';
-				document.getElementById('back').disabled = phase !== '出牌'; // 重差按钮只在出牌阶段启用
+				// 重差按钮：必须在出牌阶段且本回合未使用技能才能启用
+				document.getElementById('back').disabled = (phase !== '出牌' || backUsedThisTurn);
 				// 设置重差按钮颜色
 				const backBtn = document.getElementById('back');
-				if (phase === '出牌') {
-					backBtn.style.backgroundColor = '#2196F3'; // 出牌阶段启用时的颜色
+				if (phase === '出牌' && !backUsedThisTurn) {
+					backBtn.style.backgroundColor = '#2196F3'; // 出牌阶段且未使用技能时的颜色
 				} else {
-					backBtn.style.backgroundColor = '#999'; // 非出牌阶段禁用时的颜色
+					backBtn.style.backgroundColor = '#999'; // 非出牌阶段或已使用技能时的颜色
 				}
 			}
 
