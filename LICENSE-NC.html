@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>MIT LICENSE</title>
+		<link rel="stylesheet" href="css/head.css">
+
+		<style>
+			/* 语言切换按钮容器 */
+			.language-switcher {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				display: flex;
+				gap: 10px;
+				z-index: 1000;
+			}
+
+			.lang-btn {
+				padding: 8px 16px;
+				background: #f0f0f0;
+				border: 2px solid #ddd;
+				border-radius: 4px;
+				cursor: pointer;
+				font-weight: bold;
+				transition: all 0.3s ease;
+			}
+
+			.lang-btn.active {
+				background: #e74c3c;
+				color: white;
+				border-color: #e74c3c;
+			}
+
+			.lang-btn:hover:not(.active) {
+				background: #e0e0e0;
+			}
+
+			.license-content {
+				font-family: 'Courier New', monospace;
+				font-size: 15px;
+				background-color: #f5f8fa;
+				padding: 20px;
+				border-radius: 4px;
+				border-left: 3px solid #4CAF50;
+				position: relative;
+				overflow: auto;
+				max-height: 400px;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+				color: #333;
+				background-color: #f8f9fa;
+				line-height: 1.6;
+			}
+
+			.license-container {
+				max-width: 800px;
+				margin: 50px auto;
+				background: white;
+				border-radius: 8px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+				padding: 30px;
+				position: relative;
+				overflow: hidden;
+				border: 1px solid #ddd;
+			}
+
+			.license-container::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 5px;
+				background: linear-gradient(to bottom, #4CAF50, #2196F3);
+			}
+
+			/* 标题样式 */
+			h1 {
+				color: #2196F3;
+				text-align: center;
+				margin-bottom: 30px;
+				padding-bottom: 15px;
+				border-bottom: 2px solid #eaeaea;
+				font-size: 28px;
+			}
+
+			/* 许可证内容样式 */
+			.license-content {
+				font-family: 'Courier New', monospace;
+				font-size: 15px;
+				background-color: #f5f8fa;
+				padding: 20px;
+				border-radius: 4px;
+				border-left: 3px solid #4CAF50;
+				position: relative;
+				overflow: auto;
+				max-height: 400px;
+			}
+
+			.license-content p {
+				margin-bottom: 15px;
+			}
+
+			.copyright {
+				font-weight: bold;
+				color: #2196F3;
+				display: block;
+				margin-bottom: 15px;
+			}
+
+			.conditions {
+				background-color: #e8f5e9;
+				padding: 15px;
+				border-radius: 4px;
+				margin: 15px 0;
+				border-left: 3px solid #4CAF50;
+			}
+
+			.disclaimer {
+				background-color: #ffebee;
+				padding: 15px;
+				border-radius: 4px;
+				margin-top: 15px;
+				border-left: 3px solid #f44336;
+				font-style: italic;
+			}
+
+			/* 响应式设计 */
+			@media (max-width: 768px) {
+				.license-container {
+					margin: 20px;
+					padding: 20px;
+				}
+			}
+
+			/* 添加页面专属作用域 */
+			#mit-license-page {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+				color: #333;
+				background-color: #f8f9fa;
+				line-height: 1.6;
+			}
+
+			/* 语言切换按钮容器 */
+			#mit-license-page .language-switcher {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				display: flex;
+				gap: 10px;
+				z-index: 1000;
+			}
+
+			/* 修复：添加按钮最小尺寸 */
+			#mit-license-page .lang-btn {
+				padding: 8px 16px;
+				min-width: 80px;
+				/* 确保按钮有最小宽度 */
+				background: #f0f0f0;
+				border: 2px solid #ddd;
+				border-radius: 4px;
+				cursor: pointer;
+				font-weight: bold;
+				transition: all 0.3s ease;
+			}
+
+			/* 导航按钮样式 */
+			#mit-license-page .nav-buttons {
+				display: flex;
+				justify-content: center;
+				gap: 20px;
+				margin: 50px 0 30px;
+				/* 增加顶部间距 */
+			}
+
+			/* 确保导航按钮在横屏时保持布局 */
+			@media (orientation: landscape) {
+				#mit-license-page .nav-buttons {
+					flex-wrap: nowrap;
+				}
+			}
+			strong{color:#0066cc;font-weight:bold;}
+		</style>
+	</head>
+	<body>
+		<div class="header-placeholder"></div>
+<section class="hero-section">
+			<h1 class="hero-title">EE-NC</h1>
+			<div class="nav-buttons">
+				<button class="nav-button"><a href="index.html">返回新版主页</a></button>
+				<button class="nav-button"><a href="indexjd.html">返回经典版主页</a></button>
+			</div>
+		</section>
+		<div class="license-content">
+			<h1>Educational / Non-Commercial License<br>EE-NC v1.0</h1>
+			<span id="copyright">版权所有 &copy; 2025~2026 bilibili 月が綺麗ですね_</span><br /><br />
+  <h2>0-A 语言版本</h2>
+  <p>本许可证以中文书就，未提供英文以及其他语言版本；如出于参考目的产生任何翻译，均以中文文本为准。</p>
+
+  <h2>0-B 自由获取与传播</h2>
+  <p>受保护的内容（含源代码）可自由下载、传播、阅读，无需事先征得作者同意。</p>
+
+  <h2>0-C 保护范围与版本号触发</h2>
+  <ol>
+    <li>本协议仅保护项目内的<code><strong>mzhl.html（梦之回廊模拟器）、open.html（开盒子模拟器）、opendz.html（开袋子模拟器）</strong></code> 文件（下称“受保护文件”）。</li>
+    <li>除上述文件外，本项目其余文件继续采用 MIT License。</li>
+    <li><strong>版本号触发：</strong>如果你手上的本项目版本号（以主页 <code>index.html</code>、<code>indexjd.html</code>、更新日志 <code>versionjs.html</code> 或更新使用的 JSON 文本 <code>version.json</code> 中任意一个页面显示的版本号为准）大于或等于 <strong>V8.1.0.67</strong>，则受保护文件自动适用本协议；旧版本（&lt; V8.1.0.67）仍按 MIT 条款执行。</li>
+    <li>若你在 <strong>2026 年 01 月 03 日</strong>之前已通过<strong>本仓库以及任意方式获得</strong>受保护文件的旧版 MIT 授权副本，则该旧副本不受本协议约束，可继续按照 MIT 条款使用；</li>
+    <li>自 <strong>2026 年 01 月 03 日</strong>起，通过<strong>本仓库以及任意方式获得</strong>且版本号 ≥ V8.1.0.67 的受保护文件均受本协议条款约束，无论文件头部是否已更新 SPDX 标识。</li>
+	<li>本协议于 <strong>2026 年 01 月 03 日 10:00（UTC+8）</strong> 更新并立即生效；更新后的条款仅对更新之日后产生的新使用、再分发行为具有约束力，不影响此前已获得的授权。</li>
+  </ol>
+
+  <h2>1. 定义</h2>
+  <ul>
+    <li>「<strong>本作品</strong>」指附带的受保护文件及其任何修改、合并或衍生片段。</li>
+    <li>「<strong>作者</strong>」指版权声明中列明的版权所有人。</li>
+    <li>「<strong>商用</strong>」指以营利为目的的任何使用、复制、修改、合并、发布、再许可或销售行为，包括但不限于直接销售、SaaS、广告变现、内部成本分摊。</li>
+  </ul>
+
+  <h2>2. 许可授予</h2>
+  <p>在遵守第 3 条禁止商用条款的前提下，作者授予你全球范围、免版税、非排他、不可再许可、永久（除非终止）的许可，以</p>
+  <ul>
+    <li>复制、修改、合并、发布、分发、再许可和/或销售本作品的副本；</li>
+    <li>允许他人进行上述行为。</li>
+  </ul>
+
+  <h2>3. 商用限制</h2>
+  <p><strong>任何以营利为目的的使用均被明确禁止。</strong> 如果你需要商用，必须事先与作者签署单独的书面协议。</p>
+
+  <h2>4. 版权与署名</h2>
+  <p>本作品的全部版权及解释权归作者所有。你必须在每一份副本或实质性修改中完整保留：</p>
+  <ol>
+    <li>本许可证文件（LICENSE-NC.html）；</li>
+    <li>源代码头部或文档中的版权声明、SPDX 标识；</li>
+    <li><strong>任何公开署名（包括但不限于页面页脚、关于对话框、文档以及推广材料等）必须且仅能使用作者哔哩哔哩完整用户名“bilibili月が綺麗ですね_”</strong>，不得使用或透露作者真实姓名及其他身份信息。</li>
+  </ol>
+  <p>如未按上述方式署名，即视为违反本许可条款，作者有权终止授权并追究责任。</p>
+
+
+  <h2>5. 禁止用于违法内容</h2>
+  <p>你不得利用本作品从事任何违反适用法律法规、侵犯第三方权利或传播恶意软件、暴力、色情、歧视等内容的活动。</p>
+
+  <h2>6. 责任与赔偿</h2>
+  <p>本作品按「现状」提供，作者对任何直接、间接、附带、特殊或后果性损害概不负责。因你违反本许可条款导致的任何索赔、损失或费用，你须独自承担并赔偿作者因此遭受的全部损失（包括合理律师费）。</p>
+
+  <h2>7. 协议终止</h2>
+  <p>一旦你违反第 3、5、6 条，本许可将自动终止，且作者可追究民事、行政或刑事责任。终止后，你必须立即停止使用、删除并销毁本作品的全部副本。</p>
+
+  <h2>8. 协议更新</h2>
+  <p>作者有权随时更新本许可证文本；更新后的条款仅适用于更新日期之后的再分发行为，不影响此前已获得的许可。</p>
+
+  <h2>9. 与 MIT 许可证的关系</h2>
+  <p>本许可系对 MIT 许可证的「再许可」与补充。若本条款与 MIT 条款冲突，以本条款为准；未冲突部分继续遵循 MIT。</p>
+
+  <h2>10. 适用法律与争议解决</h2>
+  <p>本许可证受中华人民共和国法律管辖，任何争议由作者住所地有管辖权的人民法院诉讼解决。</p>
+		</div>
+		<h1>文本以简体中文版原文为准，其他版本只做参考</h1>
+		<button id="backToTopBtn">回到顶部</button>
+
+		<footer class="site-footer">
+			<div class="author-info">
+				<p>
+					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
+						target="_blank">bilibili月が綺麗ですね_</a><br />
+					联系方式：<a href="mailto:3099637681@qq.com" target="_blank">3099637681@qq.com（QQ同号）</a><br />
+					有什么新功能或建议欢迎骚扰（著名来意）<br />
+					<a href="https://1145141919810tonny.github.io/sgsmoniqi/" target="_blank">点击此处使用GitHub Pages在线服务</a>
+				</p>
+			</div>
+			<div class="code-update">
+				<a href="https://www.bilibili.com/read/readlist/rl929858?spm_id_from=333.1387.0.0" target="_blank"
+					class="bili-btn" rel="noopener noreferrer">
+					[bilibili]获取更新动态
+				</a>
+				<a href="https://github.com/1145141919810TONNY/sgsmoniqi/" target="_blank" class="github-btn"
+					rel="noopener noreferrer">
+					[GitHub]获取后续代码更新
+				</a>
+				<a href="https://gitcode.com/TONNY114514/sgsmnq?source_module=search_project" target="_blank"
+					class="gitcode-btn" rel="noopener noreferrer">
+					[GitCode]获取V7.8.3.62镜像文件
+				</a>
+			</div>
+			<div class="license-notice">
+			  <p>
+			    Copyright &copy;<span id="copyright-year">2025~2026</span> bilibili月が綺麗ですね_<br />
+			    本页部分文件受
+			    <a href="LICENSE-NC.html"
+			       title="查看 Educational/Non-Commercial 许可证" class="license-link" target="_blank">
+			      EE-NC 许可证
+			    </a> 约束，禁止商用；<br />
+			    其余文件继续适用
+			    <a href="MIT LICENSE.html"
+			       title="查看 MIT 许可证" class="license-link" target="_blank">
+			      MIT License
+			    </a>
+			  </p>
+			  <p class="i18n-annotation">
+			    (法律条款以对应英文版(MIT许可证)/中文版（EN-CC许可证）文件为准)
+			  </p>
+			</div>
+		</footer>
+		<script>
+			// SPDX-License-Identifier: LicenseRef-EE-NC
+			// SPDX-FileCopyrightText: 2025~2026 bilibili月が綺麗ですね_
+			
+			// 更新顶部操作栏占位符高度
+			function updateHeaderPlaceholder() {
+				// 获取顶部操作栏和占位元素
+				const header = document.querySelector('.header');
+				const placeholder = document.querySelector('.header-placeholder');
+
+				// 确保元素存在
+				if (header && placeholder) {
+					// 计算高度（操作栏高度 + 5px缓冲）
+					const height = header.offsetHeight + 5;
+
+					// 设置占位元素高度
+					placeholder.style.height = `${height}px`;
+				}
+			}
+
+			// 页面加载和窗口大小变化时更新占位符
+			window.addEventListener('DOMContentLoaded', updateHeaderPlaceholder);
+			window.addEventListener('resize', updateHeaderPlaceholder);
+
+			
+			// 获取按钮
+			const backToTopBtn = document.getElementById('backToTopBtn');
+			
+			// 滚动事件监听，控制按钮显示隐藏
+			window.addEventListener('scroll', () => {
+			  if (window.scrollY > 200) { // 当滚动距离大于200时显示按钮
+			    backToTopBtn.style.display = 'block';
+			  } else {
+			    backToTopBtn.style.display = 'none';
+			  }
+			});
+			
+			// 点击按钮回到顶部
+			backToTopBtn.addEventListener('click', () => {
+			  window.scrollTo({
+			    top: 0,
+			    behavior: 'smooth' // 平滑滚动
+			  });
+			});
+
+		</script>
+	</body>
+</html>
