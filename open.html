@@ -845,6 +845,15 @@
 	</div>
 	
 	<footer class="site-footer">
+		<script>
+			// 动态更新版权年份
+			document.addEventListener('DOMContentLoaded', function() {
+				const currentYearElement = document.getElementById('current-year');
+				if(currentYearElement) {
+					currentYearElement.textContent = new Date().getFullYear();
+				}
+			});
+		</script>
 		<div class="author-info">
 			<p>
 				作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
@@ -870,11 +879,13 @@
 		</div>
 		<div class="license-notice">
 		  <p>
-		    Copyright &copy;<span id="copyright-year">2025-2026</span> bilibili月が綺麗ですね_<br />
+		    Copyright &copy;2025-<span id="current-year"></span> bilibili月が綺麗ですね_<br />
 		    本页部分文件受
 		    <a href="LICENSE-NC.html"
 		       title="查看 Educational/Non-Commercial 许可证" class="license-link" target="_blank">
 		      EE-NC 许可证
+			  <!--SPDX-License-Identifier: LicenseRef-EE-NC-->
+			  <!--SPDX-FileCopyrightText: 2025-2026 bilibili月が綺麗ですね_-->
 		    </a> 约束，禁止商用；<br />
 		    其余文件继续适用
 		    <a href="MIT LICENSE.html"
@@ -1544,6 +1555,9 @@
 
         // 初始化页面
         initializePage();
+		
+		// 动态更新版权年份
+		document.getElementById('current-year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
