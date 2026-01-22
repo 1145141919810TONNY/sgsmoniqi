@@ -197,7 +197,7 @@
 		</section>
 		<div class="license-content">
 			<h1>Educational / Non-Commercial License<br>EE-NC v1.0</h1>
-			<span id="copyright">版权所有 &copy; 2025-2026 bilibili 月が綺麗ですね_</span><br /><br />
+			<span id="copyright">版权所有 &copy; 2025-<span id="current-year-body"></span> bilibili 月が綺麗ですね_</span><br /><br />
   <h2>0-A 语言版本</h2>
   <p>本许可证以中文书就，未提供英文以及其他语言版本；如出于参考目的产生任何翻译，均以中文文本为准。</p>
 
@@ -229,9 +229,8 @@
   </ul>
 
   <h2>3. 商用禁止</h2>
-<p><strong>任何商用行为均被明确禁止，作者不会授予任何人商用权利。</strong><br>
-以营利为目的的使用、复制、修改、合并、发布、再许可、销售或其它形式的商业利用，均在禁止之列。如需商用，必须与作者签署单独书面协议；作者保留拒绝授予商用权利的全部自由。</p>
-
+  <p><strong>任何商用行为均被明确禁止，作者不会授予任何人商用权利。</strong><br>
+  以营利为目的的使用、复制、修改、合并、发布、再许可、销售或其它形式的商业利用，均在禁止之列。如需商用，必须与作者签署单独书面协议；作者保留拒绝授予商用权利的全部自由。</p>
 
   <h2>4. 版权与署名</h2>
   <p>本作品的全部版权及解释权归作者所有。你必须在每一份副本或实质性修改中完整保留：</p>
@@ -290,11 +289,13 @@
 			</div>
 			<div class="license-notice">
 			  <p>
-			    Copyright &copy;<span id="copyright-year">2025-2026</span> bilibili月が綺麗ですね_<br />
+			    Copyright &copy;<span id="copyright-year">2025-<span id="current-year-footer"></span></span> bilibili月が綺麗ですね_<br />
 			    本页部分文件受
 			    <a href="LICENSE-NC.html"
 			       title="查看 Educational/Non-Commercial 许可证" class="license-link" target="_blank">
 			      EE-NC 许可证
+				  <!--SPDX-License-Identifier: LicenseRef-EE-NC-->
+				  <!--SPDX-FileCopyrightText: 2025-2026 bilibili月が綺麗ですね_-->
 			    </a> 约束，禁止商用；<br />
 			    其余文件继续适用
 			    <a href="MIT LICENSE.html"
@@ -352,9 +353,21 @@
 			  });
 			});
 
+			// 更新版权年份
+			document.addEventListener('DOMContentLoaded', function() {
+			  const currentYear = new Date().getFullYear();
+			  const currentYearBody = document.getElementById('current-year-body');
+			  const currentYearFooter = document.getElementById('current-year-footer');
+			  
+			  if(currentYearBody) {
+			    currentYearBody.textContent = currentYear;
+			  }
+			  
+			  if(currentYearFooter) {
+			    currentYearFooter.textContent = currentYear;
+			  }
+			});
+
 		</script>
 	</body>
 </html>
-
-
-
