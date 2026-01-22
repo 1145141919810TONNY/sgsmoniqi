@@ -22,7 +22,7 @@
 	<body>
 		<section class="hero-section">
 			<h1 class="hero-title">三国杀模拟器主页</h1>
-			<h2 class="hero-title">V8.1.0.67</h2>
+			<h2 class="hero-title">V8.1.1.68</h2>
 			<h3 class="hero-title">请尽量使用Windows系统以获得最优的体验效果</h3>
 			<div class="nav-buttons">
 				<button class="nav-button"><a href="index.html">切换到新版</a></button>
@@ -190,10 +190,10 @@
 			</div>
 
 			<div class="update-highlight">
-				<h3 class="update-title">最新版本更新内容 V8.1.0.67</h3>
+				<h3 class="update-title">最新版本更新内容 V8.1.1.68</h3>
 				<div class="update-content">
 					<ul class="version-list">
-						<li><span class="highlight">1.将梦之回廊模拟器、开袋子模拟器以及开盒子模拟器的协议从MIT修改为EE-NC协议，其他的页面保持MIT不变。详细内容请参考协议内容正文</span></li>
+						<li>1.将所有页尾，以及两个协议原文页面的当前年份从硬编码改为动态更新</li>
 					</ul>
 				</div>
 			</div>
@@ -202,6 +202,15 @@
 		<button id="backToTopBtn">回到顶部</button>
 
 		<footer class="site-footer">
+			<script>
+				// 动态更新版权年份
+				document.addEventListener('DOMContentLoaded', function() {
+					const currentYearElement = document.getElementById('current-year');
+					if(currentYearElement) {
+						currentYearElement.textContent = new Date().getFullYear();
+					}
+				});
+			</script>
 			<div class="author-info">
 				<p>
 					作者： <a href="https://space.bilibili.com/87412647?spm_id_from=333.1007.0.0"
@@ -227,7 +236,7 @@
 			</div>
 			<div class="license-notice">
 				<p>
-					Copyright &copy;<span id="copyright-year">2025-2026</span>bilibili月が綺麗ですね_<br />
+					Copyright &copy;<span id="copyright-year">2025-<span id="current-year"></span></span>bilibili月が綺麗ですね_<br />
 					Released under the
 					<a href="MIT LICENSE.html" title="查看MIT许可证" class="license-link" target="_blank">
 						MIT License
@@ -239,7 +248,7 @@
 			</div>
 		</footer>
 		<script>
-			const CUR_VER = '8.1.0.67';
+			const CUR_VER = '8.1.1.68';
 			const VER_URL = 'https://1145141919810tonny.github.io/sgsmoniqi/version.json';
 			
 			(function(){
@@ -264,7 +273,11 @@
 			      const go = confirm('版本号异常，可能被修改。是否立即前往下载最新版本？');
 			      if (go) window.open('https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
 			    } else {                                      // 正常旧版 → 提示升级
-			      const msg = `发现新版本：${latest}（${pubDate}）\n更新内容：\n${changelog}\n\n是否前往 GitHub 下载？`;
+			      const msg = `发现新版本：${latest}（${pubDate}）
+更新内容：
+${changelog}
+
+是否前往 GitHub 下载？`;
 			      if (confirm(msg)) {
 			        window.open('https://github.com/1145141919810TONNY/sgsmoniqi/archive/refs/heads/main.zip');
 			      }
@@ -311,7 +324,16 @@
 					behavior: 'smooth' // 平滑滚动
 				});
 			});
-			
+				
+			// 更新版权年份
+			document.addEventListener('DOMContentLoaded', function() {
+			  const currentYear = new Date().getFullYear();
+			  const currentYearElement = document.getElementById('current-year');
+			  if(currentYearElement) {
+			    currentYearElement.textContent = currentYear;
+			  }
+			});
+				
 		</script>
 	</body>
 </html>
