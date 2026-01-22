@@ -1051,11 +1051,13 @@
 			</div>
 			<div class="license-notice">
 			  <p>
-			    Copyright &copy;<span id="copyright-year">2025-2026</span> bilibili月が綺麗ですね_<br />
+			    Copyright &copy;<span id="copyright-year">2025-<span id="current-year"></span></span> bilibili月が綺麗ですね_<br />
 			    本页部分文件受
 			    <a href="LICENSE-NC.html"
 			       title="查看 Educational/Non-Commercial 许可证" class="license-link" target="_blank">
 			      EE-NC 许可证
+				  <!--SPDX-License-Identifier: LicenseRef-EE-NC-->
+				  <!--SPDX-FileCopyrightText: 2025-2026 bilibili月が綺麗ですね_-->
 			    </a> 约束，禁止商用；<br />
 			    其余文件继续适用
 			    <a href="MIT LICENSE.html"
@@ -1067,6 +1069,9 @@
 			    (法律条款以对应英文版（MIT 许可证）或中文版（EE-NC 许可证）文件为准，与本页摘要不一致时，以前述完整文本为准)
 			  </p>
 			</div>
+		<script>
+		document.getElementById('current-year').textContent = new Date().getFullYear();
+	</script>
 		</footer>
 
 		<script>
